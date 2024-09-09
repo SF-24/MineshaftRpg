@@ -1,0 +1,4 @@
+name: MineshaftRpg
+version: '1.0-SNAPSHOT'
+main: com.mineshaft.mineshaftRpg.MineshaftRpg
+api-version: '1.20'
