@@ -1,0 +1,38 @@
+# Mineshaft RPG configuration file.
+
+# Worlds in which some features are disabled
+# Currently this only includes updating the experience bar
+disabled-worlds:
+  - world1
+  - world2
+
+# The number of Skill Points the player starts the game with.
+default-skill-points: 15
+
+# The default attribute value.
+default-ability-score-value: 8
+
+# Experience required to reach each level,
+# This list displays total xp, not from last level.
+# This list can be extended to allow for more levels
+experience-per-level:
+  - 0        #Lv1
+  - 300
+  - 900
+  - 2700
+  - 6500     #Lv5
+  - 14000
+  - 23000
+  - 34000
+  - 48000
+  - 64000    #Lv10
+  - 85000
+  - 100000
+  - 120000
+  - 140000
+  - 165000   #Lv15
+  - 195000
+  - 225000
+  - 265000
+  - 305000
+  - 355000   #Lv20

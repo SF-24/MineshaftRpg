@@ -1,0 +1,24 @@
+name: MineshaftRpg
+version: '1.0-SNAPSHOT'
+main: com.mineshaft.mineshaftRpg.MineshaftRpg
+api-version: '1.20'
+prefix: MineshaftRpg
+authors: [ SebastianFrynas ]
+depend: [ MineshaftApi ]
+description: A port of the RPG features, along with new features from "Another Rpg Plugin"
+website: https://github.com/SF-24
+commands:
+  menu:
+    description: Opens the character menu
+    permission: mineshaft.rpg.menu
+  experience:
+    aliases: [ exp, exper ]
+    description: Used to give the player experience points
+    permission: mineshaft.rpg.exp
+permissions:
+  mineshaft.rpg.exp:
+    default: op
+    description: Used to grant players experience points. Exists for debugging purposes.
+  mineshaft.rpg.menu:
+    default: true
+    description: Required to open the character menu
