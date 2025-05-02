@@ -18,6 +18,7 @@
 
 package com.mineshaft.mineshaftRpg.manager.ui;
 
+import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,13 +28,34 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-
 public class PlayerMenuManager {
 
     public static void openCharacterMenu(Player player) {
+        genericInventoryOpen(player);
         // CREATE MENU INVENTORY
-        Inventory ui = Bukkit.createInventory(null, 9, ChatColor.BLACK + "Menu");
+        Inventory ui = getMenuBackground("Menu");
+
+        ui.setItem(1, UIButtonManager.getPlayerLevelButton(player));
+        ui.setItem(2, UIButtonManager.getPlayerAbilityScoreItem(player));
+        ui.setItem(3, UIButtonManager.getSkillsItem(player));
+        ui.setItem(4, UIButtonManager.getAbilityItem(player));
+
+        player.openInventory(ui);
+    }
+
+    public static void openAbilityScoreMenu(Player player) {
+        genericInventoryOpen(player);
+        Inventory ui = getMenuBackground("Ability Scores");
+
+        for(AbilityScores score : AbilityScores.values()) {
+            ui.addItem(UIButtonManager.getAbilityScoreItem(player, score));
+        }
+        ui.addItem(UIButtonManager.getSkillsItem(player));
+        player.openInventory(ui);
+    }
+
+    public static Inventory getMenuBackground(String name) {
+        Inventory ui = Bukkit.createInventory(null, 9, ChatColor.BLACK + name);
 
         // ui texture
         ItemStack menuItem = new ItemStack(Material.PEONY);
@@ -52,13 +74,16 @@ public class PlayerMenuManager {
         menuItemDownMeta.setCustomModelData(20);
         menuItemDown.setItemMeta(menuItemDownMeta);
         ui.setItem(8, menuItemDown);
+        return ui;
+    }
 
-        ui.setItem(1, UIButtonManager.getPlayerLevelButton(player));
-        ui.setItem(2, UIButtonManager.getPlayerAbilityScoreItem(player));
-        ui.setItem(3, UIButtonManager.getSkillsItem(player));
-        ui.setItem(4, UIButtonManager.getAbilityItem(player));
+    public static void genericInventoryOpen(Player player) {
+        JsonPlayerBridge.saveInventory(player);
+        player.getInventory().clear();
+    }
 
-        player.openInventory(ui);
+    public static void genericInventoryClose(Player player) {
+        JsonPlayerBridge.loadInventory(player);
     }
 
 }

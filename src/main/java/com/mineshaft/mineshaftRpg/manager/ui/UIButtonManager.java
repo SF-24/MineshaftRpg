@@ -18,6 +18,7 @@
 
 package com.mineshaft.mineshaftRpg.manager.ui;
 
+import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.AttributeManager;
 import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
 import org.bukkit.ChatColor;
@@ -29,6 +30,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 
 public class UIButtonManager {
 
@@ -67,6 +69,7 @@ public class UIButtonManager {
         abilityScoreItemMeta.setOwningPlayer(player);
         abilityScoreItemMeta.setCustomModelData(1);
         abilityScoreItem.setItemMeta(abilityScoreItemMeta);
+        UIUtil.setOnclick(abilityScoreItem, "ability_scores");
         return abilityScoreItem;
     }
 
@@ -89,4 +92,41 @@ public class UIButtonManager {
         abilityItem.setItemMeta(abilityItemMeta);
         return abilityItem;
     }
+
+
+    public static ItemStack getAbilityScoreItem(Player player, AbilityScores abilityScore) {
+        ItemStack abilityScoreItem = new ItemStack(Material.KNOWLEDGE_BOOK);
+        ItemMeta abilityScoreItemMeta = abilityScoreItem.getItemMeta();
+
+        abilityScoreItemMeta.setDisplayName(ChatColor.WHITE + "Strength");
+        ArrayList<String> strLore = new ArrayList<>();
+        strLore.add(abilityScore.getColour() + JsonPlayerBridge.getAttribute(player, abilityScore.name().toLowerCase()) + abilityScore.getDarkerColour() +" (" + AttributeManager.calculateAttributeModifier(player, abilityScore.name().toLowerCase(Locale.ROOT)) + ")");
+
+        if(JsonPlayerBridge.getAttribute(player, abilityScore.name().toLowerCase())>=20) {
+            strLore.add(ChatColor.GOLD + "Can no longer be increased");
+        } else if (JsonPlayerBridge.getSkillPoints(player) > 0){
+            strLore.add(ChatColor.YELLOW + "Click to increase");
+        } else {
+            strLore.add(ChatColor.RED + "Not enough skill points to increase");
+        }
+
+        abilityScoreItem.setItemMeta(abilityScoreItemMeta);
+
+        UIUtil.setOnclick(abilityScoreItem, abilityScore.name().toLowerCase());
+        return abilityScoreItem;
+    }
+
+    public static ItemStack getSkillPointItem(Player player) {
+        ItemStack skillPointItem = new ItemStack(Material.PEONY);
+        ItemMeta skillPointMeta = skillPointItem.getItemMeta();
+        assert skillPointMeta != null;
+
+
+        skillPointMeta.setDisplayName(ChatColor.RED + String.valueOf(JsonPlayerBridge.getSkillPoints(player)) + ChatColor.DARK_RED + " skill point" + (JsonPlayerBridge.getSkillPoints(player)>1?"s":"") + " remaining");
+        skillPointMeta.setCustomModelData(10);
+
+        skillPointItem.setItemMeta(skillPointMeta);
+        return skillPointItem;
+    }
+
 }

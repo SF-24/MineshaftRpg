@@ -20,6 +20,8 @@ package com.mineshaft.mineshaftRpg;
 
 import com.mineshaft.mineshaftRpg.command.ExperienceCommand;
 import com.mineshaft.mineshaftRpg.command.MenuCommand;
+import com.mineshaft.mineshaftRpg.listener.GameSaveListener;
+import com.mineshaft.mineshaftRpg.listener.PlayerActionlistener;
 import com.mineshaft.mineshaftRpg.listener.PlayerJoinListener;
 import com.mineshaft.mineshaftRpg.listener.UIListener;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigManager;
@@ -42,6 +44,8 @@ public final class MineshaftRpg extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new UIListener(), this);
+        Bukkit.getPluginManager().registerEvents(new GameSaveListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerActionlistener(), this);
         getDataFolder().mkdirs();
         configManager.setupConfig();
     }

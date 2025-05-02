@@ -18,20 +18,62 @@
 
 package com.mineshaft.mineshaftRpg.listener;
 
+import com.mineshaft.mineshaftRpg.manager.ui.PlayerMenuManager;
+import com.mineshaft.mineshaftRpg.manager.ui.UIUtil;
+import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 
 public class UIListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(InventoryClickEvent e) {
-        if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Menu") && e.getClickedInventory() != null) {
-            if (e.getInventory().getHolder() == null) {
+        if (e.getInventory().getHolder() == null) {
+            if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Menu") && e.getClickedInventory() != null) {
                 e.setCancelled(true);
+
+                if(e.getCurrentItem()==null) return;
+                switch (UIUtil.getOnclick(e.getCurrentItem())) {
+                    case "ability_scores":
+                        PlayerMenuManager.openAbilityScoreMenu((Player) e.getWhoClicked());
+                        break;
+                    case "abilities":
+                        //TODO: add abilities
+                        break;
+                    case "skills":
+                        //TODO: add skills
+                        break;
+                    case null, default:
+                        break;
+                }
+            } else if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Ability scores") && e.getClickedInventory() != null) {
+                e.setCancelled(true);
+
+                if(e.getCurrentItem()==null) return;
+                if(UIUtil.getOnclick(e.getCurrentItem())!=null) {
+                    Player player = (Player) e.getWhoClicked();
+                    if(JsonPlayerBridge.getSkillPoints(player)>0) {
+                        JsonPlayerBridge.setAttribute(player,UIUtil.getOnclick(e.getCurrentItem()),JsonPlayerBridge.getAttribute(player, UIUtil.getOnclick(e.getCurrentItem())));
+                        JsonPlayerBridge.setSkillPoints(player,JsonPlayerBridge.getSkillPoints(player)-1);
+                        PlayerMenuManager.openAbilityScoreMenu(player);
+                    }
+                }
             }
         }
+    }
+
+    @EventHandler
+    public void onPlayerCloseInventory(InventoryCloseEvent e) {
+        if (e.getInventory().getHolder() == null) {
+            if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Menu") || ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Ability scores")) {
+                PlayerMenuManager.genericInventoryClose((Player) e.getPlayer());
+            }
+        }
+
     }
 
 }
