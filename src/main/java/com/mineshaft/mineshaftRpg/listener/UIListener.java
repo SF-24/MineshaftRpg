@@ -18,9 +18,11 @@
 
 package com.mineshaft.mineshaftRpg.listener;
 
+import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.ui.PlayerMenuManager;
 import com.mineshaft.mineshaftRpg.manager.ui.UIUtil;
 import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,10 +38,13 @@ public class UIListener implements Listener {
             if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Menu") && e.getClickedInventory() != null) {
                 e.setCancelled(true);
 
-                if(e.getCurrentItem()==null) return;
+                System.out.printf("click: " + UIUtil.getOnclick(e.getCurrentItem()));
+
                 switch (UIUtil.getOnclick(e.getCurrentItem())) {
                     case "ability_scores":
-                        PlayerMenuManager.openAbilityScoreMenu((Player) e.getWhoClicked());
+//                        e.getWhoClicked().closeInventory();
+//                        PlayerMenuManager.genericInventoryOpen((Player) e.getWhoClicked());
+                        PlayerMenuManager.openAbilityScoreMenu((Player) e.getWhoClicked(),true);
                         break;
                     case "abilities":
                         //TODO: add abilities
@@ -47,19 +52,22 @@ public class UIListener implements Listener {
                     case "skills":
                         //TODO: add skills
                         break;
-                    case null, default:
+                    default:
+                        Logger.logInfo("default case!");
                         break;
                 }
-            } else if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Ability scores") && e.getClickedInventory() != null) {
+            } else if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Ability Scores") && e.getClickedInventory() != null) {
                 e.setCancelled(true);
 
                 if(e.getCurrentItem()==null) return;
+                // Increase ability score if it can be increased
                 if(UIUtil.getOnclick(e.getCurrentItem())!=null) {
                     Player player = (Player) e.getWhoClicked();
-                    if(JsonPlayerBridge.getSkillPoints(player)>0) {
-                        JsonPlayerBridge.setAttribute(player,UIUtil.getOnclick(e.getCurrentItem()),JsonPlayerBridge.getAttribute(player, UIUtil.getOnclick(e.getCurrentItem())));
+                    String onClick = UIUtil.getOnclick(e.getCurrentItem());
+                    if(JsonPlayerBridge.getSkillPoints(player)>0 && JsonPlayerBridge.getAttribute(player,onClick)< ConfigBridge.getAbilityScoreCap(JsonPlayerBridge.getLevel(player))) {
+                        JsonPlayerBridge.setAttribute(player,UIUtil.getOnclick(e.getCurrentItem()),1+JsonPlayerBridge.getAttribute(player, onClick));
                         JsonPlayerBridge.setSkillPoints(player,JsonPlayerBridge.getSkillPoints(player)-1);
-                        PlayerMenuManager.openAbilityScoreMenu(player);
+                        PlayerMenuManager.openAbilityScoreMenu(player,true);
                     }
                 }
             }
@@ -69,7 +77,7 @@ public class UIListener implements Listener {
     @EventHandler
     public void onPlayerCloseInventory(InventoryCloseEvent e) {
         if (e.getInventory().getHolder() == null) {
-            if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Menu") || ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Ability scores")) {
+            if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Menu") || ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Ability Scores")) {
                 PlayerMenuManager.genericInventoryClose((Player) e.getPlayer());
             }
         }

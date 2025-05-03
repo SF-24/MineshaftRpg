@@ -18,8 +18,12 @@
 
 package com.mineshaft.mineshaftRpg.manager.ui;
 
+import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.AttributeManager;
+import com.mineshaft.mineshaftapi.manager.PlayerStatManager;
+import com.mineshaft.mineshaftapi.manager.item.ItemManager;
+import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -44,6 +48,8 @@ public class UIButtonManager {
         ArrayList<String> levelItemLore = new ArrayList<>();
         levelItemLore.add(ChatColor.GRAY + "Level " + ChatColor.AQUA + JsonPlayerBridge.getLevel(player));
         levelItemLore.add(ChatColor.GRAY + "Exp " + ChatColor.GREEN + JsonPlayerBridge.getXp(player));
+        levelItemLore.add(ChatColor.GRAY + "");
+        levelItemLore.add(ChatColor.GRAY + "Armour Class " + ChatColor.GREEN + (int)PlayerStatManager.getPlayerStat(ItemStats.ARMOUR_CLASS, player));
         levelItemMeta.setLore(levelItemLore);
         levelItem.setItemMeta(levelItemMeta);
         return levelItem;
@@ -98,17 +104,19 @@ public class UIButtonManager {
         ItemStack abilityScoreItem = new ItemStack(Material.KNOWLEDGE_BOOK);
         ItemMeta abilityScoreItemMeta = abilityScoreItem.getItemMeta();
 
-        abilityScoreItemMeta.setDisplayName(ChatColor.WHITE + "Strength");
+        assert abilityScoreItemMeta != null;
+        abilityScoreItemMeta.setDisplayName(ChatColor.WHITE + abilityScore.getName());
         ArrayList<String> strLore = new ArrayList<>();
         strLore.add(abilityScore.getColour() + JsonPlayerBridge.getAttribute(player, abilityScore.name().toLowerCase()) + abilityScore.getDarkerColour() +" (" + AttributeManager.calculateAttributeModifier(player, abilityScore.name().toLowerCase(Locale.ROOT)) + ")");
 
-        if(JsonPlayerBridge.getAttribute(player, abilityScore.name().toLowerCase())>=20) {
+        if(JsonPlayerBridge.getAttribute(player, abilityScore.name().toLowerCase())>= ConfigBridge.getAbilityScoreCap(JsonPlayerBridge.getLevel(player))) {
             strLore.add(ChatColor.GOLD + "Can no longer be increased");
         } else if (JsonPlayerBridge.getSkillPoints(player) > 0){
             strLore.add(ChatColor.YELLOW + "Click to increase");
         } else {
             strLore.add(ChatColor.RED + "Not enough skill points to increase");
         }
+        abilityScoreItemMeta.setLore(strLore);
 
         abilityScoreItem.setItemMeta(abilityScoreItemMeta);
 

@@ -18,19 +18,15 @@
 
 package com.mineshaft.mineshaftRpg.manager.player_data;
 
+import com.mineshaft.mineshaftapi.manager.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
 import org.bukkit.entity.Player;
 
-import javax.swing.*;
-
 public class AttributeManager {
 
-    public static int calculateAttributeModifier(int attribute) {
-        return (attribute-10) /2;
-    }
 
     public static int calculateAttributeModifier(Player player, String attributeName) {
-        return calculateAttributeModifier(JsonPlayerBridge.getAttribute(player, attributeName));
+        return PlayerStatManager.calculateAttributeModifier(JsonPlayerBridge.getAttribute(player, attributeName));
     }
 
 }

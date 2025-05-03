@@ -36,7 +36,7 @@ public class PlayerJoinListener implements Listener {
         // If the player has not had data set, set the data.
         if(JsonPlayerBridge.getAttributeMap(event.getPlayer()).isEmpty()) {
             for(AbilityScores score : AbilityScores.values()) {
-                JsonPlayerBridge.setAttribute(event.getPlayer(), score.name().toLowerCase(Locale.ROOT), ConfigBridge.getDefaultAbilityScore());
+                JsonPlayerBridge.setAttribute(event.getPlayer(), score.name().toLowerCase(Locale.ROOT), 8);
             }
             JsonPlayerBridge.setSkillPoints(event.getPlayer(), ConfigBridge.getDefaultSkillPoints());
         }

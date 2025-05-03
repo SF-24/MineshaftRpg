@@ -20,7 +20,9 @@ package com.mineshaft.mineshaftRpg.manager.config;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class ConfigBridge {
 
@@ -33,11 +35,33 @@ public class ConfigBridge {
     }
 
     public static int getDefaultAbilityScore() {
-        return MineshaftRpg.getInstance().getConfigManager().getConfiguration().getInt("default-ability-score");
+        return 8;
+        //return MineshaftRpg.getInstance().getConfigManager().getConfiguration().getInt("default-ability-score-value");
     }
 
     public static int getDefaultSkillPoints() {
         return MineshaftRpg.getInstance().getConfig().getInt("default-skill-points");
+    }
+
+    public static HashMap<Integer, Integer> getMaximumAbilityScoresList() {
+
+        HashMap<Integer, Integer> map = new HashMap<>();
+        Set<String> keys = MineshaftRpg.getInstance().getConfig().getConfigurationSection("maximum-ability-score-per-level").getKeys(false);
+        for(String key : keys) {
+            map.put(Integer.valueOf(key),MineshaftRpg.getInstance().getConfig().getInt("maximum-ability-score-per-level."+key));
+        }
+        return map;
+    }
+
+    public static int getAbilityScoreCap(int level) {
+        int maximum = 15;
+        HashMap<Integer, Integer> map = getMaximumAbilityScoresList();
+        for(int i = 1; i <= level; i++) {
+            if(map.containsKey(i)) {
+                maximum = map.get(i);
+            }
+        }
+        return maximum;
     }
 
 }

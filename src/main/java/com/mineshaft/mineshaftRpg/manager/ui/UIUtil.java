@@ -31,11 +31,12 @@ public class UIUtil {
     }
     
     public static String getOnclick(ItemStack item) {
+        final String[] returnValue = {null};
         NBT.get(item, nbt->{
             System.out.println("On click: " + nbt.getString("onClick"));
-            return nbt.getString("onClick");
+            returnValue[0] = nbt.getString("onClick");
         });
-        return null;
+        return returnValue[0];
     }
 
 }

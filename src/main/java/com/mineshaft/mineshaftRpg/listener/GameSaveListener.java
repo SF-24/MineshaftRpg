@@ -30,7 +30,9 @@ public class GameSaveListener implements Listener {
     @EventHandler
     public void onWorldSaveEvent(WorldSaveEvent event) {
         for(Player player : Bukkit.getOnlinePlayers()) {
-            JsonPlayerBridge.saveInventory(player);
+            if(!player.getOpenInventory().getTitle().contains("Menu") && !player.getOpenInventory().getTitle().contains("Ability Scores")) {
+                JsonPlayerBridge.saveInventory(player);
+            }
         }
     }
 

@@ -36,3 +36,13 @@ experience-per-level:
   - 265000
   - 305000
   - 355000   #Lv20
+
+maximum-ability-score-per-level:
+  1: 15
+  2: 16
+  3: 16
+  4: 16
+  5: 18
+  10: 20
+  15: 20
+  20: 20

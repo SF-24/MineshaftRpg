@@ -43,15 +43,20 @@ public class PlayerMenuManager {
         player.openInventory(ui);
     }
 
-    public static void openAbilityScoreMenu(Player player) {
-        genericInventoryOpen(player);
+    public static void openAbilityScoreMenu(Player player, boolean isUpdate) {
         Inventory ui = getMenuBackground("Ability Scores");
 
         for(AbilityScores score : AbilityScores.values()) {
             ui.addItem(UIButtonManager.getAbilityScoreItem(player, score));
         }
-        ui.addItem(UIButtonManager.getSkillsItem(player));
+        ui.addItem(UIButtonManager.getSkillPointItem(player));
         player.openInventory(ui);
+
+        if(!isUpdate) {
+            genericInventoryOpen(player);
+        }else{
+            player.getInventory().clear();
+        }
     }
 
     public static Inventory getMenuBackground(String name) {

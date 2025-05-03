@@ -21,21 +21,24 @@ package com.mineshaft.mineshaftRpg.manager.player_data;
 import org.bukkit.ChatColor;
 
 public enum AbilityScores {
-    STR(ChatColor.RED.toString(), ChatColor.DARK_RED.toString()),
-    DEX(ChatColor.GREEN.toString(), ChatColor.DARK_GREEN.toString()),
-    CON(ChatColor.YELLOW.toString(), ChatColor.GOLD.toString()),
-    INT(ChatColor.AQUA.toString(),ChatColor.DARK_AQUA.toString()),
-    WIS(ChatColor.BLUE.toString(),ChatColor.DARK_BLUE.toString()),
-    CHA(ChatColor.LIGHT_PURPLE.toString(),ChatColor.DARK_PURPLE.toString());
+    STR(ChatColor.RED.toString(), ChatColor.DARK_RED.toString(), "Strength"),
+    DEX(ChatColor.GREEN.toString(), ChatColor.DARK_GREEN.toString(), "Dexterity"),
+    CON(ChatColor.YELLOW.toString(), ChatColor.GOLD.toString(), "Constitution"),
+    INT(ChatColor.AQUA.toString(),ChatColor.DARK_AQUA.toString(), "Intelligence"),
+    WIS(ChatColor.BLUE.toString(),ChatColor.DARK_BLUE.toString(), "Wisdom"),
+    CHA(ChatColor.LIGHT_PURPLE.toString(),ChatColor.DARK_PURPLE.toString(), "Charisma");
 
     private final String colour;
     private final String darkColour;
+    private final String name;
 
-    AbilityScores(String colour, String darkColour) {
+    AbilityScores(String colour, String darkColour, String name) {
         this.colour=colour;
         this.darkColour=darkColour;
+        this.name=name;
     }
 
     public String getColour() {return colour;}
     public String getDarkerColour() {return darkColour;}
+    public String getName() {return name;}
 }
