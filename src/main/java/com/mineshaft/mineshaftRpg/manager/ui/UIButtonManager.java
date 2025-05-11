@@ -137,4 +137,17 @@ public class UIButtonManager {
         return skillPointItem;
     }
 
+    public static ItemStack getPlusButton(String name) {
+        ItemStack item = new ItemStack(Material.PEONY);
+        ItemMeta itemMeta = item.getItemMeta();
+        assert itemMeta != null;
+
+
+        itemMeta.setDisplayName(ChatColor.WHITE + name);
+        itemMeta.setCustomModelData(26);
+
+        item.setItemMeta(itemMeta);
+        return item;
+    }
+
 }

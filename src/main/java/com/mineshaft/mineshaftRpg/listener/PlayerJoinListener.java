@@ -19,27 +19,25 @@
 package com.mineshaft.mineshaftRpg.listener;
 
 import com.mineshaft.mineshaftRpg.manager.ExperienceManager;
-import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
-import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
+import com.mineshaft.mineshaftRpg.manager.player_data.CharacterCreationManager;
+import com.mineshaft.mineshaftRpg.manager.ui.PlayerMenuManager;
 import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.json.JsonProfileBridge;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.Locale;
-
 public class PlayerJoinListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        // If the player has not had data set, set the data.
-        if(JsonPlayerBridge.getAttributeMap(event.getPlayer()).isEmpty()) {
-            for(AbilityScores score : AbilityScores.values()) {
-                JsonPlayerBridge.setAttribute(event.getPlayer(), score.name().toLowerCase(Locale.ROOT), 8);
-            }
-            JsonPlayerBridge.setSkillPoints(event.getPlayer(), ConfigBridge.getDefaultSkillPoints());
+        if(JsonProfileBridge.getCurrentProfile(event.getPlayer()).equals("Default")) {
+            // TODO: Create Profile
+            PlayerMenuManager.openProfileMenu(event.getPlayer(),true);
         }
+        CharacterCreationManager.setDefaultData(event.getPlayer());
+
         ExperienceManager.updateXpBar(event.getPlayer());
         JsonPlayerBridge.loadInventory(event.getPlayer());
     }

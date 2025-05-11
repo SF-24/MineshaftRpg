@@ -20,6 +20,7 @@ package com.mineshaft.mineshaftRpg.manager.ui;
 
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.json.JsonProfileBridge;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -50,6 +51,23 @@ public class PlayerMenuManager {
             ui.addItem(UIButtonManager.getAbilityScoreItem(player, score));
         }
         ui.addItem(UIButtonManager.getSkillPointItem(player));
+        player.openInventory(ui);
+
+        if(!isUpdate) {
+            genericInventoryOpen(player);
+        }else{
+            player.getInventory().clear();
+        }
+    }
+
+    public static void openProfileMenu(Player player, boolean isUpdate) {
+        Inventory ui = getMenuBackground("Profiles");
+
+        for(String profile : JsonProfileBridge.getProfiles(player)) {
+            // TODO:
+        }
+
+        ui.addItem(UIButtonManager.getPlusButton("New Profile"));
         player.openInventory(ui);
 
         if(!isUpdate) {
