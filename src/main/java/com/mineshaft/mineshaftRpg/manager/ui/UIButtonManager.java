@@ -25,6 +25,7 @@ import com.mineshaft.mineshaftapi.manager.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.json.JsonProfileBridge;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -46,6 +47,7 @@ public class UIButtonManager {
         levelItemMeta.setCustomModelData(10);
         levelItemMeta.setDisplayName(ChatColor.WHITE + "Information:");
         ArrayList<String> levelItemLore = new ArrayList<>();
+        levelItemLore.add(ChatColor.GRAY + "Name " + ChatColor.WHITE + JsonProfileBridge.getCurrentProfile(player));
         levelItemLore.add(ChatColor.GRAY + "Level " + ChatColor.AQUA + JsonPlayerBridge.getLevel(player));
         levelItemLore.add(ChatColor.GRAY + "Exp " + ChatColor.GREEN + JsonPlayerBridge.getXp(player));
         levelItemLore.add(ChatColor.GRAY + "");

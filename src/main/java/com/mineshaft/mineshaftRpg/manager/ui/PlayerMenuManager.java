@@ -22,7 +22,6 @@ import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.json.JsonProfileBridge;
-import com.mineshaft.mineshaftapi.manager.json.JsonProfileManager;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -79,12 +78,6 @@ public class PlayerMenuManager {
         // Using anvil gui: https://github.com/WesJD/AnvilGUI
         // Thank you for making this plugin, WesJD!
 
-        ItemStack confirm = new ItemStack(Material.GREEN_DYE);
-        ItemMeta meta = confirm.getItemMeta();
-        assert meta != null;
-        meta.setDisplayName(ChatColor.GREEN + "Confirm");
-        confirm.setItemMeta(meta);
-
         // Open anvil ui
         new AnvilGUI.Builder()
                 .onClick((slot, stateSnapshot) -> {
@@ -96,23 +89,24 @@ public class PlayerMenuManager {
                         AnvilGUI.ResponseAction.close(),
                         AnvilGUI.ResponseAction.run(() -> {
                             // On confirm
-                            JsonPlayerBridge.saveInventory(stateSnapshot.getPlayer());
-                            if(!JsonProfileBridge.getCurrentProfile(stateSnapshot.getPlayer()).equalsIgnoreCase("default")) {
-                                stateSnapshot.getPlayer().getInventory().clear();
+                            if(!JsonProfileBridge.getCurrentProfile(player).equalsIgnoreCase("Default") && JsonProfileBridge.getCurrentProfile(player)!=null) {
+                                JsonPlayerBridge.saveInventory(player);
+                                player.getInventory().clear();
                             }
-                            JsonProfileBridge.setCurrentProfile(stateSnapshot.getPlayer(), name);
-                            JsonProfileBridge.addProfile(stateSnapshot.getPlayer(), name);
-                            openSpeciesSelector(stateSnapshot.getPlayer());
+                            JsonProfileBridge.setCurrentProfile(player, name);
+                            JsonProfileBridge.addProfile(player, name);
+                            openSpeciesSelector(player);
                         })
                     );
                 })
-                .preventClose().text("...").title("Character name").itemLeft(confirm).itemOutput(confirm).plugin(MineshaftRpg.getInstance()).open(player);
+                .preventClose().text("...").title("Character name").itemLeft(new ItemStack(Material.NAME_TAG)).itemOutput(new ItemStack(Material.NAME_TAG)).plugin(MineshaftRpg.getInstance()).open(player);
 
         inventoryManagement(player,isUpdate);
     }
 
     public static void openSpeciesSelector(Player player) {
         // TODO:
+        player.sendMessage("Character successfully created");
 
 
 
