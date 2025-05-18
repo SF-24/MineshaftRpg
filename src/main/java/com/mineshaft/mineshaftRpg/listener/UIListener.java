@@ -22,8 +22,10 @@ import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.ui.PlayerMenuManager;
 import com.mineshaft.mineshaftRpg.manager.ui.UIUtil;
 import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.json.JsonProfileBridge;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -70,8 +72,37 @@ public class UIListener implements Listener {
                         PlayerMenuManager.openAbilityScoreMenu(player,true);
                     }
                 }
+            } else if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Profiles") && e.getClickedInventory() != null) {
+                // Profile creation screen
+
+                    e.setCancelled(true);
+
+                if(e.getCurrentItem()==null) {return;}
+
+                else if(e.getCurrentItem().getType().equals(Material.PEONY)) {
+
+                    Player player = (Player) e.getWhoClicked();
+                    PlayerMenuManager.openProfileNameSelector(player,true);
+
+                } else if(e.getCurrentItem().getItemMeta()!=null) {
+                    Player player = (Player) e.getWhoClicked();
+                    String loadCharacterName = e.getCurrentItem().getItemMeta().getDisplayName();
+
+                        // TODO: Load character
+                        if(JsonProfileBridge.getProfiles(player).contains(loadCharacterName)) {
+                            JsonProfileBridge.setCurrentProfile(player, loadCharacterName);
+                        } else {
+                            JsonProfileBridge.addProfile(player, loadCharacterName);
+                            JsonProfileBridge.setCurrentProfile(player, loadCharacterName);
+
+                            // TODO: make new character. Add selection options
+                        }
+
+                        e.getWhoClicked().closeInventory();
+                    }
+
+                }
             }
-        }
     }
 
     @EventHandler

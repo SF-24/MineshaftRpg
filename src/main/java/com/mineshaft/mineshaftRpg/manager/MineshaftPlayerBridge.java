@@ -16,28 +16,15 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.manager.player_data;
+package com.mineshaft.mineshaftRpg.manager;
 
-import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
+import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
 import org.bukkit.entity.Player;
 
-import java.util.Locale;
+public class MineshaftPlayerBridge {
 
-public class CharacterCreationManager {
-
-
-    public static void setDefaultData(Player player) {
-        // If the player has not had data set, set the data.
-        if(JsonPlayerBridge.getAttributeMap(player).isEmpty()) {
-            for(AbilityScores score : AbilityScores.values()) {
-                JsonPlayerBridge.setAttribute(player, score.name().toLowerCase(Locale.ROOT), 8);
-            }
-            JsonPlayerBridge.setSkillPoints(player, ConfigBridge.getDefaultSkillPoints());
-        }
-    }
-
-    public static void createCharacter(Player player, String name) {
-        // TODO:
+    public static void addAttribute(Player player, AbilityScores abilityScores, int value) {
+        JsonPlayerBridge.setAttribute(player, (abilityScores).name(),value+JsonPlayerBridge.getAttribute(player,abilityScores.name()));
     }
 }

@@ -111,3 +111,6 @@ buildNumber.properties
 
 # Common working directory
 run/
+
+# Other misc. files
+src/main/java/com/mineshaft/mineshaftRpg/manager/player_character_options/CustomCultures.java

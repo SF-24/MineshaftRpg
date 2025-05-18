@@ -18,9 +18,12 @@
 
 package com.mineshaft.mineshaftRpg.manager.ui;
 
+import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.json.JsonProfileBridge;
+import com.mineshaft.mineshaftapi.manager.json.JsonProfileManager;
+import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -28,6 +31,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 public class PlayerMenuManager {
 
@@ -53,11 +59,7 @@ public class PlayerMenuManager {
         ui.addItem(UIButtonManager.getSkillPointItem(player));
         player.openInventory(ui);
 
-        if(!isUpdate) {
-            genericInventoryOpen(player);
-        }else{
-            player.getInventory().clear();
-        }
+        inventoryManagement(player,isUpdate);
     }
 
     public static void openProfileMenu(Player player, boolean isUpdate) {
@@ -70,11 +72,50 @@ public class PlayerMenuManager {
         ui.addItem(UIButtonManager.getPlusButton("New Profile"));
         player.openInventory(ui);
 
-        if(!isUpdate) {
-            genericInventoryOpen(player);
-        }else{
-            player.getInventory().clear();
-        }
+        inventoryManagement(player,isUpdate);
+    }
+
+    public static void openProfileNameSelector(Player player, boolean isUpdate) {
+        // Using anvil gui: https://github.com/WesJD/AnvilGUI
+        // Thank you for making this plugin, WesJD!
+
+        ItemStack confirm = new ItemStack(Material.GREEN_DYE);
+        ItemMeta meta = confirm.getItemMeta();
+        assert meta != null;
+        meta.setDisplayName(ChatColor.GREEN + "Confirm");
+        confirm.setItemMeta(meta);
+
+        // Open anvil ui
+        new AnvilGUI.Builder()
+                .onClick((slot, stateSnapshot) -> {
+                    if (slot != AnvilGUI.Slot.OUTPUT) {
+                        return Collections.emptyList();
+                    }
+                    String name = stateSnapshot.getText();
+                    return Arrays.asList(
+                        AnvilGUI.ResponseAction.close(),
+                        AnvilGUI.ResponseAction.run(() -> {
+                            // On confirm
+                            JsonPlayerBridge.saveInventory(stateSnapshot.getPlayer());
+                            if(!JsonProfileBridge.getCurrentProfile(stateSnapshot.getPlayer()).equalsIgnoreCase("default")) {
+                                stateSnapshot.getPlayer().getInventory().clear();
+                            }
+                            JsonProfileBridge.setCurrentProfile(stateSnapshot.getPlayer(), name);
+                            JsonProfileBridge.addProfile(stateSnapshot.getPlayer(), name);
+                            openSpeciesSelector(stateSnapshot.getPlayer());
+                        })
+                    );
+                })
+                .preventClose().text("...").title("Character name").itemLeft(confirm).itemOutput(confirm).plugin(MineshaftRpg.getInstance()).open(player);
+
+        inventoryManagement(player,isUpdate);
+    }
+
+    public static void openSpeciesSelector(Player player) {
+        // TODO:
+
+
+
     }
 
     public static Inventory getMenuBackground(String name) {
@@ -101,12 +142,22 @@ public class PlayerMenuManager {
     }
 
     public static void genericInventoryOpen(Player player) {
+        JsonPlayerBridge.setTempArmourClass(player);
         JsonPlayerBridge.saveInventory(player);
         player.getInventory().clear();
     }
 
     public static void genericInventoryClose(Player player) {
         JsonPlayerBridge.loadInventory(player);
+    }
+
+    public static void inventoryManagement(Player player, boolean isUpdate) {
+        if(!isUpdate) {
+            genericInventoryOpen(player);
+        }else{
+            player.getInventory().clear();
+        }
+
     }
 
 }

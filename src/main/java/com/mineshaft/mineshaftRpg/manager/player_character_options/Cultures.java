@@ -25,7 +25,6 @@ import java.util.*;
 
 public enum Cultures {
 
-
     // TODO: add more cultures
 
     HOBBIT_SHIRE("Hobbits of the Shire",
@@ -107,13 +106,13 @@ public enum Cultures {
     final List<String> extraLanguages;
 
 
-    Cultures(String name, String description, HashMap<AbilityScores, Integer> abilityScores, int abilityScorePoints, List<PlayerSkills> skillProficiencies, List<String> itemProficiencies, List<String> toolProficiencies, List<String> extraLanguages) {
+    Cultures(String name, String description, HashMap<AbilityScores, Integer> abilityScores, int abilityScorePoints, List<PlayerSkills> skillProficiencies, List<String> weaponProficiencies, List<String> toolProficiencies, List<String> extraLanguages) {
         this.name=name;
         this.description=description;
         this.abilityScores=abilityScores;
         this.abilityScorePoints=abilityScorePoints;
         this.skillProficiencies=skillProficiencies;
-        this.itemProficiencies=itemProficiencies;
+        this.itemProficiencies=weaponProficiencies;
         this.toolProficienciesSelect=toolProficiencies;
         this.extraLanguages=extraLanguages;
     }
@@ -125,7 +124,7 @@ public enum Cultures {
     public int getAbilityScorePoints() {return abilityScorePoints;}
 
     public List<PlayerSkills> getSkillProficiencies() {return skillProficiencies;}
-    public List<String> getItemProficiencies() {return itemProficiencies;}
+    public List<String> getWeaponProficiencies() {return itemProficiencies;}
     public List<String> getToolProficiencies() {return toolProficienciesSelect;}
     public List<String> getExtraLanguages() {return extraLanguages;}
 
