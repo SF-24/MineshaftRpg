@@ -36,7 +36,6 @@ public class ConfigBridge {
 
     public static int getDefaultAbilityScore() {
         return 8;
-        //return MineshaftRpg.getInstance().getConfigManager().getConfiguration().getInt("default-ability-score-value");
     }
 
     public static int getDefaultSkillPoints() {
