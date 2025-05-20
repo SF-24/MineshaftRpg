@@ -8,6 +8,9 @@ depend: [ MineshaftApi ]
 description: A port of the RPG features, along with new features from "Another Rpg Plugin"
 website: https://github.com/SF-24
 commands:
+  mineshaft_rpg:
+    aliases: [mineshaftrpg]
+    description: A command to reload data
   menu:
     description: Opens the character menu
     permission: mineshaft.rpg.menu
@@ -15,6 +18,10 @@ commands:
     aliases: [ exp, exper ]
     description: Used to give the player experience points
     permission: mineshaft.rpg.exp
+  character_creation:
+    aliases: [charc, char_c, char_creation, charcreation, makecharacter, make_character]
+    description: Used for creating a character and debugging character creation.
+    permission: mineshaft.character.make
 permissions:
   mineshaft.rpg.exp:
     default: op
@@ -22,3 +29,9 @@ permissions:
   mineshaft.rpg.menu:
     default: true
     description: Required to open the character menu
+  mineshaft.character.make:
+    default: true
+    description: Required to make a character. Remotely executed by the character creation book menu.
+  mineshaft.reload:
+    default: op
+    description : Required to reload the plugin

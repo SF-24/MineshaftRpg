@@ -35,6 +35,17 @@ public class CultureManager {
         return true;
     }
 
+    public static boolean isValidCulture(String culture) {
+        for(Cultures c : Cultures.values()) {
+            if(c.name().equalsIgnoreCase(culture)) {
+                return true;
+            }
+        }
+        // todo. custom cultures
+
+        return false;
+    }
+
     public static void setCulture(Player player, String culture, boolean isCustom) {
         JsonPlayerBridge.setCharacterDataValue(player, "culture", culture);
         JsonPlayerBridge.setCharacterDataValue(player, "isCultureCustom", String.valueOf(isCustom).toLowerCase());
