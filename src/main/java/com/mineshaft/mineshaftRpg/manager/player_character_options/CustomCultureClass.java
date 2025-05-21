@@ -21,7 +21,6 @@ package com.mineshaft.mineshaftRpg.manager.player_character_options;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.player_skills.PlayerSkills;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
