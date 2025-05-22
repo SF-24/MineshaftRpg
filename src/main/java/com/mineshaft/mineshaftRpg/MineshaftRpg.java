@@ -22,7 +22,10 @@ import com.mineshaft.mineshaftRpg.command.CharacterCreationCommand;
 import com.mineshaft.mineshaftRpg.command.ExperienceCommand;
 import com.mineshaft.mineshaftRpg.command.MenuCommand;
 import com.mineshaft.mineshaftRpg.command.MineshaftRpgCommand;
-import com.mineshaft.mineshaftRpg.listener.*;
+import com.mineshaft.mineshaftRpg.listener.GameSaveListener;
+import com.mineshaft.mineshaftRpg.listener.PlayerActionlistener;
+import com.mineshaft.mineshaftRpg.listener.PlayerJoinListener;
+import com.mineshaft.mineshaftRpg.listener.UIListener;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.Cultures;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.CustomCultureClass;
@@ -32,7 +35,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Level;
 
 public final class MineshaftRpg extends JavaPlugin {
@@ -58,7 +60,6 @@ public final class MineshaftRpg extends JavaPlugin {
         getDataFolder().mkdirs();
         configManager.setupConfig();
 
-        cultureCache.addAll(Arrays.asList(Cultures.values()));
     }
 
     @Override
@@ -83,6 +84,12 @@ public final class MineshaftRpg extends JavaPlugin {
     public void cacheCustomCulture(CustomCultureClass customCulture) {
         this.customCultures.add(customCulture);
     }
+
+    public void cacheCulture(Cultures customCulture) {
+        this.cultureCache.add(customCulture);
+    }
+
+    public boolean areCulturesInitialised() {return !cultureCache.isEmpty();}
 
     public void clearCustomCultureCache() {
         this.customCultures.clear();

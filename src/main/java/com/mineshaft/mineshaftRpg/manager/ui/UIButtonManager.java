@@ -45,6 +45,7 @@ public class UIButtonManager {
         ItemMeta levelItemMeta = levelItem.getItemMeta();
         assert levelItemMeta != null;
         levelItemMeta.setCustomModelData(10);
+//        levelItemMeta.setItemModel();
         levelItemMeta.setDisplayName(ChatColor.WHITE + "Information:");
         ArrayList<String> levelItemLore = new ArrayList<>();
         levelItemLore.add(ChatColor.GRAY + "Name " + ChatColor.WHITE + JsonProfileBridge.getCurrentProfile(player));

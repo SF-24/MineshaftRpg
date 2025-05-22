@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftRpg.manager.ui;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.Cultures;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.CharacterCreationManager;
@@ -118,6 +119,10 @@ public class PlayerMenuManager {
     public static void openSpeciesSelector(Player player) {
         // TODO:
         player.sendMessage("Character successfully created");
+
+        if(!MineshaftRpg.getInstance().areCulturesInitialised()) {
+            CultureManager.initialiseCache();
+        }
 
         ItemStack book = new ItemStack(Material.WRITABLE_BOOK);
         BookMeta bookMeta = (BookMeta) book.getItemMeta();
