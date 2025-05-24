@@ -20,7 +20,7 @@ package com.mineshaft.mineshaftRpg.manager;
 
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftapi.manager.StringManager;
-import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.entity.Player;
 

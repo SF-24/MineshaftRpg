@@ -23,9 +23,9 @@ import com.mineshaft.mineshaftRpg.manager.player_character_options.CultureManage
 import com.mineshaft.mineshaftRpg.manager.player_character_options.Cultures;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.CharacterCreationManager;
-import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
-import com.mineshaft.mineshaftapi.manager.json.JsonProfileBridge;
-import com.mineshaft.mineshaftapi.manager.player_skills.PlayerSkills;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
+import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;

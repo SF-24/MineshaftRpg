@@ -18,7 +18,7 @@
 
 package com.mineshaft.mineshaftRpg.listener;
 
-import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

@@ -18,7 +18,7 @@
 
 package com.mineshaft.mineshaftRpg.manager.ui;
 
-import de.tr7zw.nbtapi.NBT;
+import com.mineshaft.mineshaftapi.nbtapi.NBT;
 import org.bukkit.inventory.ItemStack;
 
 public class UIUtil {

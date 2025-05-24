@@ -21,7 +21,7 @@ package com.mineshaft.mineshaftRpg.manager.player_character_options;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
-import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.entity.Player;
 

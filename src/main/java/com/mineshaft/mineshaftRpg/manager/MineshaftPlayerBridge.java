@@ -19,7 +19,7 @@
 package com.mineshaft.mineshaftRpg.manager;
 
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
-import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.bukkit.entity.Player;
 
 public class MineshaftPlayerBridge {

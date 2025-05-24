@@ -21,12 +21,13 @@ package com.mineshaft.mineshaftRpg.listener;
 import com.mineshaft.mineshaftRpg.manager.ExperienceManager;
 import com.mineshaft.mineshaftRpg.manager.player_data.CharacterCreationManager;
 import com.mineshaft.mineshaftRpg.manager.ui.PlayerMenuManager;
-import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
-import com.mineshaft.mineshaftapi.manager.json.JsonProfileBridge;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class PlayerJoinListener implements Listener {
 
@@ -45,5 +46,10 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         JsonPlayerBridge.saveInventory(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onRespawn(PlayerRespawnEvent e) {
+        ExperienceManager.updateXpBar(e.getPlayer());
     }
 }

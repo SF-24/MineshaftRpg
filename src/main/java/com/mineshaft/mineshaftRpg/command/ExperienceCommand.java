@@ -19,7 +19,7 @@
 package com.mineshaft.mineshaftRpg.command;
 
 import com.mineshaft.mineshaftRpg.manager.ExperienceManager;
-import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

@@ -20,7 +20,7 @@ package com.mineshaft.mineshaftRpg.manager.player_character_options;
 
 import com.google.gson.Gson;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
-import com.mineshaft.mineshaftapi.manager.ProfileManager;
+import com.mineshaft.mineshaftapi.manager.player.ProfileManager;
 import com.mineshaft.mineshaftapi.util.Logger;
 
 import java.io.*;

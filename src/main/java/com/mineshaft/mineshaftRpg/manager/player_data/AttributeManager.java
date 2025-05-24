@@ -18,8 +18,8 @@
 
 package com.mineshaft.mineshaftRpg.manager.player_data;
 
-import com.mineshaft.mineshaftapi.manager.PlayerStatManager;
-import com.mineshaft.mineshaftapi.manager.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.bukkit.entity.Player;
 
 public class AttributeManager {
