@@ -18,8 +18,8 @@
 
 package com.mineshaft.mineshaftRpg.command;
 
-import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.CultureManager;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.Cultures;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.CustomCultureClass;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -34,23 +34,29 @@ public class CharacterCreationCommand implements CommandExecutor {
         if(!(sender instanceof Player player)) {
             return false;
         }
+        if(args.length == 0) {
+            player.sendMessage(ChatColor.RED + "Usage: /char_c set_culture <culture>");
+            return false;
+        }
         if(args[0].equalsIgnoreCase("set_culture")) {
             if(args.length < 2) {
                 player.sendMessage(ChatColor.RED + "Usage: /char_c set_culture <culture>");
-            } if(CultureManager.getCulture(player) != null) {
+            } if(CultureManager.hasCulture(player)) {
                 player.sendMessage(ChatColor.RED + "You have already selected a culture.");
                 return false;
             } else if(!CultureManager.isValidCulture(args[1])) {
                 player.sendMessage(ChatColor.RED + "Invalid culture.");
                 return false;
             } else {
-                for(CustomCultureClass c : MineshaftRpg.getInstance().getCustomCultures()) {
-                    if(c.getId().equalsIgnoreCase(args[1])) {
-                        CultureManager.setCulture(player,c.getId(),true);
-                    }
+                if(CultureManager.getCustomCulture(args[1]) != null) {
+                    CustomCultureClass c = CultureManager.getCustomCulture(args[1]);
+                    CultureManager.givePlayerCulture(player,c.getId(),true);
+                } else {
+                    Cultures c = CultureManager.getCulture(args[1]);
+                    CultureManager.givePlayerCulture(player,c.name().toLowerCase(),false);
                 }
-
-                // TODO: add custom culture implementation
+                player.sendMessage(ChatColor.AQUA + "You have successfully selected a culture.");
+                // TODO: Next part of setup - class?
             }
         }
 

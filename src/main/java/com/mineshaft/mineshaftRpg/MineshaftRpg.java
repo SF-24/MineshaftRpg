@@ -42,7 +42,7 @@ public final class MineshaftRpg extends JavaPlugin {
     private final ConfigManager configManager = new ConfigManager();
     private ArrayList<Cultures> cultureCache = new ArrayList<>();
     private ArrayList<CustomCultureClass> customCultures = new ArrayList<>();
-    private JsonCustomCultures jsonCustomCultures = new JsonCustomCultures();
+    private JsonCustomCultures jsonCustomCultures;
 
     @Override
     public void onEnable() {
@@ -71,6 +71,8 @@ public final class MineshaftRpg extends JavaPlugin {
         getDataFolder().mkdirs();
         configManager.setupConfig();
 
+        jsonCustomCultures=new JsonCustomCultures();
+
     }
 
     @Override
@@ -84,23 +86,14 @@ public final class MineshaftRpg extends JavaPlugin {
 
     public ConfigManager getConfigManager() {return configManager;}
 
-    public ArrayList<Cultures> getCultureCache() {
-        return cultureCache;
-    }
-
     public ArrayList<CustomCultureClass> getCustomCultures() {
         return customCultures;
     }
 
     public void cacheCustomCulture(CustomCultureClass customCulture) {
         this.customCultures.add(customCulture);
+        Logger.logInfo("Cached custom culture with id: " + customCulture.getId());
     }
-
-    public void cacheCulture(Cultures customCulture) {
-        this.cultureCache.add(customCulture);
-    }
-
-    public boolean areCulturesInitialised() {return !cultureCache.isEmpty();}
 
     public void clearCustomCultureCache() {
         this.customCultures.clear();

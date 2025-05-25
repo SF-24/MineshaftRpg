@@ -36,6 +36,11 @@ public class JsonCustomCultures {
     }
 
     public void reloadData() {
+
+        if(!pathDir.exists()) {
+            pathDir.mkdirs();
+        }
+
         try {
             for(File file : Objects.requireNonNull(pathDir.listFiles())) {
                 initiateFile(file);
@@ -48,14 +53,13 @@ public class JsonCustomCultures {
     private void initiateFile(File file) throws Exception {
         if(!file.exists()) {
             makeNewFile(file);
-            MineshaftRpg.getInstance().cacheCustomCulture(loadData(file));
         }
+        MineshaftRpg.getInstance().cacheCustomCulture(loadData(file));
     }
 
     public void makeExample() {
-        File file = new File(pathDir, "example_culture.json");
+        File file = new File(path, "example_culture.json");
         if(!file.exists()) {
-            file.mkdirs();
             makeNewFile(file);
         }
     }
@@ -73,6 +77,10 @@ public class JsonCustomCultures {
 
         CustomCultureClass CustomCultureClass = makeEmptyData();
         writeData(CustomCultureClass, file);
+    }
+
+    public void saveFile(CustomCultureClass data, File file) {
+        writeData(data, file);
     }
 
 

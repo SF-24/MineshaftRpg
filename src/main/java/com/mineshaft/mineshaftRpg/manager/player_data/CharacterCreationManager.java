@@ -31,7 +31,7 @@ public class CharacterCreationManager {
         // If the player has not had data set, set the data.
         if(JsonPlayerBridge.getAttributeMap(player).isEmpty()) {
             for(AbilityScores score : AbilityScores.values()) {
-                JsonPlayerBridge.setAttribute(player, score.name().toLowerCase(Locale.ROOT), 8);
+                JsonPlayerBridge.setAttribute(player, score.name().toLowerCase(Locale.ROOT), ConfigBridge.getDefaultAbilityScore());
             }
             JsonPlayerBridge.setSkillPoints(player, ConfigBridge.getDefaultSkillPoints());
         }

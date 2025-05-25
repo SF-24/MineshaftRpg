@@ -21,24 +21,30 @@ package com.mineshaft.mineshaftRpg.manager.player_character_options;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CustomCultureClass {
 
-    String id = "culture_id_do_not_change_after_setting";
-    String name = "Name";
-    String description = "A description...";
-    HashMap<AbilityScores, Integer> abilityScores = new HashMap<>();
-    int abilityScorePoints = 2;
-    List<PlayerSkills> skillProficiencies = List.of(PlayerSkills.PERCEPTION,PlayerSkills.SLEIGHT_OF_HAND);
+    private boolean locked = false;
+
+    private String id = "culture_id_do_not_change_after_setting";
+    private String name = "Name";
+    private String description = "A description...";
+    private Map<AbilityScores, Integer> abilityScores = Map.of(AbilityScores.DEX,2,AbilityScores.CHA,1);
+    private int abilityScorePoints = 2;
+    private List<PlayerSkills> skillProficiencies = List.of(PlayerSkills.PERCEPTION,PlayerSkills.ACROBATICS);
 
     // Gain all
-    List<String> weaponProficiencies = List.of("weapon_proficiency1","weapon_proficiency2");
+    private List<String> weaponProficiencies = List.of("weapon_proficiency1","weapon_proficiency2");
 
     // Select one, !!!!
-    List<String> toolProficienciesSelect = List.of("tool_proficiency1","tool_proficiency2");
-    List<String> extraLanguages = List.of("extra_language1","extra_language2");
+    private List<String> toolProficienciesSelect = List.of("tool_proficiency1","tool_proficiency2");
+    private List<String> extraLanguages = List.of("extra_language1","extra_language2");
+
+    private List<String> abilities = List.of("example");
+
+    private boolean culturalFeat = true;
 
     public String getId() {
         return id;
@@ -52,7 +58,7 @@ public class CustomCultureClass {
         return description;
     }
 
-    public HashMap<AbilityScores, Integer> getAbilityScores() {
+    public Map<AbilityScores, Integer> getAbilityScores() {
         return abilityScores;
     }
 
@@ -74,5 +80,17 @@ public class CustomCultureClass {
 
     public List<String> getWeaponProficiencies() {
         return weaponProficiencies;
+    }
+
+    public List<String> getAbilities() {
+        return abilities;
+    }
+
+    public boolean hasCulturalFeat() {
+        return culturalFeat;
+    }
+
+    public boolean isLocked() {
+        return locked;
     }
 }

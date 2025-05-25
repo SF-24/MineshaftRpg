@@ -21,15 +21,13 @@ package com.mineshaft.mineshaftRpg.manager.ui;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.Cultures;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.CustomCultureClass;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.CharacterCreationManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
@@ -120,75 +118,31 @@ public class PlayerMenuManager {
         // TODO:
         player.sendMessage("Character successfully created");
 
-        if(!MineshaftRpg.getInstance().areCulturesInitialised()) {
-            CultureManager.initialiseCache();
-        }
-
-        ItemStack book = new ItemStack(Material.WRITABLE_BOOK);
+        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta bookMeta = (BookMeta) book.getItemMeta();
         assert bookMeta != null;
         bookMeta.addPage(ChatColor.BOLD + "Select a culture: \n" +
                 "Use the arrows underneath the book to select a page with your desired culture and press select.");
         for(Cultures c : Cultures.values()) {
-            TextComponent hoverable = new TextComponent("§4§l" + c.getName() + "\n");
-            hoverable.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(c.getDescription())));
-            ArrayList<TextComponent> page = new ArrayList<>();
 
-            // Ability Scores
-            for(AbilityScores abilityScores : c.getAbilityScores().keySet()) {
-                TextComponent desc = new TextComponent(abilityScores.getDarkerColour() + "+"  + ChatColor.WHITE + c.getAbilityScores().get(abilityScores) + " " + abilityScores.getName() + "\n");
-                page.add(desc);
-            }
-            if(c.getAbilityScorePoints()>0) {
-                // Ability score points
-                page.add(new TextComponent(ChatColor.GOLD + "+" + ChatColor.WHITE + c.getAbilityScorePoints() + " Ability Score Points\n"));
-                page.add(new TextComponent("\n"));
-            }
-
-            // Proficiencies
-            // SKILL, WEAPONS, TOOLS
-
-            StringBuilder proficiencies = new StringBuilder("Skill Proficiencies: ");
-            for(PlayerSkills e : c.getSkillProficiencies()) {
-                proficiencies.append(e.getName()).append(", ");
-            }
-            page.add(new TextComponent(String.valueOf(proficiencies)));
-
-            StringBuilder otherProficiencies = new StringBuilder("Other Proficiencies: ");
-            for(String e : c.getWeaponProficiencies()) {
-                otherProficiencies.append(e).append(", ");
-            }
-            for(String e : c.getToolProficiencies()) {
-                otherProficiencies.append(e).append(", ");
-            }
-            page.add(new TextComponent(String.valueOf(otherProficiencies)));
-
-            // Languages
-            StringBuilder lang = new StringBuilder("Languages: ");
-            for(String l : c.getExtraLanguages()) {
-                lang.append(l).append(", ");
-            }
-            page.add(new TextComponent(String.valueOf(lang)));
-
-            TextComponent select = new TextComponent("§3§lSELECT CULTURE" + "\n");
-            select.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/charcreation set_culture " + c.name()));
-
-            // TODO: Abilities
-
-
-
-            BaseComponent[] pageComp = new BaseComponent[]{};
-            page.toArray(pageComp);
-            bookMeta.spigot().addPage(pageComp);
+            bookMeta.spigot().addPage(CultureManager.getPageDisplay(c.name(),false));
 
             // TODO: Finish description
+        }
+
+        for(CustomCultureClass c : MineshaftRpg.getInstance().getCustomCultures()) {
+            bookMeta.spigot().addPage(CultureManager.getPageDisplay(c.getId(),true));
         }
 
         // TODO: Custom cultures implementation, W.I.P.
         // TODO: Add loading custom cultures from JSON config
 
         book.setItemMeta(bookMeta);
+
+        ItemStack mh = player.getInventory().getItemInMainHand();
+        player.getInventory().setItemInMainHand(book);
         player.openBook(book);
+        player.getInventory().setItemInMainHand(mh);
     }
 
     public static Inventory getMenuBackground(String name) {

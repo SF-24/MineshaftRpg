@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftRpg.manager.config;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,14 @@ public class ConfigBridge {
     }
 
     public static int getDefaultAbilityScore() {
-        return 8;
+        return MineshaftRpg.getInstance().getConfig().getInt("default-ability-score-value");
+    }
+
+    public static String getDefaultLanguage() {
+        if(MineshaftRpg.getInstance().getConfig().getString("default-language")==null) {
+            return "Westron";
+        }
+        return MineshaftRpg.getInstance().getConfig().getString("default-language");
     }
 
     public static int getDefaultSkillPoints() {

@@ -18,18 +18,8 @@
 
 package com.mineshaft.mineshaftRpg.manager.player_character_options;
 
-import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
-import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
+public enum Classes {
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
-public enum CultureOptions {
 
-    STOOR(Cultures.HOBBIT_SHIRE, "Stoors", Map.of(AbilityScores.DEX, 1), Collections.emptyList(), Collections.emptyList(), Collections.emptyList()),
-    FALLOHIDE(Cultures.HOBBIT_SHIRE, "Fallohides", Map.of(AbilityScores.DEX, 1), Collections.emptyList(), Collections.emptyList(), Collections.emptyList()),;
-    CultureOptions(Cultures parentCulture, String name, Map<AbilityScores, Integer> abilityScores, List<PlayerSkills > skillProficiencies, List<String> itemProficiencies, List<String> toolProficiencies) {
-
-    }
 }

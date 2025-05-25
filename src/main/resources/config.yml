@@ -6,6 +6,8 @@ disabled-worlds:
   - world1
   - world2
 
+default-language: Westron
+
 # The number of Skill Points the player starts the game with.
 default-skill-points: 15
 

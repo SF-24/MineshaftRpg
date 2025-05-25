@@ -33,8 +33,10 @@ public class MineshaftRpgCommand implements CommandExecutor {
         if(args.length==1 && args[0].equalsIgnoreCase("reload")) {
             MineshaftRpg.getInstance().clearCustomCultureCache();
             MineshaftRpg.getInstance().getJsonCustomCultures().reloadData();
+            sender.sendMessage("Reloaded");
         } else if(args.length==1 && args[0].equalsIgnoreCase("generate_examples")) {
             MineshaftRpg.getInstance().getJsonCustomCultures().makeExample();
+            sender.sendMessage("Generating examples...");
         } else {
             sender.sendMessage(ChatColor.RED + "Usage: /mineshaft_rpg <reload|generate_examples>");
         }
