@@ -26,9 +26,6 @@ import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.CharacterCreationManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
-import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
-import net.md_5.bungee.api.chat.*;
-import net.md_5.bungee.api.chat.hover.content.Text;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,7 +36,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -54,7 +50,7 @@ public class PlayerMenuManager {
         ui.setItem(2, UIButtonManager.getPlayerAbilityScoreItem(player));
         ui.setItem(3, UIButtonManager.getSkillsItem(player));
         ui.setItem(4, UIButtonManager.getAbilityItem(player));
-
+        ui.setItem(7, UIButtonManager.getQuestItem());
         player.openInventory(ui);
     }
 
@@ -65,6 +61,16 @@ public class PlayerMenuManager {
             ui.addItem(UIButtonManager.getAbilityScoreItem(player, score));
         }
         ui.addItem(UIButtonManager.getSkillPointItem(player));
+        player.openInventory(ui);
+
+        inventoryManagement(player,isUpdate);
+    }
+
+    public static void openQuestMenu(Player player, boolean isUpdate) {
+        Inventory ui = getMenuBackground("Quests");
+        ui.addItem(UIButtonManager.getQuestCanceller());
+        ui.addItem(UIButtonManager.getQuestTracker());
+        ui.addItem(UIButtonManager.getJournal());
         player.openInventory(ui);
 
         inventoryManagement(player,isUpdate);

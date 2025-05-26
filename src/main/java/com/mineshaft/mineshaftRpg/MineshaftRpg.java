@@ -27,14 +27,13 @@ import com.mineshaft.mineshaftRpg.listener.PlayerActionlistener;
 import com.mineshaft.mineshaftRpg.listener.PlayerJoinListener;
 import com.mineshaft.mineshaftRpg.listener.UIListener;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigManager;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.Cultures;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.CustomCultureClass;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.JsonCustomCultures;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.*;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.logging.Level;
 
 public final class MineshaftRpg extends JavaPlugin {
@@ -43,6 +42,9 @@ public final class MineshaftRpg extends JavaPlugin {
     private ArrayList<Cultures> cultureCache = new ArrayList<>();
     private ArrayList<CustomCultureClass> customCultures = new ArrayList<>();
     private JsonCustomCultures jsonCustomCultures;
+    private JsonCustomFeats jsonCustomFeats;
+
+    public Map<CustomFeatClass, Boolean> featCache = Map.of();
 
     @Override
     public void onEnable() {
@@ -72,7 +74,7 @@ public final class MineshaftRpg extends JavaPlugin {
         configManager.setupConfig();
 
         jsonCustomCultures=new JsonCustomCultures();
-
+        jsonCustomFeats=new JsonCustomFeats();
     }
 
     @Override
@@ -101,5 +103,17 @@ public final class MineshaftRpg extends JavaPlugin {
 
     public JsonCustomCultures getJsonCustomCultures() {
         return jsonCustomCultures;
+    }
+
+    public JsonCustomFeats getJsonCustomFeats() {
+        return jsonCustomFeats;
+    }
+
+    public Map<CustomFeatClass, Boolean> getCustomFeats() {
+        return featCache;
+    }
+
+    public void cacheCustomFeat(CustomFeatClass customFeat, boolean cultureRestricted) {
+        this.featCache.put(customFeat, cultureRestricted);
     }
 }

@@ -18,6 +18,9 @@
 
 package com.mineshaft.mineshaftRpg.manager.player_character_options.abilities;
 
-public enum Abilties {
+public enum Abilities {
+
+    NIMBLE_DASH,// TODO:
+    NIMBLE_LEAP,
 
 }

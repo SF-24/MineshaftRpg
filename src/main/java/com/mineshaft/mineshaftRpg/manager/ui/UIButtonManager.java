@@ -18,6 +18,7 @@
 
 package com.mineshaft.mineshaftRpg.manager.ui;
 
+import com.magmaguy.freeminecraftmodels.magmacore.util.ChatColorConverter;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.AttributeManager;
@@ -25,6 +26,7 @@ import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
 import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
+import com.mineshaft.mineshaftapi.nbtapi.NBT;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -37,6 +39,54 @@ import java.util.Collections;
 import java.util.Locale;
 
 public class UIButtonManager {
+
+    public static ItemStack getQuestTracker() {
+        ItemStack item = new ItemStack(Material.COMPASS);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.WHITE + "Quest Tracker");
+        meta.setLore(Collections.singletonList(ChatColor.GRAY + "Makes your compass point to the selected quest"));
+        item.setItemMeta(meta);
+        NBT.modify(item, nbt->{
+            nbt.setString("onClick", "quest_tracker");
+        });
+        return item;
+    }
+
+    public static ItemStack getJournal() {
+        ItemStack item = new ItemStack(Material.BOOK);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.WHITE + "Quest Journal");
+        meta.setLore(Collections.singletonList(ChatColor.GRAY + "Click to get a quest journal"));
+        item.setItemMeta(meta);
+        NBT.modify(item, nbt->{
+            nbt.setString("onClick", "quest_journal");
+        });
+        return item;
+    }
+
+    public static ItemStack getQuestCanceller() {
+        ItemStack item = new ItemStack(Material.BARRIER);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.WHITE + "Cancel a Quest");
+        meta.setLore(Collections.singletonList(ChatColor.GRAY + "Click to open the quest canceller"));
+        item.setItemMeta(meta);
+        NBT.modify(item, nbt->{
+            nbt.setString("onClick", "quest_canceller");
+        });
+        return item;
+    }
+
+    public static ItemStack getQuestItem() {
+        ItemStack item = new ItemStack(Material.KNOWLEDGE_BOOK);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.WHITE + "Quests");
+        meta.setLore(Collections.singletonList(ChatColor.GRAY + "Click to open the quest menu"));
+        item.setItemMeta(meta);
+        NBT.modify(item, nbt->{
+            nbt.setString("onClick", "quest_menu");
+        });
+        return item;
+    }
 
     public static ItemStack getPlayerLevelButton(Player player) {
         // level item

@@ -24,6 +24,7 @@ import com.mineshaft.mineshaftRpg.manager.ui.UIUtil;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
 import com.mineshaft.mineshaftapi.util.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -31,19 +32,36 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.PlayerEditBookEvent;
 
 public class UIListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(InventoryClickEvent e) {
         if (e.getInventory().getHolder() == null) {
-            if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Menu") && e.getClickedInventory() != null) {
+            String title = ChatColor.translateAlternateColorCodes('&', e.getView().getTitle());
+            if (title.equals(ChatColor.BLACK + "Quests")|| title.equals(ChatColor.BLACK + "Menu") && e.getClickedInventory() != null) {
                 e.setCancelled(true);
 
                 System.out.printf("click: " + UIUtil.getOnclick(e.getCurrentItem()));
 
+                if(e.getCurrentItem()==null) return;
+
                 switch (UIUtil.getOnclick(e.getCurrentItem())) {
+                    case "quest_tracker":
+                        e.getWhoClicked().closeInventory();
+                        Bukkit.getServer().dispatchCommand(e.getWhoClicked(),"compass");
+                        break;
+                    case "quest_canceller":
+                        e.getWhoClicked().closeInventory();
+                        Bukkit.getServer().dispatchCommand(e.getWhoClicked(),"cancelquest");
+                        break;
+                    case "quest_journal":
+                        e.getWhoClicked().closeInventory();
+                        Bukkit.getServer().dispatchCommand(e.getWhoClicked(),"journal");
+                        break;
+                    case "quest_menu":
+                        PlayerMenuManager.openQuestMenu((Player) e.getWhoClicked(), true);
+                        break;
                     case "ability_scores":
 //                        e.getWhoClicked().closeInventory();
 //                        PlayerMenuManager.genericInventoryOpen((Player) e.getWhoClicked());
@@ -109,7 +127,12 @@ public class UIListener implements Listener {
     @EventHandler
     public void onPlayerCloseInventory(InventoryCloseEvent e) {
         if (e.getInventory().getHolder() == null) {
-            if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Menu") || ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Ability Scores")) {
+            String title = ChatColor.translateAlternateColorCodes('&', e.getView().getTitle());
+            if (title.equals(ChatColor.BLACK + "Menu") ||
+                title.equals(ChatColor.BLACK + "Ability Scores") ||
+                title.equals(ChatColor.BLACK + "Profiles") ||
+                title.equals(ChatColor.BLACK + "Quests")) {
+
                 PlayerMenuManager.genericInventoryClose((Player) e.getPlayer());
             }
         }

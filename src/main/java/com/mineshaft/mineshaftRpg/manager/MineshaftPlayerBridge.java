@@ -18,6 +18,8 @@
 
 package com.mineshaft.mineshaftRpg.manager;
 
+import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.Abilities;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.PassiveAbilities;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.util.Logger;
@@ -83,5 +85,41 @@ public class MineshaftPlayerBridge {
 
     public static boolean hasCultureAbilities(Player player) {
         return JsonPlayerBridge.getCharacterDataValue(player, "hasCultureStartingAbilities").equals("true");
+    }
+
+    public static void addAbility(Player player, String abilityName, boolean isPassive) {
+        if(isValidAbility(abilityName,isPassive)) {
+            if (isPassive) {
+                JsonPlayerBridge.addPassiveAbility(player,abilityName, 1);
+            } else {
+                JsonPlayerBridge.addAbility(player, abilityName, 1);
+            }
+        }
+    }
+
+    public static boolean isValidAbility(String ability, boolean isPassive) {
+        if(isPassive) {
+            return getPassiveAbility(ability)!=null;
+        } else {
+            return getAbility(ability)!=null;
+        }
+    }
+
+    public static Abilities getAbility(String ability) {
+        for(Abilities a : Abilities.values()) {
+            if(a.name().equalsIgnoreCase(ability)) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+    public static PassiveAbilities getPassiveAbility(String ability) {
+        for(PassiveAbilities a : PassiveAbilities.values()) {
+            if(a.name().equalsIgnoreCase(ability)) {
+                return a;
+            }
+        }
+        return null;
     }
 }
