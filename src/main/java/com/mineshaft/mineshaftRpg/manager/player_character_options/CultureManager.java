@@ -27,9 +27,11 @@ import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -115,9 +117,9 @@ public class CultureManager {
 
             // Feat
             if(c.hasCulturalFeat()) {
-                MineshaftPlayerBridge.giveFeatPoint(player);
+                MineshaftPlayerBridge.giveCultureFeatPoint(player);
             }
-            return;
+
 
         } else {
             Cultures culture= getCulture(cultureName);
@@ -138,9 +140,13 @@ public class CultureManager {
             MineshaftPlayerBridge.giveCultureAbilities(player, culture.getAbilities());
             setLanguages(player,culture.getExtraLanguages());
             if(culture.isGiveFeat()) {
-                MineshaftPlayerBridge.giveFeatPoint(player);
+                MineshaftPlayerBridge.giveCultureFeatPoint(player);
             }
+
         }
+//        MineshaftPlayerBridge.giveCultureAbilities(player,cultureName,isCustom);
+        MineshaftPlayerBridge.giveCultureStartingItems(player,cultureName,isCustom);
+        return;
     }
 
 
@@ -237,6 +243,25 @@ public class CultureManager {
 
         BaseComponent[] component = new ComponentBuilder().append(hoverable).append(abilityScores).append(points).append(proficiencyList).append(proficiencyList2).append(feat).append(select).create();
         return component;
+    }
+
+    // TODO:
+    public static List<String> getCustomStartingItems(Cultures cultures) {
+        switch (cultures) {
+            default:
+                break;
+        }
+        return Collections.emptyList();
+    }
+
+    public static List<Material> getVanillaStartingItems(Cultures cultures) {
+        switch (cultures) {
+            case HUMAN_ROHAN:
+                return List.of(Material.HORSE_SPAWN_EGG);
+            default:
+                break;
+        }
+        return Collections.emptyList();
     }
 
 }

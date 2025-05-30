@@ -27,6 +27,18 @@ import java.util.Set;
 
 public class ConfigBridge {
 
+    public static String getBetonQuestStartingItemEvent() {
+        return MineshaftRpg.getInstance().getConfig().getString("default-item-bq-event");
+    }
+
+    public static String getBetonQuestStartingItemEventPackage() {
+        return MineshaftRpg.getInstance().getConfig().getString("default-item-bq-event-package");
+    }
+
+    public static boolean runBetonQuestCultureStartingEvent() {
+        return MineshaftRpg.getInstance().getConfig().getBoolean("run-hardcoded-bq-event");
+    }
+
     public static List<String> getDisabledWorlds() {
         return MineshaftRpg.getInstance().getConfigManager().getConfiguration().getStringList("disabled-worlds");
     }

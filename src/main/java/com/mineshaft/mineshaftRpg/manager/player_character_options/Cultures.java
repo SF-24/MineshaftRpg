@@ -20,6 +20,8 @@ package com.mineshaft.mineshaftRpg.manager.player_character_options;
 
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 

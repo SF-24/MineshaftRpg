@@ -8,6 +8,16 @@ disabled-worlds:
 
 default-language: Westron
 
+# BetonQuest event which should be triggered when the player is given their starting items
+default-item-bq-event-package: default
+default-item-bq-event: give_items
+
+# Whether a hardcoded beton quest event is run
+# Name: give_items_<culture>
+# Only for hadcoded cultures
+# e.g. give_items_hobbits_shire
+run-hardcoded-bq-event: true
+
 # The number of Skill Points the player starts the game with.
 default-skill-points: 15
 
@@ -48,3 +58,18 @@ maximum-ability-score-per-level:
   10: 20
   15: 20
   20: 20
+
+
+# Placeholder:
+# culture-params:
+#  hobbits_shire: []
+#  dwarf_lonely_mountain: []
+#  elf_mirkwood: []
+#  human_bardings: []
+#  human_beornings: []
+#  human_dunedain: []
+#  human_bree: []
+#  human_laketown: []
+#  human_minas_tirith: []
+#  human_rohan: []
+#  human_wilderland: []

@@ -18,12 +18,18 @@
 
 package com.mineshaft.mineshaftRpg.manager;
 
+import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.Abilities;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.PassiveAbilities;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
+import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonQuestBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.util.Logger;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
@@ -68,6 +74,31 @@ public class MineshaftPlayerBridge {
 
     public static void giveCultureStartingItems(Player player, String culture, boolean isCustom) {
         JsonPlayerBridge.setCharacterDataValue(player, "hasCultureStartingItems","true");
+        BetonQuestBridge.runBetonPlayerEvent(player, ConfigBridge.getBetonQuestStartingItemEventPackage(), ConfigBridge.getBetonQuestStartingItemEvent());
+
+        if(isCustom) {
+            for(String item : CultureManager.getCustomStartingItems(CultureManager.getCulture(culture))) {
+                player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(item));
+            }
+            for(Material m : CultureManager.getVanillaStartingItems(CultureManager.getCulture(culture))) {
+                player.getInventory().addItem(new ItemStack(m));
+            }
+
+            if(ConfigBridge.runBetonQuestCultureStartingEvent()) {
+                BetonQuestBridge.runBetonPlayerEvent(player, ConfigBridge.getBetonQuestStartingItemEventPackage(), "give_items_" + culture);
+            }
+        } else {
+            for(String item : CultureManager.getCustomCulture(culture).getStartingItems()) {
+                player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(item));
+            }
+            for(Material m : CultureManager.getCustomCulture(culture).getVanillaStartingItems()) {
+                player.getInventory().addItem(new ItemStack(m));
+            }
+            for(String e : CultureManager.getCustomCulture(culture).getBetonQuestEvents().keySet()) {
+                BetonQuestBridge.runBetonPlayerEvent(player,CultureManager.getCustomCulture(culture).getBetonQuestEvents().get(e),e);
+            }
+        }
+
         // TODO:
     }
 

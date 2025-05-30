@@ -20,6 +20,7 @@ package com.mineshaft.mineshaftRpg.manager.player_character_options;
 
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
+import org.bukkit.Material;
 
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,10 @@ public class CustomCultureClass {
     private List<String> extraLanguages = List.of("extra_language1","extra_language2");
 
     private List<String> abilities = List.of("example");
+
+    private List<String> startingItems = List.of("item1","item2");
+    private List<Material> vanillaStartingItems = List.of(Material.ARROW, Material.BOW);
+    private Map<String, String> betonQuestEvents = Map.of("event1","package1","event2","package2");
 
     private boolean culturalFeat = true;
 
@@ -92,5 +97,17 @@ public class CustomCultureClass {
 
     public boolean isLocked() {
         return locked;
+    }
+
+    public List<Material> getVanillaStartingItems() {
+        return vanillaStartingItems;
+    }
+
+    public List<String> getStartingItems() {
+        return startingItems;
+    }
+
+    public Map<String,String> getBetonQuestEvents() {
+        return betonQuestEvents;
     }
 }
