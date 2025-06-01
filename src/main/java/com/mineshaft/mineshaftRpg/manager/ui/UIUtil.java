@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftRpg.manager.ui;
 
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
+import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.inventory.ItemStack;
 
 public class UIUtil {
@@ -33,7 +34,7 @@ public class UIUtil {
     public static String getOnclick(ItemStack item) {
         final String[] returnValue = {null};
         NBT.get(item, nbt->{
-            System.out.println("On click: " + nbt.getString("onClick"));
+            Logger.logInfo("On click: " + nbt.getString("onClick"));
             returnValue[0] = nbt.getString("onClick");
         });
         return returnValue[0];

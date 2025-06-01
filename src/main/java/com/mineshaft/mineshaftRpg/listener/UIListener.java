@@ -18,6 +18,7 @@
 
 package com.mineshaft.mineshaftRpg.listener;
 
+import com.mineshaft.mineshaftRpg.manager.PlayerCharacterManager;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.ui.PlayerMenuManager;
 import com.mineshaft.mineshaftRpg.manager.ui.UIUtil;
@@ -42,11 +43,14 @@ public class UIListener implements Listener {
             if (title.equals(ChatColor.BLACK + "Quests")|| title.equals(ChatColor.BLACK + "Menu") && e.getClickedInventory() != null) {
                 e.setCancelled(true);
 
-                System.out.printf("click: " + UIUtil.getOnclick(e.getCurrentItem()));
+//                System.out.printf("click: " + UIUtil.getOnclick(e.getCurrentItem()));
 
                 if(e.getCurrentItem()==null) return;
 
                 switch (UIUtil.getOnclick(e.getCurrentItem())) {
+                    case "profile_menu":
+                        PlayerMenuManager.openProfileMenu((Player) e.getWhoClicked(),true);
+                        break;
                     case "quest_tracker":
                         e.getWhoClicked().closeInventory();
                         Bukkit.getServer().dispatchCommand(e.getWhoClicked(),"compass");
@@ -74,6 +78,7 @@ public class UIListener implements Listener {
                         //TODO: add skills
                         break;
                     default:
+
                         Logger.logInfo("default case!");
                         break;
                 }
@@ -100,28 +105,26 @@ public class UIListener implements Listener {
 
                 else if(e.getCurrentItem().getType().equals(Material.PEONY)) {
 
-                    Player player = (Player) e.getWhoClicked();
-                    PlayerMenuManager.openProfileNameSelector(player,true);
-
+                    {
+                        Player player = (Player) e.getWhoClicked();
+                        PlayerMenuManager.openProfileNameSelector(player, true);
+                    }
                 } else if(e.getCurrentItem().getItemMeta()!=null) {
-                    Player player = (Player) e.getWhoClicked();
-                    String loadCharacterName = e.getCurrentItem().getItemMeta().getDisplayName();
+                    if(UIUtil.getOnclick(e.getCurrentItem())!=null) {
+                        Player player = (Player) e.getWhoClicked();
+                        String profile = ChatColor.stripColor(UIUtil.getOnclick(e.getCurrentItem()));
 
-                        // TODO: Load character
-                        if(JsonProfileBridge.getProfiles(player).contains(loadCharacterName)) {
-                            JsonProfileBridge.setCurrentProfile(player, loadCharacterName);
+                        if(JsonProfileBridge.getProfiles(player).contains(profile)) {
+                            PlayerCharacterManager.setProfile((Player) e.getWhoClicked(), profile);
                         } else {
-                            JsonProfileBridge.addProfile(player, loadCharacterName);
-                            JsonProfileBridge.setCurrentProfile(player, loadCharacterName);
-
+                            player.sendMessage(ChatColor.RED + "This profile does not exist!");
                             // TODO: make new character. Add selection options
                         }
-
-                        e.getWhoClicked().closeInventory();
                     }
-
                 }
+
             }
+        }
     }
 
     @EventHandler

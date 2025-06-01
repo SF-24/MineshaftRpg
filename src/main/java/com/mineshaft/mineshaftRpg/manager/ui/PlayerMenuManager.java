@@ -80,7 +80,7 @@ public class PlayerMenuManager {
         Inventory ui = getMenuBackground("Profiles");
 
         for(String profile : JsonProfileBridge.getProfiles(player)) {
-            // TODO:
+            ui.addItem(UIButtonManager.getProfileButton(player,profile));
         }
 
         ui.addItem(UIButtonManager.getPlusButton("New Profile"));
@@ -137,7 +137,9 @@ public class PlayerMenuManager {
         }
 
         for(CustomCultureClass c : MineshaftRpg.getInstance().getCustomCultures()) {
-            bookMeta.spigot().addPage(CultureManager.getPageDisplay(c.getId(),true));
+            if (!c.isLocked() || JsonProfileBridge.getUnlockedCultures(player).contains(c.getName().toLowerCase())) {
+                bookMeta.spigot().addPage(CultureManager.getPageDisplay(c.getId(), true));
+            }
         }
 
         // TODO: Custom cultures implementation, W.I.P.
@@ -175,7 +177,6 @@ public class PlayerMenuManager {
     }
 
     public static void genericInventoryOpen(Player player) {
-        JsonPlayerBridge.setTempArmourClass(player);
         JsonPlayerBridge.saveInventory(player);
         player.getInventory().clear();
     }

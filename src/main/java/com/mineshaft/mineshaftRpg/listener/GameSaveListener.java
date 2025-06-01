@@ -32,6 +32,8 @@ public class GameSaveListener implements Listener {
         for(Player player : Bukkit.getOnlinePlayers()) {
             if(!player.getOpenInventory().getTitle().contains("Menu") && !player.getOpenInventory().getTitle().contains("Ability Scores")) {
                 JsonPlayerBridge.saveInventory(player);
+                JsonPlayerBridge.saveLocation(player);
+                JsonPlayerBridge.saveEffects(player);
             }
         }
     }

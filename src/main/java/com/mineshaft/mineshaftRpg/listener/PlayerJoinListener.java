@@ -20,12 +20,8 @@ package com.mineshaft.mineshaftRpg.listener;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.ExperienceManager;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.CultureManager;
-import com.mineshaft.mineshaftRpg.manager.player_data.CharacterCreationManager;
-import com.mineshaft.mineshaftRpg.manager.ui.PlayerMenuManager;
+import com.mineshaft.mineshaftRpg.manager.PlayerCharacterManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
-import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerManager;
-import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,30 +29,20 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class PlayerJoinListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         // Redundant null check?
-        if(event.getPlayer()==null || event.getPlayer().getUniqueId()==null) return;
-        if(JsonProfileBridge.getCurrentProfile(event.getPlayer()).equals("Default")) {
-            // TODO: Create Profile
-            PlayerMenuManager.openProfileMenu(event.getPlayer(),true);
-        }
-        if(!CultureManager.hasCulture(event.getPlayer())) {
-            PlayerMenuManager.openSpeciesSelector(event.getPlayer());
-        }
-        CharacterCreationManager.setDefaultData(event.getPlayer());
-
-        ExperienceManager.updateXpBar(event.getPlayer());
-        JsonPlayerBridge.loadInventory(event.getPlayer());
+        PlayerCharacterManager.initialiseCharacter(event.getPlayer());
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         JsonPlayerBridge.saveInventory(event.getPlayer());
+        JsonPlayerBridge.saveLocation(event.getPlayer());
+        JsonPlayerBridge.saveLocation(event.getPlayer());
     }
 
     @EventHandler

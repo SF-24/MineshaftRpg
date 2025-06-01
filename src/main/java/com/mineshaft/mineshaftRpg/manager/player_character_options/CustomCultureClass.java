@@ -100,14 +100,17 @@ public class CustomCultureClass {
     }
 
     public List<Material> getVanillaStartingItems() {
+        if(vanillaStartingItems==null) return List.of();
         return vanillaStartingItems;
     }
 
     public List<String> getStartingItems() {
+        if(startingItems==null) return List.of();
         return startingItems;
     }
 
     public Map<String,String> getBetonQuestEvents() {
+        if(betonQuestEvents==null) return Map.of();
         return betonQuestEvents;
     }
 }

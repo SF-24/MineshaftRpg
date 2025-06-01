@@ -19,13 +19,14 @@
 package com.mineshaft.mineshaftRpg.manager.ui;
 
 import com.magmaguy.freeminecraftmodels.magmacore.util.ChatColorConverter;
+import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.AttributeManager;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
+import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
-import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -102,8 +103,14 @@ public class UIButtonManager {
         levelItemLore.add(ChatColor.GRAY + "Exp " + ChatColor.GREEN + JsonPlayerBridge.getXp(player));
         levelItemLore.add(ChatColor.GRAY + "");
         levelItemLore.add(ChatColor.GRAY + "Armour Class " + ChatColor.GREEN + (int)PlayerStatManager.getPlayerStat(ItemStats.ARMOUR_CLASS, player));
+        levelItemLore.add("");
+        levelItemLore.add(ChatColor.GRAY + "Click to open profile menu");
         levelItemMeta.setLore(levelItemLore);
         levelItem.setItemMeta(levelItemMeta);
+        NBT.modify(levelItem, nbt->{
+            nbt.setString("onClick", "profile_menu");
+        });
+
         return levelItem;
     }
 
@@ -112,13 +119,8 @@ public class UIButtonManager {
         ItemStack abilityScoreItem = new ItemStack((Material.PLAYER_HEAD));
         SkullMeta abilityScoreItemMeta = (SkullMeta) abilityScoreItem.getItemMeta();
         abilityScoreItemMeta.setDisplayName(ChatColor.AQUA + "Ability Scores:");
-        ArrayList<String> abilityScoreItemLore = new ArrayList<>();
-        abilityScoreItemLore.add(ChatColor.WHITE + "STR: " + ChatColor.RED + JsonPlayerBridge.getAttribute(player,"str") + ChatColor.DARK_RED +" (" + AttributeManager.calculateAttributeModifier(player, "str") + ")");
-        abilityScoreItemLore.add(ChatColor.WHITE + "DEX: " + ChatColor.RED + JsonPlayerBridge.getAttribute(player,"dex") + ChatColor.DARK_RED +" (" + AttributeManager.calculateAttributeModifier(player, "dex") + ")");
-        abilityScoreItemLore.add(ChatColor.WHITE + "CON: " + ChatColor.RED + JsonPlayerBridge.getAttribute(player,"con") + ChatColor.DARK_RED +" (" + AttributeManager.calculateAttributeModifier(player, "con") + ")");
-        abilityScoreItemLore.add(ChatColor.WHITE + "INT: " + ChatColor.AQUA + JsonPlayerBridge.getAttribute(player,"int") + ChatColor.BLUE +" (" + AttributeManager.calculateAttributeModifier(player, "int") + ")");
-        abilityScoreItemLore.add(ChatColor.WHITE + "WIS: " + ChatColor.AQUA + JsonPlayerBridge.getAttribute(player,"wis") + ChatColor.BLUE +" (" + AttributeManager.calculateAttributeModifier(player, "wis") + ")");
-        abilityScoreItemLore.add(ChatColor.WHITE + "CHA: " + ChatColor.AQUA + JsonPlayerBridge.getAttribute(player,"cha") + ChatColor.BLUE +" (" + AttributeManager.calculateAttributeModifier(player, "cha") + ")");
+
+        ArrayList<String> abilityScoreItemLore = (MineshaftPlayerBridge.getAbilityScoreStrings(player));
         abilityScoreItemLore.add(ChatColor.WHITE.toString());
         abilityScoreItemLore.add(ChatColor.WHITE + "Skill points: " + ChatColor.GREEN + JsonPlayerBridge.getSkillPoints(player));
         abilityScoreItemLore.add("");
@@ -194,7 +196,6 @@ public class UIButtonManager {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
 
-
         itemMeta.setDisplayName(ChatColor.WHITE + name);
         itemMeta.setCustomModelData(26);
 
@@ -202,4 +203,24 @@ public class UIButtonManager {
         return item;
     }
 
+    public static ItemStack getProfileButton(Player player,String profile) {
+
+        ItemStack item = new ItemStack(Material.IRON_SWORD);
+        ItemMeta itemMeta = item.getItemMeta();
+        assert itemMeta != null;
+
+        String culture = JsonPlayerBridge.getJsonPlayerManager(player,profile).getCharacterDataValue("culture");
+
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GRAY + culture);
+        lore.add("");
+        lore.addAll(MineshaftPlayerBridge.getAbilityScoreStrings(player));
+
+        itemMeta.setDisplayName(ChatColor.WHITE + profile);
+        itemMeta.setLore(lore);
+        item.setItemMeta(itemMeta);
+
+        item = UIUtil.setOnclick(item, profile);
+        return item;
+    }
 }

@@ -23,14 +23,17 @@ import com.mineshaft.mineshaftRpg.manager.player_character_options.CultureManage
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.Abilities;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.PassiveAbilities;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
+import com.mineshaft.mineshaftRpg.manager.player_data.AttributeManager;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonQuestBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.util.Logger;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MineshaftPlayerBridge {
@@ -76,7 +79,7 @@ public class MineshaftPlayerBridge {
         JsonPlayerBridge.setCharacterDataValue(player, "hasCultureStartingItems","true");
         BetonQuestBridge.runBetonPlayerEvent(player, ConfigBridge.getBetonQuestStartingItemEventPackage(), ConfigBridge.getBetonQuestStartingItemEvent());
 
-        if(isCustom) {
+        if(!isCustom) {
             for(String item : CultureManager.getCustomStartingItems(CultureManager.getCulture(culture))) {
                 player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(item));
             }
@@ -98,7 +101,7 @@ public class MineshaftPlayerBridge {
                 BetonQuestBridge.runBetonPlayerEvent(player,CultureManager.getCustomCulture(culture).getBetonQuestEvents().get(e),e);
             }
         }
-
+        JsonPlayerBridge.saveInventory(player);
         // TODO:
     }
 
@@ -152,5 +155,16 @@ public class MineshaftPlayerBridge {
             }
         }
         return null;
+    }
+
+    public static ArrayList<String> getAbilityScoreStrings(Player player) {
+        ArrayList<String> abilityScoreItemLore = new ArrayList<>();
+        abilityScoreItemLore.add(ChatColor.WHITE + "STR: " + ChatColor.RED + JsonPlayerBridge.getAttribute(player,"str") + ChatColor.DARK_RED +" (" + AttributeManager.calculateAttributeModifier(player, "str") + ")");
+        abilityScoreItemLore.add(ChatColor.WHITE + "DEX: " + ChatColor.RED + JsonPlayerBridge.getAttribute(player,"dex") + ChatColor.DARK_RED +" (" + AttributeManager.calculateAttributeModifier(player, "dex") + ")");
+        abilityScoreItemLore.add(ChatColor.WHITE + "CON: " + ChatColor.RED + JsonPlayerBridge.getAttribute(player,"con") + ChatColor.DARK_RED +" (" + AttributeManager.calculateAttributeModifier(player, "con") + ")");
+        abilityScoreItemLore.add(ChatColor.WHITE + "INT: " + ChatColor.AQUA + JsonPlayerBridge.getAttribute(player,"int") + ChatColor.BLUE +" (" + AttributeManager.calculateAttributeModifier(player, "int") + ")");
+        abilityScoreItemLore.add(ChatColor.WHITE + "WIS: " + ChatColor.AQUA + JsonPlayerBridge.getAttribute(player,"wis") + ChatColor.BLUE +" (" + AttributeManager.calculateAttributeModifier(player, "wis") + ")");
+        abilityScoreItemLore.add(ChatColor.WHITE + "CHA: " + ChatColor.AQUA + JsonPlayerBridge.getAttribute(player,"cha") + ChatColor.BLUE +" (" + AttributeManager.calculateAttributeModifier(player, "cha") + ")");
+        return abilityScoreItemLore;
     }
 }

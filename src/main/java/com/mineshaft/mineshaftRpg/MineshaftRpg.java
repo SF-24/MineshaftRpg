@@ -18,10 +18,7 @@
 
 package com.mineshaft.mineshaftRpg;
 
-import com.mineshaft.mineshaftRpg.command.CharacterCreationCommand;
-import com.mineshaft.mineshaftRpg.command.ExperienceCommand;
-import com.mineshaft.mineshaftRpg.command.MenuCommand;
-import com.mineshaft.mineshaftRpg.command.MineshaftRpgCommand;
+import com.mineshaft.mineshaftRpg.command.*;
 import com.mineshaft.mineshaftRpg.listener.GameSaveListener;
 import com.mineshaft.mineshaftRpg.listener.PlayerActionlistener;
 import com.mineshaft.mineshaftRpg.listener.PlayerJoinListener;
@@ -33,6 +30,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -44,7 +42,7 @@ public final class MineshaftRpg extends JavaPlugin {
     private JsonCustomCultures jsonCustomCultures;
     private JsonCustomFeats jsonCustomFeats;
 
-    public Map<CustomFeatClass, Boolean> featCache = Map.of();
+    public HashMap<CustomFeatClass, Boolean> featCache = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -64,6 +62,7 @@ public final class MineshaftRpg extends JavaPlugin {
         getCommand("experience").setExecutor(new ExperienceCommand());
         getCommand("menu").setExecutor(new MenuCommand());
         getCommand("character_creation").setExecutor(new CharacterCreationCommand());
+        getCommand("character_creation").setTabCompleter(new CharacterCreationTabCompleter());
         getCommand("mineshaft_rpg").setExecutor(new MineshaftRpgCommand());
 
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(), this);

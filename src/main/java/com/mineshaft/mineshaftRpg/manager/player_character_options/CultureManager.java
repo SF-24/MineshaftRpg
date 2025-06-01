@@ -146,7 +146,6 @@ public class CultureManager {
         }
 //        MineshaftPlayerBridge.giveCultureAbilities(player,cultureName,isCustom);
         MineshaftPlayerBridge.giveCultureStartingItems(player,cultureName,isCustom);
-        return;
     }
 
 

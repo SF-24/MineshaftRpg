@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftRpg.command;
 
 import com.mineshaft.mineshaftRpg.manager.ui.PlayerMenuManager;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,7 +28,9 @@ import org.bukkit.entity.Player;
 public class MenuCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] strings) {
-        if(sender instanceof Player) { PlayerMenuManager.openCharacterMenu((Player) sender); }
+        if(sender instanceof Player) {
+            PlayerMenuManager.openCharacterMenu((Player) sender);
+        }
         else { sender.sendMessage("You must be a player to use this command."); }
         return false;
     }
