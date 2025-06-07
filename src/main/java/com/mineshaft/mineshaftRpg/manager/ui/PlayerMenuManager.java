@@ -26,6 +26,8 @@ import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.CharacterCreationManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
+import net.kyori.adventure.text.Component;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,6 +38,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -136,14 +139,20 @@ public class PlayerMenuManager {
             // TODO: Finish description
         }
 
+        ArrayList<BaseComponent[]> unlockedLockedCulturePages = new ArrayList<>();
+
         for(CustomCultureClass c : MineshaftRpg.getInstance().getCustomCultures()) {
-            if (!c.isLocked() || JsonProfileBridge.getUnlockedCultures(player).contains(c.getName().toLowerCase())) {
+            if (!c.isLocked()) {
                 bookMeta.spigot().addPage(CultureManager.getPageDisplay(c.getId(), true));
+            } else if(JsonProfileBridge.getUnlockedCultures(player).contains(c.getName().toLowerCase())) {
+                unlockedLockedCulturePages.add(CultureManager.getPageDisplay(c.getId(), true));
             }
         }
 
-        // TODO: Custom cultures implementation, W.I.P.
-        // TODO: Add loading custom cultures from JSON config
+        // Make unlocked cultures, which are marked as locked appear at the end of the ui book
+        for(BaseComponent[] page : unlockedLockedCulturePages) {
+            bookMeta.spigot().addPage(page);
+        }
 
         book.setItemMeta(bookMeta);
 

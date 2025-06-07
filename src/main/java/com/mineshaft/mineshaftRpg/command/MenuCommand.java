@@ -19,7 +19,6 @@
 package com.mineshaft.mineshaftRpg.command;
 
 import com.mineshaft.mineshaftRpg.manager.ui.PlayerMenuManager;
-import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

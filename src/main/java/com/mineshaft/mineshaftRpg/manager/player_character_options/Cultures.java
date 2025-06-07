@@ -19,6 +19,8 @@
 package com.mineshaft.mineshaftRpg.manager.player_character_options;
 
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
+import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
+import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategoryType;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -34,35 +36,42 @@ public enum Cultures {
                     "for the love peace and quiet and good tilled earth: a well-ordered and well-farmed countryside " +
                     "was their favourite haunt.",
             Map.of(AbilityScores.DEX,2), 0,
-            List.of(PlayerSkills.STEALTH), List.of("Pipe"), List.of(/*"Brewer's Supplies", "Carpenter's Tools", "Cartographer's Tools", "Gardener's Tools", "Potter's Tools", "Smith's Tools", "Weaver's Tools", "Woodcarver's Tools",*/ "Cook's Utensils"), Collections.emptyList(),
+            List.of(PlayerSkills.STEALTH), List.of(ItemSubcategory.PIPE), List.of(/*"Brewer's Supplies", "Carpenter's Tools", "Cartographer's Tools", "Gardener's Tools", "Potter's Tools", "Smith's Tools", "Weaver's Tools", "Woodcarver's Tools",*/ "Cook's Utensils"), Collections.emptyList(),
             List.of(), false),
 
-    DWARF_LONELY_MOUNTAIN("Dwarves of Erebor",
-            "There now Dáin son of Nain took up his abode, and he became King under the Mountain, " +
-                    "and in time many other Dwarves gathered to his throne in the ancient halls.",
-            Map.of(AbilityScores.CON, 2), 0,
-            Collections.emptyList(), List.of("Axe", "Handaxe", "Greataxe", "Light Hammer", "Warhammer"), List.of(/*"Jeweller's Tools", "Mason's Tools", "Smith's Tools", "Wood Carver's Tools",*/ "Miner's Tools"), List.of("Dalish", "Khuzdul"),
-            List.of(), false),
-    // And proficiency in a musical instrument?
+//    DWARF_LONELY_MOUNTAIN("Dwarves of Erebor",
+//            "There now Dáin son of Nain took up his abode, and he became King under the Mountain, " +
+//                    "and in time many other Dwarves gathered to his throne in the ancient halls.",
+//            Map.of(AbilityScores.CON, 2), 0,
+//            Collections.emptyList(), List.of("Axe", "Handaxe", "Greataxe", "Light Hammer", "Warhammer"), List.of(/*"Jeweller's Tools", "Mason's Tools", "Smith's Tools", "Wood Carver's Tools",*/ "Miner's Tools"), List.of("Dalish", "Khuzdul"),
+//            List.of(), false),
+//    // And proficiency in a musical instrument?
+
+    DWARF_DURINGS_FOLK("Dwarves of Durin's Folk",
+            "Only on the Road would travellers be found, most often Dwarves, hurrying along on buisness of their own, and with no help but a few words to spare for strangers",
+            Map.of(AbilityScores.CON, 2), 1, List.of(),List.of(ItemSubcategory.AXE,ItemSubcategory.GREAT_AXE,ItemSubcategory.HAND_AXE,ItemSubcategory.PICKAXE),List.of(),
+            List.of("Dalish","Khuzdul"),List.of(),true
+    ),
 
     ELF_MIRKWOOD("Wood Elves",
             "In the great hall with pillars hewn out of the living stone sat the Elvenking on a chair of carven wood.",
             Map.of(AbilityScores.DEX, 2, AbilityScores.WIS, 1), 0,
-            List.of(PlayerSkills.PERCEPTION,PlayerSkills.STEALTH), List.of("Dagger", "Spear", "Broadsword", "Short Sword", "Short Bow"), Collections.emptyList(), List.of("Sindarin","Silvan Elvish"),
+            List.of(PlayerSkills.PERCEPTION,PlayerSkills.STEALTH), List.of(ItemSubcategory.DAGGER, ItemSubcategory.SPEAR, ItemSubcategory.SHORTSWORD, ItemSubcategory.SHORTBOW), Collections.emptyList(), List.of("Sindarin","Silvan Elvish"),
             List.of(), false),
 
+    // Keep
     HUMAN_BARDINGS("Bardings",
             "Bard had rebuilt the town in Dale and Men had gathered to him from the Lake and from South and West, " +
                     "and the desolation was now filled with birds and blossoms in spring and fruit and feasting in autumn.",
             Map.of(AbilityScores.STR, 1), 2, List.of(PlayerSkills.INSIGHT),
-            Collections.emptyList(), Collections.emptyList(), List.of("Dalish"),
+            List.of(ItemSubcategory.LONGBOW), Collections.emptyList(), List.of("Dalish"),
             List.of(), true),
-    HUMAN_BEORNINGS("Beornings",
-            "Beorn indeed became a great chief afterwards in those regions and " +
-                    "ruled a wide land between the mountains and the wood...",
-            Map.of(AbilityScores.STR, 1), 2, List.of(PlayerSkills.INTIMIDATION),
-            Collections.emptyList(), Collections.emptyList(), List.of("Vale of Andiun Tongue"),
-            List.of(), true),
+//    HUMAN_BEORNINGS("Beornings",
+//            "Beorn indeed became a great chief afterwards in those regions and " +
+//                    "ruled a wide land between the mountains and the wood...",
+//            Map.of(AbilityScores.STR, 1), 2, List.of(PlayerSkills.INTIMIDATION),
+//            Collections.emptyList(), Collections.emptyList(), List.of("Vale of Andiun Tongue"),
+//            List.of(), true),
     HUMAN_DUNEDAIN("Dúnedain",
             "In the wild lands beyond Bree, there were mysterious wanderers. " +
                     "The Bree-folk called them Rangers, and knew nothing of their origin.",
@@ -87,20 +96,19 @@ public enum Cultures {
             Map.of(AbilityScores.INT, 1), 2, List.of(PlayerSkills.HISTORY),
             Collections.emptyList(), Collections.emptyList(), List.of("Sindarin"),
             List.of(), true),
-    HUMAN_ROHAN("Riders of Rohan",
-            "Where now is the horse and the rider? Where is the horn that was blowing? " +
-                    "Where is the helm and the hauberk, and the bright hair flowing?",
-            Map.of(AbilityScores.WIS, 1), 2, List.of(PlayerSkills.ANIMAL_HANDLING),
-            Collections.emptyList(), Collections.emptyList(), List.of("Rohan","Sindarin"),
-            List.of(), true),
-    HUMAN_WILDERLAND("Woodmen of Wilderland",
-            "There were many of them, and they were brave and well armed, and even the Wargs " +
-                    "dared not attack them if there were many together, or in the bright day.",
-            Map.of(AbilityScores.DEX, 1), 2, List.of(PlayerSkills.SURVIVAL),
-            Collections.emptyList(), Collections.emptyList(), List.of("Vale of Andiun Tongue"),
-            List.of(), true),
+//    HUMAN_ROHAN("Riders of Rohan",
+//            "Where now is the horse and the rider? Where is the horn that was blowing? " +
+//                    "Where is the helm and the hauberk, and the bright hair flowing?",
+//            Map.of(AbilityScores.WIS, 1), 2, List.of(PlayerSkills.ANIMAL_HANDLING),
+//            Collections.emptyList(), Collections.emptyList(), List.of("Rohan","Sindarin"),
+//            List.of(), true),
+//    HUMAN_WILDERLAND("Woodmen of Wilderland",
+//            "There were many of them, and they were brave and well armed, and even the Wargs " +
+//                    "dared not attack them if there were many together, or in the bright day.",
+//            Map.of(AbilityScores.DEX, 1), 2, List.of(PlayerSkills.SURVIVAL),
+//            Collections.emptyList(), Collections.emptyList(), List.of("Vale of Andiun Tongue"),
+//            List.of(), true),
     ;
-
 
     final String name;
     final String description;
@@ -109,7 +117,7 @@ public enum Cultures {
     final List<PlayerSkills> skillProficiencies;
 
     // Gain all
-    final List<String> itemProficiencies;
+    final List<ItemSubcategory> itemProficiencies;
 
     // Select one, !!!!
     final List<String> toolProficienciesSelect;
@@ -118,7 +126,7 @@ public enum Cultures {
     private final boolean giveFeat;
 
 
-    Cultures(String name, String description, Map<AbilityScores, Integer> abilityScores, int abilityScorePoints, List<PlayerSkills> skillProficiencies, List<String> weaponProficiencies, List<String> toolProficiencies, List<String> extraLanguages, List<String> abilities, boolean giveFeat) {
+    Cultures(String name, String description, Map<AbilityScores, Integer> abilityScores, int abilityScorePoints, List<PlayerSkills> skillProficiencies, List<ItemSubcategory> weaponProficiencies, List<String> toolProficiencies, List<String> extraLanguages, List<String> abilities, boolean giveFeat) {
         this.name=name;
         this.description=description;
         this.abilityScores=abilityScores;
@@ -138,7 +146,7 @@ public enum Cultures {
     public int getAbilityScorePoints() {return abilityScorePoints;}
 
     public List<PlayerSkills> getSkillProficiencies() {return skillProficiencies;}
-    public List<String> getWeaponProficiencies() {return itemProficiencies;}
+    public List<ItemSubcategory> getWeaponProficiencies() {return itemProficiencies;}
     public List<String> getToolProficiencies() {return toolProficienciesSelect;}
     public List<String> getExtraLanguages() {return extraLanguages;}
 

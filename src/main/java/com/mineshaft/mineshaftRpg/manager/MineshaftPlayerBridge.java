@@ -83,8 +83,8 @@ public class MineshaftPlayerBridge {
             for(String item : CultureManager.getCustomStartingItems(CultureManager.getCulture(culture))) {
                 player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(item));
             }
-            for(Material m : CultureManager.getVanillaStartingItems(CultureManager.getCulture(culture))) {
-                player.getInventory().addItem(new ItemStack(m));
+            for(Material material : CultureManager.getVanillaStartingItems(CultureManager.getCulture(culture)).keySet()) {
+                player.getInventory().addItem(new ItemStack(material, CultureManager.getVanillaStartingItems(CultureManager.getCulture(culture)).get(material)));
             }
 
             if(ConfigBridge.runBetonQuestCultureStartingEvent()) {
@@ -94,11 +94,11 @@ public class MineshaftPlayerBridge {
             for(String item : CultureManager.getCustomCulture(culture).getStartingItems()) {
                 player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(item));
             }
-            for(Material m : CultureManager.getCustomCulture(culture).getVanillaStartingItems()) {
-                player.getInventory().addItem(new ItemStack(m));
+            for(Material material : CultureManager.getCustomCulture(culture).getVanillaStartingItems()) {
+                player.getInventory().addItem(new ItemStack(material));
             }
-            for(String e : CultureManager.getCustomCulture(culture).getBetonQuestEvents().keySet()) {
-                BetonQuestBridge.runBetonPlayerEvent(player,CultureManager.getCustomCulture(culture).getBetonQuestEvents().get(e),e);
+            for(String eventName : CultureManager.getCustomCulture(culture).getBetonQuestEvents().keySet()) {
+                BetonQuestBridge.runBetonPlayerEvent(player,CultureManager.getCustomCulture(culture).getBetonQuestEvents().get(eventName),eventName);
             }
         }
         JsonPlayerBridge.saveInventory(player);

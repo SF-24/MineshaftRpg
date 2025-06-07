@@ -22,6 +22,7 @@ import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
+import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import net.md_5.bungee.api.chat.*;
@@ -135,7 +136,11 @@ public class CultureManager {
 
             // Proficiencies
             JsonPlayerBridge.setProficiencyLevels(player, culture.getSkillProficiencies(),1);
-            JsonPlayerBridge.addWeaponProficiencies(player, culture.getWeaponProficiencies());
+            ArrayList<String> weaponProficiencies = new ArrayList<>();
+            for(ItemSubcategory itemSubcategory : culture.getWeaponProficiencies()) {
+                weaponProficiencies.add(itemSubcategory.name().toLowerCase());
+            }
+            JsonPlayerBridge.addWeaponProficiencies(player, weaponProficiencies);
 
             MineshaftPlayerBridge.giveCultureAbilities(player, culture.getAbilities());
             setLanguages(player,culture.getExtraLanguages());
@@ -159,31 +164,33 @@ public class CultureManager {
         int scorePoints = 0;
         List<String> weaponProficiencies = List.of();
         List<PlayerSkills> skillProficiencies = List.of();
-        List<String> toolProficiencies = List.of();
+        List<String> craftProficiencies = List.of();
         boolean extraFeat = false;
 
         if(isCustom) {
-            CustomCultureClass c = getCustomCulture(culture);
-            id=c.getId().toLowerCase();
-            name = c.getName();
-            desc = c.getDescription();
-            scores = c.getAbilityScores();
-            scorePoints=c.getAbilityScorePoints();
-            weaponProficiencies=c.getWeaponProficiencies();
-            skillProficiencies=c.getSkillProficiencies();
-            toolProficiencies=c.getToolProficienciesSelect();
-            extraFeat=c.hasCulturalFeat();
+            CustomCultureClass customCulture = getCustomCulture(culture);
+            id=customCulture.getId().toLowerCase();
+            name = customCulture.getName();
+            desc = customCulture.getDescription();
+            scores = customCulture.getAbilityScores();
+            scorePoints=customCulture.getAbilityScorePoints();
+            weaponProficiencies=customCulture.getWeaponProficiencies();
+            skillProficiencies=customCulture.getSkillProficiencies();
+            craftProficiencies=customCulture.getToolProficienciesSelect();
+            extraFeat=customCulture.hasCulturalFeat();
         } else {
-            Cultures c = getCulture(culture);
-            id=c.name().toLowerCase();
-            name = c.getName();
-            desc = c.getDescription();
-            scores = c.getAbilityScores();
-            scorePoints=c.getAbilityScorePoints();
-            weaponProficiencies=c.getWeaponProficiencies();
-            skillProficiencies=c.getSkillProficiencies();
-            toolProficiencies=c.getToolProficiencies();
-            extraFeat=c.isGiveFeat();
+            Cultures hardcodedCulture = getCulture(culture);
+            id=hardcodedCulture.name().toLowerCase();
+            name = hardcodedCulture.getName();
+            desc = hardcodedCulture.getDescription();
+            scores = hardcodedCulture.getAbilityScores();
+            scorePoints=hardcodedCulture.getAbilityScorePoints();
+            for(ItemSubcategory itemSubcategory : hardcodedCulture.getWeaponProficiencies()) {
+                weaponProficiencies.add(itemSubcategory.name().toLowerCase());
+            }
+            skillProficiencies=hardcodedCulture.getSkillProficiencies();
+            craftProficiencies=hardcodedCulture.getToolProficiencies();
+            extraFeat=hardcodedCulture.isGiveFeat();
         }
 
 
@@ -247,20 +254,31 @@ public class CultureManager {
     // TODO:
     public static List<String> getCustomStartingItems(Cultures cultures) {
         switch (cultures) {
-            default:
-                break;
+            case HOBBIT_SHIRE -> { return List.of(); }
+            case DWARF_DURINGS_FOLK -> { return List.of(); }
+            case ELF_MIRKWOOD -> { return List.of(); }
+            case HUMAN_BARDINGS -> { return List.of(); }
+            case HUMAN_DUNEDAIN ->{ return List.of(); }
+            case HUMAN_BREE ->{ return List.of(); }
+            case HUMAN_LAKETOWN ->{ return List.of(); }
+            case HUMAN_MINAS_TIRITH ->{ return List.of(); }
         }
         return Collections.emptyList();
     }
 
-    public static List<Material> getVanillaStartingItems(Cultures cultures) {
+    public static Map<Material, Integer> getVanillaStartingItems(Cultures cultures) {
         switch (cultures) {
-            case HUMAN_ROHAN:
-                return List.of(Material.HORSE_SPAWN_EGG);
-            default:
-                break;
+
+            case HOBBIT_SHIRE -> {
+                return Map.of(
+                        Material.APPLE, 5,
+                        Material.BREAD, 5
+                );
+            }
+            case DWARF_DURINGS_FOLK -> {
+            }
         }
-        return Collections.emptyList();
+        return Collections.emptyMap();
     }
 
 }
