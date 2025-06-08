@@ -37,7 +37,6 @@ import java.util.logging.Level;
 public final class MineshaftRpg extends JavaPlugin {
 
     private final ConfigManager configManager = new ConfigManager();
-    private ArrayList<Cultures> cultureCache = new ArrayList<>();
     private ArrayList<CustomCultureClass> customCultures = new ArrayList<>();
     private JsonCustomCultures jsonCustomCultures;
     private JsonCustomFeats jsonCustomFeats;

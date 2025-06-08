@@ -22,17 +22,14 @@ import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -48,18 +45,8 @@ public class CultureManager {
     }
 
     public static boolean isValidCulture(String culture) {
-        if(getCulture(culture)!=null)return true;
         if(getCustomCulture(culture)!=null)return true;
         return false;
-    }
-
-    public static Cultures getCulture(String culture) {
-        for(Cultures c : Cultures.values()) {
-            if(c.name().equalsIgnoreCase(culture)) {
-                return c;
-            }
-        }
-        return null;
     }
 
     public static CustomCultureClass getCustomCulture(String culture) {
@@ -71,9 +58,8 @@ public class CultureManager {
         return null;
     }
 
-    public static void setCulture(Player player, String culture, boolean isCustom) {
+    public static void setCulture(Player player, String culture) {
         JsonPlayerBridge.setCharacterDataValue(player, "culture", culture);
-        JsonPlayerBridge.setCharacterDataValue(player, "isCultureCustom", String.valueOf(isCustom).toLowerCase());
     }
 
     public static void setLanguages(Player player, List<String> languages) {
@@ -91,71 +77,35 @@ public class CultureManager {
         return JsonPlayerBridge.getCharacterDataValue(player, "culture");
     }
 
-    public static boolean isCustomCulture(Player player) {
-        return JsonPlayerBridge.getCharacterDataValue(player,"isCultureCustom").equals("true");
-    }
+    public static void givePlayerCulture(Player player, String cultureName) {
+        CustomCultureClass c = getCustomCulture(cultureName);
 
-    public static void givePlayerCulture(Player player, String cultureName, boolean isCustom) {
-
-        if(isCustom) {
-            CustomCultureClass c = getCustomCulture(cultureName);
-            // Base values
-
-            for(AbilityScores element : c.getAbilityScores().keySet()) {
-                MineshaftPlayerBridge.addAttribute(player,element,c.getAbilityScores().get(element));
-            }
-            JsonPlayerBridge.addSkillPoints(player,c.getAbilityScorePoints());
-            CultureManager.setCulture(player, c.getId(), true);
-
-            // Proficiencies
-
-            JsonPlayerBridge.setProficiencyLevels(player, c.getSkillProficiencies(),1);
-            JsonPlayerBridge.addWeaponProficiencies(player, c.getWeaponProficiencies());
-
-            // Abilities and languages, WIP
-            MineshaftPlayerBridge.giveCultureAbilities(player, c.getAbilities());
-            setLanguages(player,c.getExtraLanguages());
-
-            // Feat
-            if(c.hasCulturalFeat()) {
-                MineshaftPlayerBridge.giveCultureFeatPoint(player);
-            }
-
-
-        } else {
-            Cultures culture= getCulture(cultureName);
-            if(culture==null) {
-                player.sendMessage(ChatColor.RED + "No Culture found with id " + cultureName);
-                return;
-            }
-            for(AbilityScores element : culture.getAbilityScores().keySet()) {
-                MineshaftPlayerBridge.addAttribute(player,element,culture.getAbilityScores().get(element));
-            }
-            JsonPlayerBridge.addSkillPoints(player,culture.getAbilityScorePoints());
-            CultureManager.setCulture(player, culture.name.toLowerCase(), true);
-
-            // Proficiencies
-            JsonPlayerBridge.setProficiencyLevels(player, culture.getSkillProficiencies(),1);
-            ArrayList<String> weaponProficiencies = new ArrayList<>();
-            for(ItemSubcategory itemSubcategory : culture.getWeaponProficiencies()) {
-                weaponProficiencies.add(itemSubcategory.name().toLowerCase());
-            }
-            JsonPlayerBridge.addWeaponProficiencies(player, weaponProficiencies);
-
-            MineshaftPlayerBridge.giveCultureAbilities(player, culture.getAbilities());
-            setLanguages(player,culture.getExtraLanguages());
-            if(culture.isGiveFeat()) {
-                MineshaftPlayerBridge.giveCultureFeatPoint(player);
-            }
-
+        // Base values
+        for(AbilityScores element : c.getAbilityScores().keySet()) {
+            MineshaftPlayerBridge.addAttribute(player,element,c.getAbilityScores().get(element));
         }
-//        MineshaftPlayerBridge.giveCultureAbilities(player,cultureName,isCustom);
-        MineshaftPlayerBridge.giveCultureStartingItems(player,cultureName,isCustom);
+        JsonPlayerBridge.addSkillPoints(player,c.getAbilityScorePoints());
+        CultureManager.setCulture(player, c.getId());
+
+        // Proficiencies
+
+        JsonPlayerBridge.setProficiencyLevels(player, c.getSkillProficiencies(),1);
+        JsonPlayerBridge.addWeaponProficiencies(player, c.getWeaponProficiencies());
+
+        // Abilities and languages, WIP
+        MineshaftPlayerBridge.giveCultureAbilities(player, c.getAbilities());
+        setLanguages(player,c.getExtraLanguages());
+
+        // Feat
+        if(c.hasCulturalFeat()) {
+            MineshaftPlayerBridge.giveCultureFeatPoint(player);
+        }
+        MineshaftPlayerBridge.giveCultureStartingItems(player,cultureName);
     }
 
 
 
-    public static BaseComponent[] getPageDisplay(String culture, boolean isCustom) {
+    public static BaseComponent[] getPageDisplay(String culture) {
 
         String id = "";
         String name = "";
@@ -167,32 +117,16 @@ public class CultureManager {
         List<String> craftProficiencies = List.of();
         boolean extraFeat = false;
 
-        if(isCustom) {
-            CustomCultureClass customCulture = getCustomCulture(culture);
-            id=customCulture.getId().toLowerCase();
-            name = customCulture.getName();
-            desc = customCulture.getDescription();
-            scores = customCulture.getAbilityScores();
-            scorePoints=customCulture.getAbilityScorePoints();
-            weaponProficiencies=customCulture.getWeaponProficiencies();
-            skillProficiencies=customCulture.getSkillProficiencies();
-            craftProficiencies=customCulture.getToolProficienciesSelect();
-            extraFeat=customCulture.hasCulturalFeat();
-        } else {
-            Cultures hardcodedCulture = getCulture(culture);
-            id=hardcodedCulture.name().toLowerCase();
-            name = hardcodedCulture.getName();
-            desc = hardcodedCulture.getDescription();
-            scores = hardcodedCulture.getAbilityScores();
-            scorePoints=hardcodedCulture.getAbilityScorePoints();
-            for(ItemSubcategory itemSubcategory : hardcodedCulture.getWeaponProficiencies()) {
-                weaponProficiencies.add(itemSubcategory.name().toLowerCase());
-            }
-            skillProficiencies=hardcodedCulture.getSkillProficiencies();
-            craftProficiencies=hardcodedCulture.getToolProficiencies();
-            extraFeat=hardcodedCulture.isGiveFeat();
-        }
-
+        CustomCultureClass customCulture = getCustomCulture(culture);
+        id=customCulture.getId().toLowerCase();
+        name = customCulture.getName();
+        desc = customCulture.getDescription();
+        scores = customCulture.getAbilityScores();
+        scorePoints=customCulture.getAbilityScorePoints();
+        weaponProficiencies=customCulture.getWeaponProficiencies();
+        skillProficiencies=customCulture.getSkillProficiencies();
+        craftProficiencies=customCulture.getToolProficienciesSelect();
+        extraFeat=customCulture.hasCulturalFeat();
 
 
         TextComponent hoverable = new TextComponent("§4§l" + name + "\n");
@@ -233,7 +167,7 @@ public class CultureManager {
 //                otherProficiencies.append(e).append(", ");
 //            }
 
-        TextComponent proficiencyList2 = (new TextComponent(String.valueOf(otherProficiencies)+"\n"));
+        TextComponent proficiencyList2 = (new TextComponent(otherProficiencies +"\n"));
 
         TextComponent feat;
         if(extraFeat) {
@@ -250,35 +184,4 @@ public class CultureManager {
         BaseComponent[] component = new ComponentBuilder().append(hoverable).append(abilityScores).append(points).append(proficiencyList).append(proficiencyList2).append(feat).append(select).create();
         return component;
     }
-
-    // TODO:
-    public static List<String> getCustomStartingItems(Cultures cultures) {
-        switch (cultures) {
-            case HOBBIT_SHIRE -> { return List.of(); }
-            case DWARF_DURINGS_FOLK -> { return List.of(); }
-            case ELF_MIRKWOOD -> { return List.of(); }
-            case HUMAN_BARDINGS -> { return List.of(); }
-            case HUMAN_DUNEDAIN ->{ return List.of(); }
-            case HUMAN_BREE ->{ return List.of(); }
-            case HUMAN_LAKETOWN ->{ return List.of(); }
-            case HUMAN_MINAS_TIRITH ->{ return List.of(); }
-        }
-        return Collections.emptyList();
-    }
-
-    public static Map<Material, Integer> getVanillaStartingItems(Cultures cultures) {
-        switch (cultures) {
-
-            case HOBBIT_SHIRE -> {
-                return Map.of(
-                        Material.APPLE, 5,
-                        Material.BREAD, 5
-                );
-            }
-            case DWARF_DURINGS_FOLK -> {
-            }
-        }
-        return Collections.emptyMap();
-    }
-
 }

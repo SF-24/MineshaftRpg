@@ -20,16 +20,15 @@ package com.mineshaft.mineshaftRpg.manager.player_character_options;
 
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategoryType;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
+@Deprecated(forRemoval = true)
 public enum Cultures {
 
-    // TODO: add more cultures
+    // TODO: Remove
 
 //    HOBBIT_SHIRE("Hobbits of the Shire",
 //            "Hobbits are an unobtrusive but very ancient people, more numerous formerly than they are today; " +

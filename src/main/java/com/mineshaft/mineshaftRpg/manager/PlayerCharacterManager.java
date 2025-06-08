@@ -54,7 +54,7 @@ public class PlayerCharacterManager {
         if(!CultureManager.hasCulture(player)) {
             PlayerMenuManager.openSpeciesSelector(player);
         } else if(!MineshaftPlayerBridge.hasCultureStartingItems(player)) {
-            MineshaftPlayerBridge.giveCultureStartingItems(player,CultureManager.getCulture(player),CultureManager.isCustomCulture(player));
+            MineshaftPlayerBridge.giveCultureStartingItems(player,CultureManager.getCulture(player));
         }
     }
 

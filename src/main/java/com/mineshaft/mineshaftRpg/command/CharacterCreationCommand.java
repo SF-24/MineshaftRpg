@@ -19,7 +19,6 @@
 package com.mineshaft.mineshaftRpg.command;
 
 import com.mineshaft.mineshaftRpg.manager.player_character_options.CultureManager;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.Cultures;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.CustomCultureClass;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -50,10 +49,7 @@ public class CharacterCreationCommand implements CommandExecutor {
             } else {
                 if(CultureManager.getCustomCulture(args[1]) != null) {
                     CustomCultureClass c = CultureManager.getCustomCulture(args[1]);
-                    CultureManager.givePlayerCulture(player,c.getId(),true);
-                } else {
-                    Cultures c = CultureManager.getCulture(args[1]);
-                    CultureManager.givePlayerCulture(player,c.name().toLowerCase(),false);
+                    CultureManager.givePlayerCulture(player,c.getId());
                 }
                 player.sendMessage(ChatColor.AQUA + "You have successfully selected a culture.");
                 // TODO: Next part of setup - class?

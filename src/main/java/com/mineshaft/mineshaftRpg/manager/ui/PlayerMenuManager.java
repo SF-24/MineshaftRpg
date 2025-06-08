@@ -20,13 +20,11 @@ package com.mineshaft.mineshaftRpg.manager.ui;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.CultureManager;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.Cultures;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.CustomCultureClass;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.CharacterCreationManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
-import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
@@ -132,20 +130,14 @@ public class PlayerMenuManager {
         assert bookMeta != null;
         bookMeta.addPage(ChatColor.BOLD + "Select a culture: \n" +
                 "Use the arrows underneath the book to select a page with your desired culture and press select.");
-        for(Cultures c : Cultures.values()) {
-
-            bookMeta.spigot().addPage(CultureManager.getPageDisplay(c.name(),false));
-
-            // TODO: Finish description
-        }
 
         ArrayList<BaseComponent[]> unlockedLockedCulturePages = new ArrayList<>();
 
         for(CustomCultureClass c : MineshaftRpg.getInstance().getCustomCultures()) {
             if (!c.isLocked()) {
-                bookMeta.spigot().addPage(CultureManager.getPageDisplay(c.getId(), true));
+                bookMeta.spigot().addPage(CultureManager.getPageDisplay(c.getId()));
             } else if(JsonProfileBridge.getUnlockedCultures(player).contains(c.getName().toLowerCase())) {
-                unlockedLockedCulturePages.add(CultureManager.getPageDisplay(c.getId(), true));
+                unlockedLockedCulturePages.add(CultureManager.getPageDisplay(c.getId()));
             }
         }
 
