@@ -95,6 +95,18 @@ public class UIButtonManager {
         return item;
     }
 
+    public static ItemStack getCodexItem() {
+        ItemStack item = new ItemStack(Material.PAPER);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.WHITE + "Discoveries");
+        meta.setLore(Collections.singletonList(ChatColor.GRAY + "Click to open your discoveries"));
+        item.setItemMeta(meta);
+        NBT.modify(item, nbt->{
+            nbt.setString("onClick", "discovery_menu");
+        });
+        return item;
+    }
+
     public static ItemStack getPlayerLevelButton(Player player) {
         // level item
         ItemStack levelItem = new ItemStack(Material.PEONY);

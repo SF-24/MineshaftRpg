@@ -66,6 +66,9 @@ public class UIListener implements Listener {
                     case "quest_menu":
                         PlayerMenuManager.openQuestMenu((Player) e.getWhoClicked(), true);
                         break;
+                    case "discovery_menu":
+                        PlayerMenuManager.openDiscoveryMenu((Player) e.getWhoClicked(), true);
+                        break;
                     case "ability_scores":
 //                        e.getWhoClicked().closeInventory();
 //                        PlayerMenuManager.genericInventoryOpen((Player) e.getWhoClicked());

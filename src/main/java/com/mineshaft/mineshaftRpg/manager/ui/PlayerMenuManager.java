@@ -51,6 +51,7 @@ public class PlayerMenuManager {
         ui.setItem(2, UIButtonManager.getPlayerAbilityScoreItem(player));
         ui.setItem(3, UIButtonManager.getSkillsItem(player));
         ui.setItem(4, UIButtonManager.getAbilityItem(player));
+        ui.setItem(4, UIButtonManager.getCodexItem());
         ui.setItem(7, UIButtonManager.getQuestItem());
         player.openInventory(ui);
     }
@@ -72,6 +73,13 @@ public class PlayerMenuManager {
         ui.addItem(UIButtonManager.getQuestCanceller());
         ui.addItem(UIButtonManager.getQuestTracker());
         ui.addItem(UIButtonManager.getJournal());
+        player.openInventory(ui);
+
+        inventoryManagement(player,isUpdate);
+    }
+
+    public static void openDiscoveryMenu(Player player, boolean isUpdate) {
+        Inventory ui = getMenuBackground("Discoveries");
         player.openInventory(ui);
 
         inventoryManagement(player,isUpdate);
