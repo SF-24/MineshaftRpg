@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftRpg.manager;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftapi.manager.StringManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.entity.Player;
 
@@ -99,4 +100,24 @@ public class ExperienceManager {
         updateXpBar(player);
     }
 
+    public static int getDiscoveryExperiencePerLevel(int level, double multiplier, int roundValue) {
+        int base = 10 + (level+1)*(level+1);
+        return (int) (Math.round(multiplier*base / roundValue) * roundValue);
+    }
+
+    public static int getTownDiscoveryExperiencePerLevel(Player player, int level, double townSize) {
+        double multiplier = (2*townSize-1)/3;
+        if(JsonPlayerBridge.getProficiencyLevel(player,PlayerSkills.LORE)>0) {
+            if(JsonPlayerBridge.getProficiencyLevel(player,PlayerSkills.LORE)>1) {
+                multiplier*=1.666;
+            } else {
+                multiplier*=1.333;
+            }
+        }
+        if(townSize<2&&level<5) {
+            return getDiscoveryExperiencePerLevel(level, multiplier, 2);
+        } else {
+            return getDiscoveryExperiencePerLevel(level, multiplier, 5);
+        }
+    }
 }

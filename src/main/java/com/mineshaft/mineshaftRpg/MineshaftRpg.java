@@ -19,10 +19,7 @@
 package com.mineshaft.mineshaftRpg;
 
 import com.mineshaft.mineshaftRpg.command.*;
-import com.mineshaft.mineshaftRpg.listener.GameSaveListener;
-import com.mineshaft.mineshaftRpg.listener.PlayerActionlistener;
-import com.mineshaft.mineshaftRpg.listener.PlayerJoinListener;
-import com.mineshaft.mineshaftRpg.listener.UIListener;
+import com.mineshaft.mineshaftRpg.listener.*;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.*;
 import com.mineshaft.mineshaftapi.util.Logger;
@@ -37,7 +34,7 @@ import java.util.logging.Level;
 public final class MineshaftRpg extends JavaPlugin {
 
     private final ConfigManager configManager = new ConfigManager();
-    private ArrayList<CustomCultureClass> customCultures = new ArrayList<>();
+    private final ArrayList<CustomCultureClass> customCultures = new ArrayList<>();
     private JsonCustomCultures jsonCustomCultures;
     private JsonCustomFeats jsonCustomFeats;
 
@@ -45,8 +42,6 @@ public final class MineshaftRpg extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
-
 
         Logger.log(Level.INFO, "\n" +
                 "███╗░░░███╗██╗███╗░░██╗███████╗░██████╗██╗░░██╗░█████╗░███████╗████████╗   ██████╗░██████╗░░██████╗░\n" +
@@ -68,6 +63,7 @@ public final class MineshaftRpg extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new UIListener(), this);
         Bukkit.getPluginManager().registerEvents(new GameSaveListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerActionlistener(), this);
+        Bukkit.getPluginManager().registerEvents(new MineshaftListener(), this);
         getDataFolder().mkdirs();
         configManager.setupConfig();
 

@@ -18,15 +18,20 @@
 
 package com.mineshaft.mineshaftRpg.manager.ui;
 
-import com.magmaguy.freeminecraftmodels.magmacore.util.ChatColorConverter;
+import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.AttributeManager;
+import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.dependency.world_guard.DiscoveryCategory;
+import com.mineshaft.mineshaftapi.dependency.world_guard.Town;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
 import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonDiscoveryBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
+import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -37,6 +42,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 public class UIButtonManager {
@@ -138,7 +144,18 @@ public class UIButtonManager {
         ItemMeta skillsItemMeta = skillsItem.getItemMeta();
         assert skillsItemMeta != null;
         skillsItemMeta.setDisplayName(ChatColor.WHITE + "Skills");
-        skillsItemMeta.setLore(Collections.singletonList(ChatColor.RED + "Locked"));
+
+        ArrayList<String> lore = new ArrayList<>();
+
+        for(PlayerSkills skill : PlayerSkills.values()) {
+            switch (JsonPlayerBridge.getProficiencyLevel(player,skill)) {
+                case 0 -> lore.add(AbilityScores.valueOf(skill.getBaseAbilityScore()).getColour() + skill.getName() + AbilityScores.valueOf(skill.getBaseAbilityScore()).getDarkerColour());
+                case 1 -> lore.add(AbilityScores.valueOf(ChatColor.BOLD + skill.getBaseAbilityScore()).getColour() + skill.getName() + AbilityScores.valueOf(skill.getBaseAbilityScore()).getDarkerColour() + " (Proficient)");
+                case 2 -> lore.add(AbilityScores.valueOf(ChatColor.BOLD + skill.getBaseAbilityScore()).getColour() + skill.getName() + AbilityScores.valueOf(skill.getBaseAbilityScore()).getDarkerColour() + " (Expertise)");
+            }
+        }
+
+        skillsItemMeta.setLore(lore);
         skillsItem.setItemMeta(skillsItemMeta);
         return skillsItem;
     }
@@ -221,6 +238,70 @@ public class UIButtonManager {
         item.setItemMeta(itemMeta);
 
         item = UIUtil.setOnclick(item, profile);
+        return item;
+    }
+
+    public static ItemStack getDiscoveryCategory(Player player, DiscoveryCategory category) {
+        ItemStack categoryItem = new ItemStack(Material.KNOWLEDGE_BOOK);
+        ItemMeta categoryItemMeta = categoryItem.getItemMeta();
+        categoryItemMeta.setDisplayName(ChatColor.WHITE + category.getName());
+
+        switch (category) {
+            case TOWN -> {
+                int discoveries= JsonDiscoveryBridge.getDiscoveredTowns(player).size();
+
+                categoryItemMeta.setLore(List.of(
+                    ChatColor.GRAY.toString() + discoveries + " discovered"
+                ));
+            }
+            case MOB -> {
+                // TODO: add mob amount calculation
+                int discoveries = 0;
+
+                categoryItemMeta.setLore(List.of(
+                        ChatColor.GRAY.toString() + discoveries + " discovered"
+                ));
+            }
+            case LORE -> {
+                // TODO: Add lore amount calculation
+                int discoveries = 0;
+
+                categoryItemMeta.setLore(List.of(
+                        ChatColor.GRAY.toString() + discoveries + " discovered"
+                ));
+            }
+        }
+        categoryItem.setItemMeta(categoryItemMeta);
+
+        // Set category id
+        NBT.modify(categoryItem, nbt->{
+            nbt.setString("Category",category.name().toLowerCase());
+        });
+        return categoryItem;
+    }
+
+    public static ItemStack getLocationRegion(Player player, String regionName) {
+        ItemStack item = new ItemStack(Material.KNOWLEDGE_BOOK);
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.setDisplayName(ChatColor.WHITE + regionName.replace("-"," ").replace("_"," "));
+        itemMeta.setLore(List.of(
+                ChatColor.GRAY.toString() + -1 + " discovered"
+        ));
+        item.setItemMeta(itemMeta);
+
+        // Set category id
+        NBT.modify(item, nbt->{
+            nbt.setString("Region",regionName.toLowerCase());
+        });
+        return item;
+    }
+
+    public static ItemStack getTownDiscovery(Town town) {
+        ItemStack item = new ItemStack(Material.KNOWLEDGE_BOOK);
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.setDisplayName(ChatColor.WHITE + town.getName());
+
+        item.setItemMeta(itemMeta);
         return item;
     }
 }
