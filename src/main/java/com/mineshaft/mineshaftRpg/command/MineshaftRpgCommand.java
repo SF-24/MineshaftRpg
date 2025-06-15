@@ -38,6 +38,7 @@ public class MineshaftRpgCommand implements CommandExecutor {
             MineshaftRpg.getInstance().getJsonCustomFeats().makeExample();
             MineshaftRpg.getInstance().getJsonCustomAbilities().makeExample();
             MineshaftRpg.getInstance().getJsonCustomLevellingRewards().makeExample();
+            MineshaftRpg.getInstance().getJsonCustomBackgrounds().makeExample();
             sender.sendMessage("Generating examples...");
         } else {
             sender.sendMessage(ChatColor.RED + "Usage: /mineshaft_rpg <reload|generate_examples>");

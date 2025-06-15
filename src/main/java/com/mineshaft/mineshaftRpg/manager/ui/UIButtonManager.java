@@ -37,6 +37,7 @@ import com.mineshaft.mineshaftapi.util.UIUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -156,15 +157,18 @@ public class UIButtonManager {
         ItemStack skillsItem = new ItemStack(Material.IRON_SWORD);
         ItemMeta skillsItemMeta = skillsItem.getItemMeta();
         assert skillsItemMeta != null;
+        skillsItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        skillsItemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         skillsItemMeta.setDisplayName(ChatColor.WHITE + "Skills");
 
         ArrayList<String> lore = new ArrayList<>();
 
         for(PlayerSkills skill : PlayerSkills.values()) {
+            AbilityScores abilityScore = AbilityScores.valueOf(ChatColor.stripColor(skill.getBaseAbilityScore()).toUpperCase());
             switch (JsonPlayerBridge.getProficiencyLevel(player,skill)) {
-                case 0 -> lore.add(AbilityScores.valueOf(skill.getBaseAbilityScore()).getColour() + skill.getName() + AbilityScores.valueOf(skill.getBaseAbilityScore()).getDarkerColour());
-                case 1 -> lore.add(AbilityScores.valueOf(ChatColor.BOLD + skill.getBaseAbilityScore()).getColour() + skill.getName() + AbilityScores.valueOf(skill.getBaseAbilityScore()).getDarkerColour() + " (Proficient)");
-                case 2 -> lore.add(AbilityScores.valueOf(ChatColor.BOLD + skill.getBaseAbilityScore()).getColour() + skill.getName() + AbilityScores.valueOf(skill.getBaseAbilityScore()).getDarkerColour() + " (Expertise)");
+                case 0 -> lore.add(abilityScore.getColour() + skill.getName() + abilityScore.getDarkerColour());
+                case 1 -> lore.add(ChatColor.BOLD + abilityScore.getColour() + skill.getName() + abilityScore.getDarkerColour() + " (Proficient)");
+                case 2 -> lore.add(ChatColor.BOLD + abilityScore.getColour() + skill.getName() + abilityScore.getDarkerColour() + " (Expertise)");
             }
         }
 

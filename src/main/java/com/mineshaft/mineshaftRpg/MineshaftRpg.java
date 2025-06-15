@@ -26,6 +26,7 @@ import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.Jso
 import com.mineshaft.mineshaftRpg.manager.player_character_options.backgrounds.JsonCustomBackgrounds;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.JsonCustomCultures;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.JsonCustomFeats;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.JsonLevellingRewards;
 import com.mineshaft.mineshaftapi.manager.player.ProfileManager;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Bukkit;
@@ -88,7 +89,7 @@ public final class MineshaftRpg extends JavaPlugin {
 
     public JsonCustomAbilities getJsonCustomAbilities() {return cache.jsonCustomAbilities;}
 
-    public JsonCustomAbilities getJsonCustomLevellingRewards() {return cache.jsonCustomAbilities;}
+    public JsonLevellingRewards getJsonCustomLevellingRewards() {return cache.jsonLevellingRewards;}
 
     public JsonCustomBackgrounds getJsonCustomBackgrounds() {return cache.jsonCustomBackgrounds;}
 

@@ -27,7 +27,7 @@ import java.util.Objects;
 
 public class JsonLevellingRewards {
 
-    static final String path = MineshaftRpg.getConfigPath() + File.separator + "LevellingRewards";
+    static final String path = MineshaftRpg.getConfigPath() + File.separator + "CustomLevellingRewards";
     static final File pathDir = new File(path);
 
     public JsonLevellingRewards() {
