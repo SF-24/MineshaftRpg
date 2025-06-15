@@ -18,7 +18,7 @@
 
 package com.mineshaft.mineshaftRpg.command;
 
-import com.mineshaft.mineshaftRpg.manager.ExperienceManager;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

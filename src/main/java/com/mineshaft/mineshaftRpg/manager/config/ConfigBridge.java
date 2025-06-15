@@ -35,10 +35,6 @@ public class ConfigBridge {
         return MineshaftRpg.getInstance().getConfig().getString("default-item-bq-event-package");
     }
 
-    public static boolean runBetonQuestCultureStartingEvent() {
-        return MineshaftRpg.getInstance().getConfig().getBoolean("run-hardcoded-bq-event");
-    }
-
     public static List<String> getDisabledWorlds() {
         return MineshaftRpg.getInstance().getConfigManager().getConfiguration().getStringList("disabled-worlds");
     }
@@ -51,6 +47,10 @@ public class ConfigBridge {
         return MineshaftRpg.getInstance().getConfig().getInt("default-ability-score-value");
     }
 
+    public static int getLevelCap() {
+        return MineshaftRpg.getInstance().getConfig().getInt("level-cap");
+    }
+
     public static String getDefaultLanguage() {
         if(MineshaftRpg.getInstance().getConfig().getString("default-language")==null) {
             return "Westron";
@@ -60,6 +60,11 @@ public class ConfigBridge {
 
     public static int getDefaultSkillPoints() {
         return MineshaftRpg.getInstance().getConfig().getInt("default-skill-points");
+    }
+
+    public static int getAbilityScoreIncreaseForLevel(int level) {
+        if(!MineshaftRpg.getInstance().getConfig().contains("ability-score-increases."+level)) return 0;
+        return MineshaftRpg.getInstance().getConfig().getInt("ability-score-increases."+level);
     }
 
     public static HashMap<Integer, Integer> getMaximumAbilityScoresList() {

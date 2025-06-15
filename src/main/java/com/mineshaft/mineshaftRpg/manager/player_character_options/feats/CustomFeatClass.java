@@ -16,7 +16,7 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.manager.player_character_options;
+package com.mineshaft.mineshaftRpg.manager.player_character_options.feats;
 
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 

@@ -16,7 +16,7 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.manager.player_character_options;
+package com.mineshaft.mineshaftRpg.manager.player_character_options.cultures;
 
 import com.google.gson.Gson;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
@@ -26,13 +26,12 @@ import com.mineshaft.mineshaftapi.util.Logger;
 import java.io.*;
 import java.util.Objects;
 
-public class JsonCustomFeats {
+public class JsonCustomCultures {
 
-
-    static final String path = ProfileManager.getPluginPath() + File.separator + "CustomVirtues";
+    static final String path = MineshaftRpg.getConfigPath() + File.separator + "CustomCultures";
     static final File pathDir = new File(path);
 
-    public JsonCustomFeats() {
+    public JsonCustomCultures() {
         reloadData();
     }
 
@@ -41,6 +40,7 @@ public class JsonCustomFeats {
         if(!pathDir.exists()) {
             pathDir.mkdirs();
         }
+
         try {
             for(File file : Objects.requireNonNull(pathDir.listFiles())) {
                 initiateFile(file);
@@ -54,11 +54,11 @@ public class JsonCustomFeats {
         if(!file.exists()) {
             makeNewFile(file);
         }
-        MineshaftRpg.getInstance().cacheCustomFeat(loadData(file),loadData(file).isCultureRestricted());
+        MineshaftRpg.getCache().cacheCustomCulture(loadData(file));
     }
 
     public void makeExample() {
-        File file = new File(path, "example_feat.json");
+        File file = new File(path, "example_culture.json");
         if(!file.exists()) {
             makeNewFile(file);
         }
@@ -75,17 +75,17 @@ public class JsonCustomFeats {
             e.printStackTrace();
         }
 
-        CustomFeatClass c = makeEmptyData();
-        writeData(c, file);
+        CustomCultureClass CustomCultureClass = makeEmptyData();
+        writeData(CustomCultureClass, file);
     }
 
-    public void saveFile(CustomFeatClass data, File file) {
+    public void saveFile(CustomCultureClass data, File file) {
         writeData(data, file);
     }
 
 
     // write data to a file
-    public static void writeData(CustomFeatClass settingsData, File file) {
+    public static void writeData(CustomCultureClass settingsData, File file) {
         Writer writer = null;
         Gson gson = new Gson();
 
@@ -113,12 +113,12 @@ public class JsonCustomFeats {
     }
 
     // make empty data file
-    public static CustomFeatClass makeEmptyData() {
-        return new CustomFeatClass();
+    public static CustomCultureClass makeEmptyData() {
+        return new CustomCultureClass();
     }
 
     //loads player json data file
-    public CustomFeatClass loadData(File file) {
+    public CustomCultureClass loadData(File file) {
         Gson gson = new Gson();
         Reader reader = null;
 
@@ -133,13 +133,12 @@ public class JsonCustomFeats {
             return null;
         }
 
-        CustomFeatClass pdc = gson.fromJson(reader, CustomFeatClass.class);
+        CustomCultureClass pdc = gson.fromJson(reader, CustomCultureClass.class);
         if(pdc==null) {
-            Logger.logError("ERROR! CustomFeatClass is null");
+            Logger.logError("ERROR! CustomCultureClass is null");
         }
 
         assert pdc != null;
         return pdc;
     }
-
 }

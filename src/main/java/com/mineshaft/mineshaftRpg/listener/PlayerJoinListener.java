@@ -19,7 +19,7 @@
 package com.mineshaft.mineshaftRpg.listener;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
-import com.mineshaft.mineshaftRpg.manager.ExperienceManager;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
 import com.mineshaft.mineshaftRpg.manager.PlayerCharacterManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.bukkit.Bukkit;

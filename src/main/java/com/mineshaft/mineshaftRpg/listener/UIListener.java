@@ -21,10 +21,11 @@ package com.mineshaft.mineshaftRpg.listener;
 import com.mineshaft.mineshaftRpg.manager.PlayerCharacterManager;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.ui.PlayerMenuManager;
-import com.mineshaft.mineshaftRpg.manager.ui.UIUtil;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
+import com.mineshaft.mineshaftapi.nbtapi.NBT;
 import com.mineshaft.mineshaftapi.util.Logger;
+import com.mineshaft.mineshaftapi.util.UIUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -40,7 +41,7 @@ public class UIListener implements Listener {
     public void onPlayerInteract(InventoryClickEvent e) {
         if (e.getInventory().getHolder() == null) {
             String title = ChatColor.translateAlternateColorCodes('&', e.getView().getTitle());
-            if (title.equals(ChatColor.BLACK + "Quests")|| title.equals(ChatColor.BLACK + "Menu") && e.getClickedInventory() != null) {
+            if (title.equals(ChatColor.BLACK + "Discoveries")||title.equals(ChatColor.BLACK + "Quests")|| title.equals(ChatColor.BLACK + "Menu") && e.getClickedInventory() != null) {
                 e.setCancelled(true);
 
 //                System.out.printf("click: " + UIUtil.getOnclick(e.getCurrentItem()));
@@ -48,6 +49,18 @@ public class UIListener implements Listener {
                 if(e.getCurrentItem()==null) return;
 
                 switch (UIUtil.getOnclick(e.getCurrentItem())) {
+                    case "discoveries":
+                        PlayerMenuManager.openDiscoveryMenu((Player) e.getWhoClicked(), true);
+                        break;
+                    case "category_town":
+                        PlayerMenuManager.openTownRegionMenu((Player) e.getWhoClicked(),true);
+                        break;
+                    case "category_lore":
+                        // TODO:
+                        break;
+                    case "category_mob":
+                        // TODO:
+                        break;
                     case "profile_menu":
                         PlayerMenuManager.openProfileMenu((Player) e.getWhoClicked(),true);
                         break;
@@ -126,6 +139,31 @@ public class UIListener implements Listener {
                     }
                 }
 
+            } else if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).contains(ChatColor.BLACK + "Region") && e.getClickedInventory() != null) {
+                // Discovery screen
+
+                e.setCancelled(true);
+
+                if(e.getCurrentItem()==null) {return;}
+
+                if(e.getCurrentItem().getItemMeta()!=null && e.getCurrentItem().getItemMeta().getDisplayName().contains("Next Page")) {
+                    // Next page
+                    try {
+                        NBT.get(e.getCurrentItem(), nbt->{
+                            String region = nbt.getString("Identifier");
+                            int page = nbt.getInteger("Page");
+                            PlayerMenuManager.openTownDiscoveries((Player) e.getWhoClicked(),region,page+1,true);
+                        });
+                    } catch (NullPointerException ignored) {}
+                } else if(e.getCurrentItem().getItemMeta()!=null && e.getCurrentItem().getItemMeta().getDisplayName().contains("Previous Page")) {
+                    // Previous page
+                    NBT.get(e.getCurrentItem(), nbt->{
+                        String region = nbt.getString("Identifier");
+                        int page = nbt.getInteger("Page");
+                        PlayerMenuManager.openTownDiscoveries((Player) e.getWhoClicked(),region,page-1,true);
+                    });
+                }
+
             }
         }
     }
@@ -136,6 +174,9 @@ public class UIListener implements Listener {
             String title = ChatColor.translateAlternateColorCodes('&', e.getView().getTitle());
             if (title.equals(ChatColor.BLACK + "Menu") ||
                 title.equals(ChatColor.BLACK + "Ability Scores") ||
+                title.equals(ChatColor.BLACK + "Discoveries") ||
+                title.equals(ChatColor.BLACK + "Abilities") ||
+                title.contains(ChatColor.BLACK + "Region") ||
                 title.equals(ChatColor.BLACK + "Profiles") ||
                 title.equals(ChatColor.BLACK + "Quests")) {
 

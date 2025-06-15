@@ -16,7 +16,7 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.manager.player_character_options;
+package com.mineshaft.mineshaftRpg.manager.player_character_options.cultures;
 
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;

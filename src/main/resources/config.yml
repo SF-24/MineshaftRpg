@@ -12,20 +12,20 @@ default-language: Westron
 default-item-bq-event-package: default
 default-item-bq-event: give_items
 
-# Whether a hardcoded beton quest event is run
-# Name: give_items_<culture>
-# Only for hadcoded cultures
-# e.g. give_items_hobbits_shire
-run-hardcoded-bq-event: true
-
 # The number of Skill Points the player starts the game with.
 default-skill-points: 15
 
 # The default attribute value.
 default-ability-score-value: 8
 
+# Feature for stopping players levelling beyond a given level
+# Set to 0 or -1 to disable
+# Otherwise, this is the highest level any player can reach
+# Has no effect if greater than the maximum level defined by the experience-per-level list
+level-cap: -1
+
 # Experience required to reach each level,
-# This list displays total xp, not from last level.
+# This list displays total xp, not from the previous level.
 # This list can be extended to allow for more levels
 experience-per-level:
   - 0        #Lv1
@@ -59,17 +59,25 @@ maximum-ability-score-per-level:
   15: 20
   20: 20
 
+# Ability score increases for each level.
+ability-score-increases:
+  2: 1
+  3: 1
+  4: 1
+  5: 1
+  6: 1
+  7: 1
+  8: 1
+  9: 1
+  10: 1
+  12: 1
+  14: 1
+  16: 1
+  18: 1
+  20: 1
+  11: 1
+  13: 1
+  15: 1
+  17: 1
+  19: 1
 
-# Placeholder:
-# culture-params:
-#  hobbits_shire: []
-#  dwarf_lonely_mountain: []
-#  elf_mirkwood: []
-#  human_bardings: []
-#  human_beornings: []
-#  human_dunedain: []
-#  human_bree: []
-#  human_laketown: []
-#  human_minas_tirith: []
-#  human_rohan: []
-#  human_wilderland: []

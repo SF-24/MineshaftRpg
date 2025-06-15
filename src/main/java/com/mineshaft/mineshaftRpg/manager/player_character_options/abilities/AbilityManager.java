@@ -16,21 +16,29 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.listener;
+package com.mineshaft.mineshaftRpg.manager.player_character_options.abilities;
 
-import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
+import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerExpChangeEvent;
+import org.bukkit.entity.Player;
 
-public class PlayerActionlistener implements Listener {
+import java.util.ArrayList;
 
-    @EventHandler
-    public void onPlayerPickupExperience(PlayerExpChangeEvent e) {
-        JsonPlayerBridge.addXp(e.getPlayer(), e.getAmount());
-        ExperienceManager.updateXpBar(e.getPlayer());
-        e.setAmount(0);
+public class AbilityManager {
+
+    public static ArrayList<CustomAbilityClass> getPlayerAbilities(Player player) {
+        ArrayList<CustomAbilityClass> abilities = new ArrayList<>();
+        for(String ability : JsonPlayerBridge.getAbilities(player).keySet()) {
+            abilities.add(getAbility(ability));
+        }
+        return abilities;
+    }
+
+    public static CustomAbilityClass getAbility(String abilityId) {
+        for(CustomAbilityClass abilityClass : MineshaftRpg.getCache().getAbilityCache()) {
+            if(abilityClass.getId().equals(abilityId)) return abilityClass;
+        }
+        return null;
     }
 
 }

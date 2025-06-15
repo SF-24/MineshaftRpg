@@ -33,6 +33,7 @@ import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
+import com.mineshaft.mineshaftapi.util.UIUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -182,6 +183,17 @@ public class UIButtonManager {
         return abilityItem;
     }
 
+    // TODO: Add more ability options
+    public static ItemStack getAbilityItem(String ability) {
+        // TODO: Add icon option
+        ItemStack abilityItem = new ItemStack(Material.PAPER);
+        ItemMeta abilityItemMeta = abilityItem.getItemMeta();
+        assert abilityItemMeta != null;
+        abilityItemMeta.setDisplayName(ChatColor.WHITE + ability);
+        abilityItem.setItemMeta(abilityItemMeta);
+        return abilityItem;
+    }
+
 
     public static ItemStack getAbilityScoreItem(Player player, AbilityScores abilityScore) {
         ItemStack abilityScoreItem = new ItemStack(Material.KNOWLEDGE_BOOK);
@@ -288,6 +300,7 @@ public class UIButtonManager {
         // Set category id
         NBT.modify(categoryItem, nbt->{
             nbt.setString("Category",category.name().toLowerCase());
+            nbt.setString("OnClick","category_"+category.name().toLowerCase());
         });
         return categoryItem;
     }
@@ -297,7 +310,7 @@ public class UIButtonManager {
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.setDisplayName(ChatColor.WHITE + regionName.replace("-"," ").replace("_"," "));
         itemMeta.setLore(List.of(
-                ChatColor.GRAY.toString() + -1 + " discovered"
+//                ChatColor.GRAY.toString() + -1 + " discovered"
         ));
         item.setItemMeta(itemMeta);
 

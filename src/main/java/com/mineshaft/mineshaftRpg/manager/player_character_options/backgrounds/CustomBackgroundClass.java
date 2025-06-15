@@ -16,10 +16,24 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.manager.player_character_options;
+package com.mineshaft.mineshaftRpg.manager.player_character_options.backgrounds;
 
-public enum Classes {
+import java.util.List;
 
+public class CustomBackgroundClass {
 
+    String name = "Example Background";
+    String id = "example_background";
 
+    // Culture: leave empty for any
+    List<String> culture = List.of("culture1","culture2");
+    String event = "a_betonquest_package:a_betonquest_event";
+
+    // TODO:
+
+    public String getName() {return name;}
+    public String getId() {return id;}
+
+    public boolean isCultureRestricted() {return !culture.isEmpty();}
+    public List<String> getCultures() {return culture;}
 }

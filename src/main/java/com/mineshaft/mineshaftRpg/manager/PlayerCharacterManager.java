@@ -19,7 +19,8 @@
 package com.mineshaft.mineshaftRpg.manager;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.CultureManager;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
 import com.mineshaft.mineshaftRpg.manager.player_data.CharacterCreationManager;
 import com.mineshaft.mineshaftRpg.manager.ui.PlayerMenuManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;

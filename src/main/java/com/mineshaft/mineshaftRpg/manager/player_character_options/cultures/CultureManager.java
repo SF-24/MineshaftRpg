@@ -16,7 +16,7 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.manager.player_character_options;
+package com.mineshaft.mineshaftRpg.manager.player_character_options.cultures;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
@@ -50,7 +50,7 @@ public class CultureManager {
     }
 
     public static CustomCultureClass getCustomCulture(String culture) {
-        for(CustomCultureClass c : MineshaftRpg.getInstance().getCustomCultures()) {
+        for(CustomCultureClass c : MineshaftRpg.getCache().getCultureCache()) {
             if(c.getId().equalsIgnoreCase(culture)) {
                 return c;
             }

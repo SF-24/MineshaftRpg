@@ -18,8 +18,8 @@
 
 package com.mineshaft.mineshaftRpg.command;
 
-import com.mineshaft.mineshaftRpg.manager.player_character_options.CultureManager;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.CustomCultureClass;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

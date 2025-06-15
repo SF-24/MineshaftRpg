@@ -20,25 +20,24 @@ package com.mineshaft.mineshaftRpg;
 
 import com.mineshaft.mineshaftRpg.command.*;
 import com.mineshaft.mineshaftRpg.listener.*;
+import com.mineshaft.mineshaftRpg.manager.MineshaftCache;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigManager;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.*;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.JsonCustomAbilities;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.backgrounds.JsonCustomBackgrounds;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.JsonCustomCultures;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.JsonCustomFeats;
+import com.mineshaft.mineshaftapi.manager.player.ProfileManager;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 
 public final class MineshaftRpg extends JavaPlugin {
 
     private final ConfigManager configManager = new ConfigManager();
-    private final ArrayList<CustomCultureClass> customCultures = new ArrayList<>();
-    private JsonCustomCultures jsonCustomCultures;
-    private JsonCustomFeats jsonCustomFeats;
 
-    public HashMap<CustomFeatClass, Boolean> featCache = new HashMap<>();
+    private final MineshaftCache cache = new MineshaftCache();
 
     @Override
     public void onEnable() {
@@ -66,9 +65,6 @@ public final class MineshaftRpg extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new MineshaftListener(), this);
         getDataFolder().mkdirs();
         configManager.setupConfig();
-
-        jsonCustomCultures=new JsonCustomCultures();
-        jsonCustomFeats=new JsonCustomFeats();
     }
 
     @Override
@@ -82,32 +78,25 @@ public final class MineshaftRpg extends JavaPlugin {
 
     public ConfigManager getConfigManager() {return configManager;}
 
-    public ArrayList<CustomCultureClass> getCustomCultures() {
-        return customCultures;
-    }
-
-    public void cacheCustomCulture(CustomCultureClass customCulture) {
-        this.customCultures.add(customCulture);
-        Logger.logInfo("Cached custom culture with id: " + customCulture.getId());
-    }
-
-    public void clearCustomCultureCache() {
-        this.customCultures.clear();
-    }
-
     public JsonCustomCultures getJsonCustomCultures() {
-        return jsonCustomCultures;
+        return cache.jsonCustomCultures;
     }
 
     public JsonCustomFeats getJsonCustomFeats() {
-        return jsonCustomFeats;
+        return cache.jsonCustomFeats;
     }
 
-    public Map<CustomFeatClass, Boolean> getCustomFeats() {
-        return featCache;
-    }
+    public JsonCustomAbilities getJsonCustomAbilities() {return cache.jsonCustomAbilities;}
 
-    public void cacheCustomFeat(CustomFeatClass customFeat, boolean cultureRestricted) {
-        this.featCache.put(customFeat, cultureRestricted);
-    }
+    public JsonCustomAbilities getJsonCustomLevellingRewards() {return cache.jsonCustomAbilities;}
+
+    public JsonCustomBackgrounds getJsonCustomBackgrounds() {return cache.jsonCustomBackgrounds;}
+
+    // Get cache static function
+    public static MineshaftCache getCache() {return MineshaftRpg.getInstance().cache;}
+
+    public static String getPluginPath() {return ProfileManager.getPluginPath();}
+
+    // Note: may change in the future
+    public static String getConfigPath() {return getPluginPath();}
 }

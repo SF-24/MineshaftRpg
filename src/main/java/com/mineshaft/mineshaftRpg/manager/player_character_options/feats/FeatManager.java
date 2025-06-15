@@ -16,9 +16,10 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.manager.player_character_options;
+package com.mineshaft.mineshaftRpg.manager.player_character_options.feats;
 
 import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.bukkit.ChatColor;

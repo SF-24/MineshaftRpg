@@ -19,12 +19,17 @@
 package com.mineshaft.mineshaftRpg.manager.ui;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.CultureManager;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.CustomCultureClass;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.CharacterCreationManager;
+import com.mineshaft.mineshaftapi.dependency.world_guard.DiscoveryCategory;
+import com.mineshaft.mineshaftapi.dependency.world_guard.Town;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonDiscoveryBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
@@ -56,6 +61,12 @@ public class PlayerMenuManager {
         player.openInventory(ui);
     }
 
+    public static void openAbilityUI(Player player, boolean isUpdate) {
+        Inventory ui = getLargeMenuBackground("Abilities");
+
+        player.openInventory(ui);
+    }
+
     public static void openAbilityScoreMenu(Player player, boolean isUpdate) {
         Inventory ui = getMenuBackground("Ability Scores");
 
@@ -80,9 +91,34 @@ public class PlayerMenuManager {
 
     public static void openDiscoveryMenu(Player player, boolean isUpdate) {
         Inventory ui = getMenuBackground("Discoveries");
+        ui.addItem(UIButtonManager.getDiscoveryCategory(player, DiscoveryCategory.TOWN));
+        ui.addItem(UIButtonManager.getDiscoveryCategory(player, DiscoveryCategory.MOB));
+        ui.addItem(UIButtonManager.getDiscoveryCategory(player, DiscoveryCategory.LORE));
         player.openInventory(ui);
 
         inventoryManagement(player,isUpdate);
+    }
+
+    public static void openTownRegionMenu(Player player, boolean isUpdate) {
+        Inventory ui = getMenuBackground("Discoveries");
+
+        for(String region : JsonDiscoveryBridge.getDiscoveredRegions(player)) {
+            ui.addItem(UIButtonManager.getLocationRegion(player,region));
+        }
+        player.openInventory(ui);
+
+        inventoryManagement(player,isUpdate);
+
+    }
+
+    // Open town discovery menu
+    public static void openTownDiscoveries(Player player, String region, int page, boolean isUpdate) {
+        ArrayList<ItemStack> items = new ArrayList<>();
+
+        for(Town town : JsonDiscoveryBridge.getDiscoveredTowns(player)) {
+            items.add(UIButtonManager.getTownDiscovery(town));
+        }
+        new GUI(player,page,Bukkit.createInventory(null,54, NamedTextColor.BLACK+"Region"), items, region);
     }
 
     public static void openProfileMenu(Player player, boolean isUpdate) {
@@ -136,12 +172,12 @@ public class PlayerMenuManager {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta bookMeta = (BookMeta) book.getItemMeta();
         assert bookMeta != null;
-        bookMeta.addPage(ChatColor.BOLD + "Select a culture: \n" +
+        bookMeta.addPage(TextDecoration.BOLD + "Select a culture: \n" +
                 "Use the arrows underneath the book to select a page with your desired culture and press select.");
 
         ArrayList<BaseComponent[]> unlockedLockedCulturePages = new ArrayList<>();
 
-        for(CustomCultureClass c : MineshaftRpg.getInstance().getCustomCultures()) {
+        for(CustomCultureClass c : MineshaftRpg.getCache().getCultureCache()) {
             if (!c.isLocked()) {
                 bookMeta.spigot().addPage(CultureManager.getPageDisplay(c.getId()));
             } else if(JsonProfileBridge.getUnlockedCultures(player).contains(c.getName().toLowerCase())) {
@@ -162,6 +198,30 @@ public class PlayerMenuManager {
         player.getInventory().setItemInMainHand(mh);
     }
 
+    public static Inventory getLargeMenuBackground(String name) {
+        Inventory ui = Bukkit.createInventory(null, 54, ChatColor.BLACK + name);
+
+        // ui texture
+//        ItemStack menuItem = new ItemStack(Material.PEONY);
+//        ItemMeta menuItemMeta = menuItem.getItemMeta();
+//        assert menuItemMeta != null;
+//        menuItemMeta.setDisplayName(NamedTextColor.WHITE.toString());
+////        menuItemMeta.setCustomModelData(19);
+//        menuItem.setItemMeta(menuItemMeta);
+//        ui.setItem(0, menuItem);
+//
+////        TODO: Implement down item and full UI
+//        ItemStack menuItemDown = new ItemStack(Material.PEONY);
+//        ItemMeta menuItemDownMeta = menuItemDown.getItemMeta();
+//        assert menuItemDownMeta != null;
+//        menuItemDownMeta.setDisplayName(NamedTextColor.WHITE.toString());
+////        menuItemDownMeta.setCustomModelData(20);
+//        menuItemDown.setItemMeta(menuItemDownMeta);
+//        ui.setItem(8, menuItemDown);
+        return ui;
+    }
+
+
     public static Inventory getMenuBackground(String name) {
         Inventory ui = Bukkit.createInventory(null, 9, ChatColor.BLACK + name);
 
@@ -169,7 +229,7 @@ public class PlayerMenuManager {
         ItemStack menuItem = new ItemStack(Material.PEONY);
         ItemMeta menuItemMeta = menuItem.getItemMeta();
         assert menuItemMeta != null;
-        menuItemMeta.setDisplayName(ChatColor.WHITE.toString());
+        menuItemMeta.setDisplayName(NamedTextColor.WHITE.toString());
         menuItemMeta.setCustomModelData(19);
         menuItem.setItemMeta(menuItemMeta);
         ui.setItem(0, menuItem);
@@ -178,7 +238,7 @@ public class PlayerMenuManager {
         ItemStack menuItemDown = new ItemStack(Material.PEONY);
         ItemMeta menuItemDownMeta = menuItemDown.getItemMeta();
         assert menuItemDownMeta != null;
-        menuItemDownMeta.setDisplayName(ChatColor.WHITE.toString());
+        menuItemDownMeta.setDisplayName(NamedTextColor.WHITE.toString());
         menuItemDownMeta.setCustomModelData(20);
         menuItemDown.setItemMeta(menuItemDownMeta);
         ui.setItem(8, menuItemDown);

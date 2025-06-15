@@ -16,28 +16,18 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.manager.ui;
+package com.mineshaft.mineshaftRpg.manager.player_character_options.levelling;
 
-import com.mineshaft.mineshaftapi.nbtapi.NBT;
-import com.mineshaft.mineshaftapi.util.Logger;
-import org.bukkit.inventory.ItemStack;
+public class LevellingRewardClass {
 
-public class UIUtil {
+    int level = 2;
+    int culturalVirtues = 1;
+    int skillVirtues = 1;
+    int virtues = 0;
 
-    public static ItemStack setOnclick(ItemStack item, String onClick) {
-        NBT.modify(item, nbt->{
-            nbt.setString("onClick", onClick);
-        });
-        return item;
-    }
-    
-    public static String getOnclick(ItemStack item) {
-        final String[] returnValue = {null};
-        NBT.get(item, nbt->{
-            Logger.logInfo("On click: " + nbt.getString("onClick"));
-            returnValue[0] = nbt.getString("onClick");
-        });
-        return returnValue[0];
-    }
+    public int getLevel() {return level;}
+    public int getCulturalVirtues() {return culturalVirtues;}
+    public int getSkillVirtues() {return skillVirtues;}
+    public int getVirtues() {return virtues;}
 
 }

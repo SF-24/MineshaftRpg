@@ -16,22 +16,21 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.manager.player_character_options;
+package com.mineshaft.mineshaftRpg.manager.player_character_options.backgrounds;
 
 import com.google.gson.Gson;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
-import com.mineshaft.mineshaftapi.manager.player.ProfileManager;
 import com.mineshaft.mineshaftapi.util.Logger;
 
 import java.io.*;
 import java.util.Objects;
 
-public class JsonCustomCultures {
+public class JsonCustomBackgrounds {
 
-    static final String path = ProfileManager.getPluginPath() + File.separator + "CustomCultures";
+    static final String path = MineshaftRpg.getConfigPath() + File.separator + "CustomBackgrounds";
     static final File pathDir = new File(path);
 
-    public JsonCustomCultures() {
+    public JsonCustomBackgrounds() {
         reloadData();
     }
 
@@ -40,7 +39,6 @@ public class JsonCustomCultures {
         if(!pathDir.exists()) {
             pathDir.mkdirs();
         }
-
         try {
             for(File file : Objects.requireNonNull(pathDir.listFiles())) {
                 initiateFile(file);
@@ -50,15 +48,16 @@ public class JsonCustomCultures {
         }
     }
 
-    private void initiateFile(File file) throws Exception {
+    private void initiateFile(File file) {
         if(!file.exists()) {
             makeNewFile(file);
         }
-        MineshaftRpg.getInstance().cacheCustomCulture(loadData(file));
+        CustomBackgroundClass data = loadData(file);
+        MineshaftRpg.getCache().cacheCustomBackground(data, data.isCultureRestricted());
     }
 
     public void makeExample() {
-        File file = new File(path, "example_culture.json");
+        File file = new File(path, "example_background.json");
         if(!file.exists()) {
             makeNewFile(file);
         }
@@ -75,17 +74,17 @@ public class JsonCustomCultures {
             e.printStackTrace();
         }
 
-        CustomCultureClass CustomCultureClass = makeEmptyData();
-        writeData(CustomCultureClass, file);
+        CustomBackgroundClass c = makeEmptyData();
+        writeData(c, file);
     }
 
-    public void saveFile(CustomCultureClass data, File file) {
+    public void saveFile(CustomBackgroundClass data, File file) {
         writeData(data, file);
     }
 
 
     // write data to a file
-    public static void writeData(CustomCultureClass settingsData, File file) {
+    public static void writeData(CustomBackgroundClass settingsData, File file) {
         Writer writer = null;
         Gson gson = new Gson();
 
@@ -113,12 +112,12 @@ public class JsonCustomCultures {
     }
 
     // make empty data file
-    public static CustomCultureClass makeEmptyData() {
-        return new CustomCultureClass();
+    public static CustomBackgroundClass makeEmptyData() {
+        return new CustomBackgroundClass();
     }
 
     //loads player json data file
-    public CustomCultureClass loadData(File file) {
+    public CustomBackgroundClass loadData(File file) {
         Gson gson = new Gson();
         Reader reader = null;
 
@@ -133,12 +132,13 @@ public class JsonCustomCultures {
             return null;
         }
 
-        CustomCultureClass pdc = gson.fromJson(reader, CustomCultureClass.class);
+        CustomBackgroundClass pdc = gson.fromJson(reader, CustomBackgroundClass.class);
         if(pdc==null) {
-            Logger.logError("ERROR! CustomCultureClass is null");
+            Logger.logError("ERROR! CustomBackgroundClass is null");
         }
 
         assert pdc != null;
         return pdc;
     }
+
 }

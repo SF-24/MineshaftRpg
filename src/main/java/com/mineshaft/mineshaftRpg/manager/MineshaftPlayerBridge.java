@@ -19,7 +19,7 @@
 package com.mineshaft.mineshaftRpg.manager;
 
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.CultureManager;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.Abilities;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.PassiveAbilities;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;

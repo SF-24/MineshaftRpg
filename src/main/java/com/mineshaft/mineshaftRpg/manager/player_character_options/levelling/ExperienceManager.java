@@ -16,7 +16,7 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.manager;
+package com.mineshaft.mineshaftRpg.manager.player_character_options.levelling;
 
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftapi.manager.StringManager;
