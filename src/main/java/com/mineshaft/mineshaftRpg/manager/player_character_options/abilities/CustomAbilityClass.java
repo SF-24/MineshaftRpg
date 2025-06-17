@@ -30,6 +30,7 @@ public class CustomAbilityClass {
     String id = "example_ability";
     List<String> customEvents = List.of("event1","event2");
     List<String> hardcodedEvents = List.of("event1","event2");
+    List<String> passiveAbilities = List.of("passive_ability_1,passive_ability_2");
     int castCost = 10;
     Material materialIcon = Material.IRON_SWORD;
     int customModelData = 5;
@@ -39,6 +40,9 @@ public class CustomAbilityClass {
     public int getCastCost() {return castCost;}
     public List<String> getCustomEvents() {return customEvents;}
     public List<String> getHardcodedEvents() {return hardcodedEvents;}
+
+    // Granted on gain
+    public List<String> getPassiveAbilities() {return passiveAbilities;}
 
     public ItemStack getIcon() {
         ItemStack item = new ItemStack(materialIcon);

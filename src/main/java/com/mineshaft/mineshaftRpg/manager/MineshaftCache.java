@@ -18,6 +18,7 @@
 
 package com.mineshaft.mineshaftRpg.manager;
 
+import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.JsonCustomAbilities;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.backgrounds.CustomBackgroundClass;
@@ -108,5 +109,13 @@ public class MineshaftCache {
         jsonCustomAbilities.reloadData();
         jsonCustomFeats.reloadData();
         jsonLevellingRewards.reloadData();
+    }
+
+    public void makeExamples() {
+        MineshaftRpg.getInstance().getJsonCustomCultures().makeExample();
+        MineshaftRpg.getInstance().getJsonCustomFeats().makeExample();
+        MineshaftRpg.getInstance().getJsonCustomAbilities().makeExample();
+        MineshaftRpg.getInstance().getJsonCustomLevellingRewards().makeExample();
+        MineshaftRpg.getInstance().getJsonCustomBackgrounds().makeExample();
     }
 }

@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftRpg.manager.player_character_options.cultures;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import org.bukkit.Material;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,9 @@ public class CustomCultureClass {
 
     private String id = "culture_id_do_not_change_after_setting";
     private String name = "Name";
+
+    private List<String> disabledWorlds = List.of("World1","World2");
+
     private String description = "A description...";
     private Map<AbilityScores, Integer> abilityScores = Map.of(AbilityScores.DEX,2,AbilityScores.CHA,1);
     private int abilityScorePoints = 2;
@@ -112,5 +116,9 @@ public class CustomCultureClass {
     public Map<String,String> getBetonQuestEvents() {
         if(betonQuestEvents==null) return Map.of();
         return betonQuestEvents;
+    }
+
+    public List<String> getDisabledWorlds() {
+        return disabledWorlds;
     }
 }

@@ -36,16 +36,17 @@ import com.mineshaft.mineshaftapi.nbtapi.NBT;
 import com.mineshaft.mineshaftapi.util.UIUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class UIButtonManager {
 
@@ -157,8 +158,6 @@ public class UIButtonManager {
         ItemStack skillsItem = new ItemStack(Material.IRON_SWORD);
         ItemMeta skillsItemMeta = skillsItem.getItemMeta();
         assert skillsItemMeta != null;
-        skillsItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        skillsItemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         skillsItemMeta.setDisplayName(ChatColor.WHITE + "Skills");
 
         ArrayList<String> lore = new ArrayList<>();
@@ -173,6 +172,14 @@ public class UIButtonManager {
         }
 
         skillsItemMeta.setLore(lore);
+        skillsItemMeta.addAttributeModifier(Attribute.ATTACK_DAMAGE, new AttributeModifier(NamespacedKey.minecraft("dummy"), 0.0, AttributeModifier.Operation.ADD_NUMBER));
+        skillsItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        skillsItemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        skillsItemMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
+        skillsItemMeta.addItemFlags(ItemFlag.HIDE_DYE);
+        skillsItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        skillsItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+
         skillsItem.setItemMeta(skillsItemMeta);
         return skillsItem;
     }
@@ -182,7 +189,11 @@ public class UIButtonManager {
         ItemMeta abilityItemMeta = abilityItem.getItemMeta();
         assert abilityItemMeta != null;
         abilityItemMeta.setDisplayName(ChatColor.LIGHT_PURPLE + "Abilities");
-        abilityItemMeta.setLore(Collections.singletonList(ChatColor.RED + "Locked"));
+        if(JsonPlayerBridge.getAbilities(player).isEmpty()) {
+            abilityItemMeta.setLore(Collections.singletonList(ChatColor.GRAY + "None"));
+        } else {
+            abilityItemMeta.setLore(Collections.singletonList(ChatColor.GRAY + "Click to view"));
+        }
         abilityItem.setItemMeta(abilityItemMeta);
         return abilityItem;
     }
@@ -260,6 +271,9 @@ public class UIButtonManager {
         lore.add(ChatColor.GRAY + culture);
         lore.add("");
         lore.addAll(MineshaftPlayerBridge.getAbilityScoreStrings(player));
+
+        itemMeta.addAttributeModifier(Attribute.ATTACK_DAMAGE, new AttributeModifier(NamespacedKey.minecraft("dummy"), 0.0, AttributeModifier.Operation.ADD_NUMBER));
+        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 
         itemMeta.setDisplayName(ChatColor.WHITE + profile);
         itemMeta.setLore(lore);
