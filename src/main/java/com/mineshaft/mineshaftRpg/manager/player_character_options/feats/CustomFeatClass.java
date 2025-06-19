@@ -34,6 +34,7 @@ public class CustomFeatClass {
     // Display values
     private String description = "Virtue Description";
     private String virtueName = "Virtue Name";
+    private String id = "enter_id_here";
 
     // Minimum level
     private int minimumLevel = 1;
@@ -47,6 +48,7 @@ public class CustomFeatClass {
 
 
     public String getName() {return virtueName;}
+    public String getId() {return id;}
     public String getDescription() {return description;}
 
     public boolean isCultureRestricted() {return cultureRestricted;}

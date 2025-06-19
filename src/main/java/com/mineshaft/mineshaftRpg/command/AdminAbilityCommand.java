@@ -16,11 +16,18 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.manager.player_character_options.abilities;
+package com.mineshaft.mineshaftRpg.command;
 
-public enum PassiveAbilities {
+import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.AbilityExecutor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
-    FINESSE, // Use all light weapons and long-swords as finesse weapons
-    KEEN,    // + ?
-    FIERCE_SHOT
+public class AdminAbilityCommand implements CommandExecutor {
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
+        AbilityExecutor.parseAbilityTriggerCommand(sender, args, false);
+        return false;
+    }
 }

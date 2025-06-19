@@ -178,9 +178,15 @@ public class PlayerMenuManager {
         ArrayList<BaseComponent[]> unlockedLockedCulturePages = new ArrayList<>();
 
         for(CustomCultureClass c : MineshaftRpg.getCache().getCultureCache()) {
-            if (!c.isLocked()&&!c.getDisabledWorlds().contains(player.getWorld().getName())) {
+            if(c.getDisabledWorlds()!=null && c.getDisabledWorlds().contains(player.getWorld().getName())) {
+                continue;
+            } else if(c.getRequiredWorlds()!=null && !c.getRequiredWorlds().contains(player.getWorld().getName())) {
+                continue;
+            }
+            // Culture mechanic
+            if (!c.isLocked()) {
                 bookMeta.spigot().addPage(CultureManager.getPageDisplay(c.getId()));
-            } else if(JsonProfileBridge.getUnlockedCultures(player).contains(c.getName().toLowerCase()) && !c.getDisabledWorlds().contains(player.getWorld().getName())) {
+            } else if(JsonProfileBridge.getUnlockedCultures(player).contains(c.getName().toLowerCase())) {
                 unlockedLockedCulturePages.add(CultureManager.getPageDisplay(c.getId()));
             }
         }

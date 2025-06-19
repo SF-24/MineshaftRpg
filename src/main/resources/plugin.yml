@@ -21,17 +21,27 @@ commands:
   character_creation:
     aliases: [charc, char_c, char_creation, charcreation, makecharacter, make_character]
     description: Used for creating a character and debugging character creation.
-    permission: mineshaft.character.make
+    permission: mineshaft.rpg.character.make
+  ability:
+    aliases: [cast]
+    description: Player cast command
+  ability_admin:
+    aliases: [abilityadmin, cast_admin, castadmin, admincast, admin_cast, adminability, admin_ability]
+    description: Debug command for abilities
+    permission: mineshaft.rpg.admin_ability
 permissions:
+  mineshaft.rpg.admin_ability:
+    default: op
+    description: Used for debugging abilities
   mineshaft.rpg.exp:
     default: op
     description: Used to grant players experience points. Exists for debugging purposes.
   mineshaft.rpg.menu:
     default: true
     description: Required to open the character menu
-  mineshaft.character.make:
+  mineshaft.rpg.character.make:
     default: true
     description: Required to make a character. Remotely executed by the character creation book menu.
-  mineshaft.reload:
+  mineshaft.rpg.reload:
     default: op
     description : Required to reload the plugin

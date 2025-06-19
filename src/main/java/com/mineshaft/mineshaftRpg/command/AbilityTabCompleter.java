@@ -16,11 +16,27 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.manager.player_character_options.abilities;
+package com.mineshaft.mineshaftRpg.command;
 
-public enum PassiveAbilities {
+import com.mineshaft.mineshaftRpg.MineshaftRpg;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-    FINESSE, // Use all light weapons and long-swords as finesse weapons
-    KEEN,    // + ?
-    FIERCE_SHOT
+import java.util.Collections;
+import java.util.List;
+
+public class AbilityTabCompleter implements TabCompleter {
+
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
+        if(args.length == 1) {
+            return MineshaftRpg.getCache().getAbilityIds();
+        } else {
+            return Collections.emptyList();
+        }
+    }
 }

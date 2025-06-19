@@ -34,6 +34,7 @@ public class CustomCultureClass {
     private String name = "Name";
 
     private List<String> disabledWorlds = List.of("World1","World2");
+    private List<String> requiredWorlds = List.of("World1","World2");
 
     private String description = "A description...";
     private Map<AbilityScores, Integer> abilityScores = Map.of(AbilityScores.DEX,2,AbilityScores.CHA,1);
@@ -120,5 +121,9 @@ public class CustomCultureClass {
 
     public List<String> getDisabledWorlds() {
         return disabledWorlds;
+    }
+
+    public List<String> getRequiredWorlds() {
+        return requiredWorlds;
     }
 }

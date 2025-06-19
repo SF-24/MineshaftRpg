@@ -26,6 +26,7 @@ import java.util.List;
 
 public class CustomAbilityClass {
 
+    boolean isSpell = false;
     String name = "Example Ability";
     String id = "example_ability";
     List<String> customEvents = List.of("event1","event2");
@@ -51,6 +52,12 @@ public class CustomAbilityClass {
         itemMeta.setCustomModelData(customModelData);
         item.setItemMeta(itemMeta);
         return item;
+    }
+
+    public boolean isSpell() {return isSpell;}
+
+    public CustomAbilityClass self() {
+        return this;
     }
 
 }

@@ -62,18 +62,22 @@ public class MineshaftCache {
 
     public void cacheCustomFeat(CustomFeatClass customFeat, boolean cultureRestricted) {
         this.featCache.put(customFeat, cultureRestricted);
+        Logger.logInfo("Cached custom feat with name: " + customFeat.getName());
     }
 
     public void cacheCustomAbility(CustomAbilityClass customAbilityClass) {
         this.abilityCache.add(customAbilityClass);
+        Logger.logInfo("Cached custom ability with id: " + customAbilityClass.getId());
     }
 
     public void cacheCustomLevellingReward(LevellingRewardClass levellingRewardClass) {
         this.levellingRewardCache.add(levellingRewardClass);
+        Logger.logInfo("Cached custom levelling reward for level: " + levellingRewardClass.getLevel());
     }
 
     public void cacheCustomBackground(CustomBackgroundClass customBackground, boolean isCultureRestricted) {
         this.backgroundCache.put(customBackground, isCultureRestricted);
+        Logger.logInfo("Cached custom background with id: " + customBackground.getId());
     }
 
     public void cacheCustomCulture(CustomCultureClass customCulture) {
@@ -93,6 +97,14 @@ public class MineshaftCache {
     }
 
     public ArrayList<CustomAbilityClass> getAbilityCache() {return abilityCache;}
+
+    public ArrayList<String> getAbilityIds() {
+        ArrayList<String> abilityStrings = new ArrayList<>();
+        abilityCache.forEach(customAbilityClass -> {
+            abilityStrings.add(customAbilityClass.getId());
+        });
+        return abilityStrings;
+    }
 
     public ArrayList<LevellingRewardClass> getLevellingRewardCache() {return levellingRewardCache;}
 

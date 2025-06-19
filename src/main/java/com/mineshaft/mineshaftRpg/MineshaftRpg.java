@@ -58,6 +58,10 @@ public final class MineshaftRpg extends JavaPlugin {
         getCommand("character_creation").setExecutor(new CharacterCreationCommand());
         getCommand("character_creation").setTabCompleter(new CharacterCreationTabCompleter());
         getCommand("mineshaft_rpg").setExecutor(new MineshaftRpgCommand());
+        getCommand("ability").setExecutor(new AbilityCommand());
+        getCommand("ability_admin").setExecutor(new AdminAbilityCommand());
+        getCommand("ability").setTabCompleter(new AbilityTabCompleter());
+        getCommand("ability_admin").setTabCompleter(new AbilityTabCompleter());
 
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new UIListener(), this);
