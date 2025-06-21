@@ -52,7 +52,7 @@ public class JsonCustomAbilities {
         if(!file.exists()) {
             makeNewFile(file);
         }
-        MineshaftRpg.getCache().cacheCustomAbility(loadData(file));
+        MineshaftRpg.getInstance().getCache().cacheCustomAbility(loadData(file));
     }
 
     public void makeExample() {

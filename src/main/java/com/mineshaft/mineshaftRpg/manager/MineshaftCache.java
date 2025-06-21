@@ -18,6 +18,7 @@
 
 package com.mineshaft.mineshaftRpg.manager;
 
+import com.mineshaft.mineshaftRpg.ClickCache;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.JsonCustomAbilities;
@@ -29,6 +30,7 @@ import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.CustomF
 import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.JsonCustomFeats;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.JsonLevellingRewards;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.LevellingRewardClass;
+import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.util.Logger;
 
 import java.util.ArrayList;
@@ -50,6 +52,8 @@ public class MineshaftCache {
     private final ArrayList<LevellingRewardClass> levellingRewardCache = new ArrayList<>();
     private final HashMap<CustomBackgroundClass, Boolean> backgroundCache = new HashMap<>();
 
+    ClickCache clickCache = new ClickCache();
+
     public MineshaftCache() {
         jsonCustomCultures=new JsonCustomCultures();
         jsonCustomBackgrounds=new JsonCustomBackgrounds();
@@ -57,6 +61,9 @@ public class MineshaftCache {
         jsonCustomFeats=new JsonCustomFeats();
         jsonLevellingRewards=new JsonLevellingRewards();
     }
+
+    // Click cache
+    public ClickCache getClickCache() {return clickCache;}
 
     // Cache functions
 
@@ -66,6 +73,7 @@ public class MineshaftCache {
     }
 
     public void cacheCustomAbility(CustomAbilityClass customAbilityClass) {
+        MineshaftApi.getInstance().cacheAbility(customAbilityClass.getId());
         this.abilityCache.add(customAbilityClass);
         Logger.logInfo("Cached custom ability with id: " + customAbilityClass.getId());
     }
@@ -106,10 +114,21 @@ public class MineshaftCache {
         return abilityStrings;
     }
 
+    public CustomAbilityClass getAbility(String id) {
+        for(CustomAbilityClass customAbilityClass : abilityCache) {
+            if(id.equalsIgnoreCase(customAbilityClass.getId())) return customAbilityClass;
+        }
+        return null;
+    }
+
     public ArrayList<LevellingRewardClass> getLevellingRewardCache() {return levellingRewardCache;}
 
     // Reload the plugin data
     public void reloadData() {
+        // Clear parent cache
+        MineshaftApi.getInstance().clearAbilities();
+
+        // Deal with own cache
         customCultureCache.clear();
         backgroundCache.clear();
         abilityCache.clear();

@@ -33,8 +33,8 @@ public class CustomCultureClass {
     private String id = "culture_id_do_not_change_after_setting";
     private String name = "Name";
 
-    private List<String> disabledWorlds = List.of("World1","World2");
-    private List<String> requiredWorlds = List.of("World1","World2");
+    private List<String> disabledWorlds = List.of();
+    private List<String> requiredWorlds = List.of();
 
     private String description = "A description...";
     private Map<AbilityScores, Integer> abilityScores = Map.of(AbilityScores.DEX,2,AbilityScores.CHA,1);

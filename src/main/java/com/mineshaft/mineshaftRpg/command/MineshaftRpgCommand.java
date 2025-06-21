@@ -31,10 +31,10 @@ public class MineshaftRpgCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if(args.length==1 && args[0].equalsIgnoreCase("reload")) {
-            MineshaftRpg.getCache().reloadData();
+            MineshaftRpg.getInstance().getCache().reloadData();
             sender.sendMessage("Reloaded");
         } else if(args.length==1 && args[0].equalsIgnoreCase("generate_examples")) {
-            MineshaftRpg.getCache().makeExamples();
+            MineshaftRpg.getInstance().getCache().makeExamples();
             sender.sendMessage("Generating examples...");
         } else {
             sender.sendMessage(ChatColor.RED + "Usage: /mineshaft_rpg <reload|generate_examples>");

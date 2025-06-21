@@ -54,7 +54,7 @@ public class JsonCustomCultures {
         if(!file.exists()) {
             makeNewFile(file);
         }
-        MineshaftRpg.getCache().cacheCustomCulture(loadData(file));
+        MineshaftRpg.getInstance().getCache().cacheCustomCulture(loadData(file));
     }
 
     public void makeExample() {

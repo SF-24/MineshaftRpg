@@ -34,7 +34,7 @@ public class AbilityTabCompleter implements TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
         if(args.length == 1) {
-            return MineshaftRpg.getCache().getAbilityIds();
+            return MineshaftRpg.getInstance().getCache().getAbilityIds();
         } else {
             return Collections.emptyList();
         }

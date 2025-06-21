@@ -32,13 +32,17 @@ import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public final class MineshaftRpg extends JavaPlugin {
 
+    ArrayList<UUID> openUiPlayers = new ArrayList<>();
+
     private final ConfigManager configManager = new ConfigManager();
 
-    private final MineshaftCache cache = new MineshaftCache();
+    public final MineshaftCache cache = new MineshaftCache();
 
     @Override
     public void onEnable() {
@@ -68,8 +72,11 @@ public final class MineshaftRpg extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new GameSaveListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerActionlistener(), this);
         Bukkit.getPluginManager().registerEvents(new MineshaftListener(), this);
+
         getDataFolder().mkdirs();
         configManager.setupConfig();
+
+        getCache().reloadData();
     }
 
     @Override
@@ -98,10 +105,14 @@ public final class MineshaftRpg extends JavaPlugin {
     public JsonCustomBackgrounds getJsonCustomBackgrounds() {return cache.jsonCustomBackgrounds;}
 
     // Get cache static function
-    public static MineshaftCache getCache() {return MineshaftRpg.getInstance().cache;}
+    public MineshaftCache getCache() {return MineshaftRpg.getInstance().cache;}
 
     public static String getPluginPath() {return ProfileManager.getPluginPath();}
 
     // Note: may change in the future
     public static String getConfigPath() {return getPluginPath();}
+
+    public void addUiBrowsingPlayer(UUID uuid) {openUiPlayers.add(uuid);}
+    public void removeUiBrowsingPlayer(UUID uuid) {openUiPlayers.remove(uuid);}
+    public ArrayList<UUID> getUiBrowsingPlayers() {return openUiPlayers;}
 }

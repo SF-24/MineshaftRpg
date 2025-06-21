@@ -18,11 +18,14 @@
 
 package com.mineshaft.mineshaftRpg.listener;
 
+import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class PlayerActionlistener implements Listener {
 
@@ -31,6 +34,13 @@ public class PlayerActionlistener implements Listener {
         JsonPlayerBridge.addXp(e.getPlayer(), e.getAmount());
         ExperienceManager.updateXpBar(e.getPlayer());
         e.setAmount(0);
+    }
+
+    @EventHandler
+    public void onItemPickup(PlayerAttemptPickupItemEvent e) {
+        if(MineshaftRpg.getInstance().getUiBrowsingPlayers().contains(e.getPlayer().getUniqueId())) {
+            e.setCancelled(true);
+        }
     }
 
 }

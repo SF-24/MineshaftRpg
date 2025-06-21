@@ -53,7 +53,7 @@ public class JsonCustomBackgrounds {
             makeNewFile(file);
         }
         CustomBackgroundClass data = loadData(file);
-        MineshaftRpg.getCache().cacheCustomBackground(data, data.isCultureRestricted());
+        MineshaftRpg.getInstance().getCache().cacheCustomBackground(data, data.isCultureRestricted());
     }
 
     public void makeExample() {

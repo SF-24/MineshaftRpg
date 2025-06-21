@@ -53,7 +53,7 @@ public class JsonLevellingRewards {
             makeNewFile(file);
         }
         LevellingRewardClass data = loadData(file);
-        MineshaftRpg.getCache().cacheCustomLevellingReward(data);
+        MineshaftRpg.getInstance().getCache().cacheCustomLevellingReward(data);
     }
 
     public void makeExample() {

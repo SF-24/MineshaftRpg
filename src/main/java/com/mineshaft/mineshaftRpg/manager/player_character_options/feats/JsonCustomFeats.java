@@ -55,7 +55,7 @@ public class JsonCustomFeats {
             makeNewFile(file);
         }
         CustomFeatClass data = loadData(file);
-        MineshaftRpg.getCache().cacheCustomFeat(data,data.isCultureRestricted());
+        MineshaftRpg.getInstance().getCache().cacheCustomFeat(data,data.isCultureRestricted());
     }
 
     public void makeExample() {

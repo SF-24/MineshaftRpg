@@ -18,7 +18,9 @@
 
 package com.mineshaft.mineshaftRpg.listener;
 
+import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
+import com.mineshaft.mineshaftapi.events.MineshaftClickTypeEvent;
 import com.mineshaft.mineshaftapi.events.MineshaftTownDiscoveryEvent;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.ui.notification.NotificationSender;
@@ -39,5 +41,10 @@ public class MineshaftListener implements Listener {
         );
         // Send title
         NotificationSender.sendTownDiscoveryTitle(e.getPlayer(),e.getTown());
+    }
+
+    @EventHandler
+    public void onClickKey(MineshaftClickTypeEvent e) {
+        MineshaftRpg.getInstance().getCache().getClickCache().cacheClick(e.getPlayer(), e.getClickType());
     }
 }

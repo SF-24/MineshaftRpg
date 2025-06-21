@@ -85,7 +85,7 @@ public class PlayerLevelManager {
         ArrayList<String> MessageList = new ArrayList<>();
 
         MessageList.add(NamedTextColor.GREEN + "_____________________________________________________");
-        MessageList.add(NamedTextColor.WHITE.toString() + TextDecoration.BOLD + "Level Up");
+        MessageList.add(NamedTextColor.WHITE + "" + TextDecoration.BOLD + "Level Up");
         MessageList.add("");
         MessageList.add(NamedTextColor.YELLOW + "You are now level " + NamedTextColor.GOLD.toString() + NamedTextColor.GOLD + level + NamedTextColor.YELLOW + "!");
         if(skillPointsGained == 1) {

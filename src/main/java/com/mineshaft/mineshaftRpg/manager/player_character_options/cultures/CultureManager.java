@@ -24,6 +24,7 @@ import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
+import com.mineshaft.mineshaftapi.util.Logger;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.ChatColor;
@@ -50,7 +51,7 @@ public class CultureManager {
     }
 
     public static CustomCultureClass getCustomCulture(String culture) {
-        for(CustomCultureClass c : MineshaftRpg.getCache().getCultureCache()) {
+        for(CustomCultureClass c : MineshaftRpg.getInstance().getCache().getCultureCache()) {
             if(c.getId().equalsIgnoreCase(culture)) {
                 return c;
             }
@@ -154,7 +155,11 @@ public class CultureManager {
 
         StringBuilder proficiencies = new StringBuilder("Skill Proficiencies: ");
         for(PlayerSkills e : skillProficiencies) {
-            proficiencies.append(e.getName()).append(", ");
+            if(e!=null) {
+                proficiencies.append(e.getName()).append(", ");
+            } else {
+                Logger.logError("Detected invalid skill in '" + skillProficiencies + "' declaration in culture " + id);
+            }
         }
         proficiencies.append("\n");
         TextComponent proficiencyList = (new TextComponent(String.valueOf(proficiencies)));

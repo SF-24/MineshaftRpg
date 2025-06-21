@@ -54,6 +54,8 @@ public class CustomAbilityClass {
         return item;
     }
 
+    public int getCustomModelData() {return customModelData;}
+
     public boolean isSpell() {return isSpell;}
 
     public CustomAbilityClass self() {

@@ -41,7 +41,7 @@ public class CharacterCreationTabCompleter implements TabCompleter {
             return StringUtil.copyPartialMatches(args[0], Collections.singleton("set_culture"),new ArrayList<>());
         } else if(args.length==2 && args[0].equals("set_culture")) {
             ArrayList<String> list = new ArrayList<>();
-            for(CustomCultureClass c : MineshaftRpg.getCache().getCultureCache()) {
+            for(CustomCultureClass c : MineshaftRpg.getInstance().getCache().getCultureCache()) {
                 if(!c.isLocked() || JsonProfileBridge.getUnlockedCultures((Player)sender).contains(c.getId())) {
                     list.add(c.getId());
                 }

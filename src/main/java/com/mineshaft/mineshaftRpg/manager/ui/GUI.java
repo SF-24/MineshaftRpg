@@ -20,8 +20,6 @@ package com.mineshaft.mineshaftRpg.manager.ui;
 
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
 import com.mineshaft.mineshaftapi.util.UIUtil;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -30,12 +28,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class GUI {
 
     public GUI(Player player, int page, Inventory baseInventory, ArrayList<ItemStack> items, String guiIdentifier) {
-        Inventory ui = Bukkit.createInventory(null, baseInventory.getSize(), Component.text("Discoveries"));
 
         ItemStack leftButton;
         ItemMeta leftButtonMeta;
@@ -51,7 +47,7 @@ public class GUI {
                 nbt.setString("Identifier",guiIdentifier);
             });
 
-            ui.setItem(45,leftButton);
+            baseInventory.setItem(45,leftButton);
         }
 
         ItemStack rightButton;
@@ -67,13 +63,80 @@ public class GUI {
                 nbt.setString("Identifier",guiIdentifier);
             });
 
-            ui.setItem(53,rightButton);
+            baseInventory.setItem(53,rightButton);
         }
 
         for(ItemStack item : UIUtil.getPageItem(items, 1, baseInventory.getSize()-9)) {
-            ui.addItem(item);
+            baseInventory.addItem(item);
         }
-        player.openInventory(ui);
+        player.openInventory(baseInventory);
+    }
+
+    public GUI(Player player, int page, Inventory baseInventory, ArrayList<ItemStack> items, String guiIdentifier, int leftButtonSlot, int rightButtonSlot) {
+
+        ItemStack leftButton;
+        ItemMeta leftButtonMeta;
+
+        if(UIUtil.isPageValid(items, page-1, baseInventory.getSize()-9)) {
+            leftButton = new ItemStack(Material.ARROW);
+            leftButtonMeta=leftButton.getItemMeta();
+            leftButtonMeta.setDisplayName(ChatColor.WHITE+"Previous page");
+            leftButton.setItemMeta(leftButtonMeta);
+
+            NBT.modify(leftButton,nbt->{
+                nbt.setInteger("Page", page);
+                nbt.setString("Identifier",guiIdentifier);
+            });
+
+            baseInventory.setItem(leftButtonSlot,leftButton);
+        }
+
+        ItemStack rightButton;
+        ItemMeta rightButtonMeta;
+
+        if(UIUtil.isPageValid(items, page-1, baseInventory.getSize()-9)) {
+            rightButton = new ItemStack(Material.ARROW);
+            rightButtonMeta=rightButton.getItemMeta();
+            rightButtonMeta.setDisplayName(ChatColor.WHITE+"Next page");
+            rightButton.setItemMeta(rightButtonMeta);
+            NBT.modify(rightButton,nbt->{
+                nbt.setInteger("Page", page);
+                nbt.setString("Identifier",guiIdentifier);
+            });
+
+            baseInventory.setItem(rightButtonSlot,rightButton);
+        }
+
+        for(ItemStack item : UIUtil.getPageItem(items, 1, baseInventory.getSize()-9)) {
+            baseInventory.addItem(item);
+        }
+        player.openInventory(baseInventory);
+    }
+
+    public GUI(Player player, int page, Inventory baseInventory, ArrayList<ItemStack> items, String guiIdentifier, int leftButtonSlot, int rightButtonSlot, ItemStack leftItem, ItemStack rightItem) {
+
+        if(UIUtil.isPageValid(items, page-1, baseInventory.getSize()-9)) {
+            NBT.modify(leftItem,nbt->{
+                nbt.setInteger("Page", page);
+                nbt.setString("Identifier",guiIdentifier);
+            });
+
+            baseInventory.setItem(leftButtonSlot,leftItem);
+        }
+
+        if(UIUtil.isPageValid(items, page-1, baseInventory.getSize()-9)) {
+            NBT.modify(rightItem,nbt->{
+                nbt.setInteger("Page", page);
+                nbt.setString("Identifier",guiIdentifier);
+            });
+
+            baseInventory.setItem(rightButtonSlot,rightItem);
+        }
+
+        for(ItemStack item : UIUtil.getPageItem(items, 1, baseInventory.getSize()-9)) {
+            baseInventory.addItem(item);
+        }
+        player.openInventory(baseInventory);
     }
 
 }

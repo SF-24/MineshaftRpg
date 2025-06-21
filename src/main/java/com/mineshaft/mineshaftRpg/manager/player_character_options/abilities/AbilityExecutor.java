@@ -32,7 +32,7 @@ public class AbilityExecutor {
 
     public static CustomAbilityClass getAbilityClass(@NotNull String id) {
         final CustomAbilityClass[] returnValue = {null};
-        MineshaftRpg.getCache().getAbilityCache().forEach(customAbilityClass -> {
+        MineshaftRpg.getInstance().getCache().getAbilityCache().forEach(customAbilityClass -> {
             if(customAbilityClass.getId().equals(id)) {
                 returnValue[0]=customAbilityClass;
             }
@@ -66,21 +66,21 @@ public class AbilityExecutor {
     public static void parseAbilityTriggerCommand(CommandSender sender, @NotNull String @NotNull [] args, boolean checkOwnership) {
         if(sender instanceof Player player) {
             if (args.length == 1) {
-                if(MineshaftRpg.getCache().getAbilityIds().contains(args[0])) {
+                if(MineshaftRpg.getInstance().getCache().getAbilityIds().contains(args[0])) {
                     if (!checkOwnership || JsonPlayerBridge.getAbilities(player).containsKey(args[0])) {
                         // Trigger the ability:
                         executeAbilityOnSelf(player,getAbilityClass(args[0]));
                     } else {
-                        player.sendMessage(Component.text(NamedTextColor.RED + "You have not learned this ability"));
+                        player.sendMessage(Component.text("You have not learned this ability",NamedTextColor.RED));
                     }
                 } else {
-                    player.sendMessage(Component.text(NamedTextColor.RED + "This ability does not exist"));
+                    player.sendMessage(Component.text("This ability does not exist",NamedTextColor.RED));
                 }
             } else {
-                sender.sendMessage(Component.text(NamedTextColor.RED + "Invalid arguments. Please specify only one ability."));
+                sender.sendMessage(Component.text("Invalid arguments. Please specify only one ability.",NamedTextColor.RED));
             }
         } else {
-            sender.sendMessage(Component.text(NamedTextColor.RED + "Only players may execute this command."));
+            sender.sendMessage(Component.text("Only players may execute this command.",NamedTextColor.RED));
         }
     }
 
