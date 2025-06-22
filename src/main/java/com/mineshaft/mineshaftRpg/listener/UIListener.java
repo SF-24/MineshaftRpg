@@ -105,6 +105,7 @@ public class UIListener implements Listener {
                         // Reload the UI
                         NBT.modify(Objects.requireNonNull(e.getView().getTopInventory().getItem(11)), nbt->{
                             String abilityName=nbt.getString("ability");
+                            JsonSettingsBridge.removeAbility((Player) e.getWhoClicked(),abilityName);
                             PlayerMenuManager.openAbilityBindingUI((Player) e.getWhoClicked(),true,MineshaftRpg.getInstance().getCache().getAbility(abilityName));
                         });
                         break;

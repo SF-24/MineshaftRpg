@@ -64,7 +64,7 @@ public class UIButtonManager {
         assert itemMeta != null;
 
         itemMeta.setDisplayName(ChatColor.WHITE + name);
-        itemMeta.setCustomModelData(ButtonUtil.getButtonCustomModelData(ButtonType.ADD, ButtonVariant.GREEN));
+        itemMeta.setCustomModelData(ButtonType.PLUS.getCustomModelData(ButtonVariant.GREEN));
 
         item.setItemMeta(itemMeta);
         return item;
@@ -91,7 +91,7 @@ public class UIButtonManager {
         }
 
         public static ItemStack getComboClearItem() {
-            return ButtonUtil.getButton(ButtonType.ADD, ButtonVariant.RED, "Clear All Combos", new ArrayList<>(), "delete_combo");
+            return ButtonUtil.getButton(ButtonType.PLUS, ButtonVariant.RED, "Clear All Combos", new ArrayList<>(), "delete_combo");
         }
 
         public static ItemStack getComboSaveItem() {
@@ -100,7 +100,7 @@ public class UIButtonManager {
 
         public static ItemStack getComboAddClickItem(Player player) {
             ArrayList<String> lore = MineshaftRpg.getInstance().getCache().getClickCache().getSettingClicksAsStringList(player,ChatColor.GRAY.toString(),"Click");
-            return ButtonUtil.getButton(ButtonType.ADD, ButtonVariant.GREEN, "Add Clicks", lore, "add_click_to_combo");
+            return ButtonUtil.getButton(ButtonType.PLUS, ButtonVariant.GREEN, "Add Clicks", lore, "add_click_to_combo");
         }
 
         // TODO: Add more ability options

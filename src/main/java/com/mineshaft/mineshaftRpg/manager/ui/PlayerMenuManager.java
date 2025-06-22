@@ -89,7 +89,7 @@ public class PlayerMenuManager {
         ui.setItem(13, UIButtonManager.Abilities.getComboAddClickItem(player));
         ui.setItem(15, UIButtonManager.Abilities.getComboSaveItem());
         ui.setItem(16, UIButtonManager.Abilities.getComboResetItem());
-        ui.setItem(17, UIButtonManager.Abilities.getComboClearItem());
+//        ui.setItem(17, UIButtonManager.Abilities.getComboClearItem());
 
         player.openInventory(ui);
         inventoryManagement(player, isUpdate);
