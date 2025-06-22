@@ -21,25 +21,26 @@ package com.mineshaft.mineshaftRpg.manager.player_character_options.feats;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.Map;
 
 @Getter
 public class CustomFeatClass {
 
-    // Whether it is restricted to a culture
-    private final boolean cultureRestricted = true;
-
-    // The feat type
-    private final FeatType featType = FeatType.SKILL_FEAT;
-
+    private final String id = "enter_id_here";
     private final String name = "Example Feat";
-
-    // The culture it is restricted to (if the above boolean is checked)
-    private final String culture = "human_bree";
 
     // Display values
     private final String description = "Virtue Description";
-    private final String id = "enter_id_here";
+
+    // Whether it is restricted to a culture
+    private final FeatType featType = FeatType.SKILL_FEAT;
+
+    // The feat type
+    private final boolean cultureRestricted = true;
+
+    // The culture it is restricted to (if the above boolean is checked)
+    private final String culture = "human_bree";
 
     // Minimum level
     private final int minimumLevel = 1;
@@ -47,7 +48,10 @@ public class CustomFeatClass {
     // Minimum ability scores
     private final Map<AbilityScores, Integer> minimumAbilityScores = Map.of(AbilityScores.WIS, 10, AbilityScores.DEX, 10);
 
-    // Boolean - whether it's a passive ability
-    private final Map<String, Boolean> abilities = Map.of("Ability1",false,"Ability2",false,"PassiveAbility",true);
+    // Boolean - whether they just level up if you own them
+    private final List<String> abilities = List.of("Ability1","Ability2","Ability3");
+    private final List<String> passiveAbilities = List.of("PassiveAbility1","PassiveAbility2");
+
+    // ASI
     private final Map<AbilityScores,Integer> abilityScoreIncreases = Map.of(AbilityScores.WIS, 1, AbilityScores.DEX, 1);
 }
