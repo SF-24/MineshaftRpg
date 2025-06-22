@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class PassiveAbilityRegistrar {
-
     public static boolean hasPassiveAbility(Player player, PassiveAbilities ability) {
         return getHardcodedAbilities(player).contains(ability);
     }

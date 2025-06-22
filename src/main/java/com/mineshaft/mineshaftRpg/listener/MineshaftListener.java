@@ -19,7 +19,10 @@
 package com.mineshaft.mineshaftRpg.listener;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.AbilityType;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.passive_events.PassiveAbilityRegistrar;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
+import com.mineshaft.mineshaftapi.events.MineshaftAbilityModifyEvent;
 import com.mineshaft.mineshaftapi.events.MineshaftClickTypeEvent;
 import com.mineshaft.mineshaftapi.events.MineshaftTownDiscoveryEvent;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
@@ -46,5 +49,13 @@ public class MineshaftListener implements Listener {
     @EventHandler
     public void onClickKey(MineshaftClickTypeEvent e) {
         MineshaftRpg.getInstance().getCache().getClickCache().cacheClick(e.getPlayer(), e.getClickType());
+    }
+
+    @EventHandler
+    public void onAbilityChange(MineshaftAbilityModifyEvent e) {
+        // Reload passive abilities if the passive abilities are modified.
+        if(MineshaftRpg.getInstance().getCache().getAbility(e.getAbilityId())!=null && MineshaftRpg.getInstance().getCache().getAbility(e.getAbilityId()).getAbilityType().equals(AbilityType.PASSIVE_ABILITY)) {
+            PassiveAbilityRegistrar.initialisePassiveAbilities(e.getPlayer());
+        }
     }
 }
