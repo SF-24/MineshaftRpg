@@ -19,140 +19,116 @@
 package com.mineshaft.mineshaftRpg.manager;
 
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.Abilities;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.PassiveAbilities;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.AttributeManager;
-import com.mineshaft.mineshaftapi.MineshaftApi;
-import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonQuestBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MineshaftPlayerBridge {
 
-    public static void addAttribute(Player player, AbilityScores abilityScores, int value) {
-        int newValue = value + Math.max(getAttribute(player,abilityScores),8);
-        JsonPlayerBridge.setAttribute(player, (abilityScores).name().toLowerCase(),newValue);
-    }
-
-    public static int getAttribute(Player player, AbilityScores abilityScores) {
-        return JsonPlayerBridge.getAttribute(player,abilityScores.name().toLowerCase());
-    }
-
-    public static void giveFeatPoint(Player player) {
-        int points = getFeatPoints(player)+1;
-        JsonPlayerBridge.setCharacterDataValue(player,"featPoints", String.valueOf(points));
-    }
-
-    public static void giveCultureFeatPoint(Player player) {
-        int points = getCultureFeatPoints(player)+1;
-        JsonPlayerBridge.setCharacterDataValue(player,"cultureFeatPoints", String.valueOf(points));
-    }
-
-    public static int getFeatPoints(Player player) {
-        try {
-            return Integer.parseInt(JsonPlayerBridge.getCharacterDataValue(player, "featPoints"));
-        } catch (NumberFormatException e) {
-            Logger.logError("Cannot load feat points for " + player.getName());
-            return 0;
+    public static void setLanguages(Player player, List<String> languages) {
+        if(!languages.contains(ConfigBridge.getDefaultLanguage())) {
+            JsonPlayerBridge.addToCharDataList(player, "languages",ConfigBridge.getDefaultLanguage() );
         }
+        JsonPlayerBridge.addToCharDataList(player, "languages", languages);
     }
 
-    public static int getCultureFeatPoints(Player player) {
-        try {
-            return Integer.parseInt(JsonPlayerBridge.getCharacterDataValue(player, "cultureFeatPoints"));
-        } catch (NumberFormatException e) {
-            Logger.logError("Cannot load culture feat points for " + player.getName());
-            return 0;
-        }
-    }
 
-    public static void giveCultureStartingItems(Player player, String culture) {
-        JsonPlayerBridge.setCharacterDataValue(player, "hasCultureStartingItems","true");
-        BetonQuestBridge.runBetonPlayerEvent(player, ConfigBridge.getBetonQuestStartingItemEventPackage(), ConfigBridge.getBetonQuestStartingItemEvent());
-
-        for(String item : CultureManager.getCustomCulture(culture).getStartingItems()) {
-            player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(item));
-        }
-        for(Material material : CultureManager.getCustomCulture(culture).getVanillaStartingItems()) {
-            player.getInventory().addItem(new ItemStack(material));
-        }
-        for(String eventName : CultureManager.getCustomCulture(culture).getBetonQuestEvents().keySet()) {
-            BetonQuestBridge.runBetonPlayerEvent(player,CultureManager.getCustomCulture(culture).getBetonQuestEvents().get(eventName),eventName);
+    public static class Abilities {
+        public static void addAbility(Player player, String abilityName, boolean isPassive) {
+            if(isValidAbility(abilityName,isPassive)) {
+                if (isPassive) {
+                    JsonPlayerBridge.addPassiveAbility(player,abilityName, 1);
+                } else {
+                    JsonPlayerBridge.addAbility(player, abilityName, 1);
+                }
+            }
         }
 
-        JsonPlayerBridge.saveInventory(player);
-        // TODO:
-    }
-
-
-    public static boolean hasCultureStartingItems(Player player) {
-        return JsonPlayerBridge.getCharacterDataValue(player, "hasCultureStartingItems").equals("true");
-    }
-
-    public static void giveCultureAbilities(Player player, List<String> abilities) {
-//        JsonPlayerBridge.setCharacterDataValue(player, "hasCultureStartingAbilities","true");
-        // TODO: coming soon
-    }
-
-    public static void giveCultureAbilities(Player player, String culture, boolean isCultureCustom) {}
-
-    public static boolean hasCultureAbilities(Player player) {
-        return JsonPlayerBridge.getCharacterDataValue(player, "hasCultureStartingAbilities").equals("true");
-    }
-
-    public static void addAbility(Player player, String abilityName, boolean isPassive) {
-        if(isValidAbility(abilityName,isPassive)) {
-            if (isPassive) {
-                JsonPlayerBridge.addPassiveAbility(player,abilityName, 1);
+        public static boolean isValidAbility(String ability, boolean isPassive) {
+            if(isPassive) {
+                return getPassiveAbility(ability)!=null;
             } else {
-                JsonPlayerBridge.addAbility(player, abilityName, 1);
+                return getAbility(ability)!=null;
             }
         }
-    }
 
-    public static boolean isValidAbility(String ability, boolean isPassive) {
-        if(isPassive) {
-            return getPassiveAbility(ability)!=null;
-        } else {
-            return getAbility(ability)!=null;
+        public static com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.Abilities getAbility(String ability) {
+            for(com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.Abilities a : com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.Abilities.values()) {
+                if(a.name().equalsIgnoreCase(ability)) {
+                    return a;
+                }
+            }
+            return null;
+        }
+
+        public static PassiveAbilities getPassiveAbility(String ability) {
+            for(PassiveAbilities a : PassiveAbilities.values()) {
+                if(a.name().equalsIgnoreCase(ability)) {
+                    return a;
+                }
+            }
+            return null;
         }
     }
 
-    public static Abilities getAbility(String ability) {
-        for(Abilities a : Abilities.values()) {
-            if(a.name().equalsIgnoreCase(ability)) {
-                return a;
+    public static class Attributes {
+        public static ArrayList<String> getAbilityScoreStrings(Player player) {
+            ArrayList<String> abilityScoreItemLore = new ArrayList<>();
+            abilityScoreItemLore.add(ChatColor.WHITE + "STR: " + ChatColor.RED + JsonPlayerBridge.getAttribute(player,"str") + ChatColor.DARK_RED +" (" + AttributeManager.calculateAttributeModifier(player, "str") + ")");
+            abilityScoreItemLore.add(ChatColor.WHITE + "DEX: " + ChatColor.RED + JsonPlayerBridge.getAttribute(player,"dex") + ChatColor.DARK_RED +" (" + AttributeManager.calculateAttributeModifier(player, "dex") + ")");
+            abilityScoreItemLore.add(ChatColor.WHITE + "CON: " + ChatColor.RED + JsonPlayerBridge.getAttribute(player,"con") + ChatColor.DARK_RED +" (" + AttributeManager.calculateAttributeModifier(player, "con") + ")");
+            abilityScoreItemLore.add(ChatColor.WHITE + "INT: " + ChatColor.AQUA + JsonPlayerBridge.getAttribute(player,"int") + ChatColor.BLUE +" (" + AttributeManager.calculateAttributeModifier(player, "int") + ")");
+            abilityScoreItemLore.add(ChatColor.WHITE + "WIS: " + ChatColor.AQUA + JsonPlayerBridge.getAttribute(player,"wis") + ChatColor.BLUE +" (" + AttributeManager.calculateAttributeModifier(player, "wis") + ")");
+            abilityScoreItemLore.add(ChatColor.WHITE + "CHA: " + ChatColor.AQUA + JsonPlayerBridge.getAttribute(player,"cha") + ChatColor.BLUE +" (" + AttributeManager.calculateAttributeModifier(player, "cha") + ")");
+            return abilityScoreItemLore;
+        }
+
+        public static void addAttribute(Player player, AbilityScores abilityScores, int value) {
+            int newValue = value + Math.max(getAttribute(player,abilityScores),8);
+            JsonPlayerBridge.setAttribute(player, (abilityScores).name().toLowerCase(),newValue);
+        }
+
+        public static int getAttribute(Player player, AbilityScores abilityScores) {
+            return JsonPlayerBridge.getAttribute(player,abilityScores.name().toLowerCase());
+        }
+    }
+
+    public static class Feats {
+        // Feats
+
+        public static void giveFeatPoint(Player player) {
+            int points = getFeatPoints(player)+1;
+            JsonPlayerBridge.setCharacterDataValue(player,"featPoints", String.valueOf(points));
+        }
+
+        public static void giveCultureFeatPoint(Player player) {
+            int points = getCultureFeatPoints(player)+1;
+            JsonPlayerBridge.setCharacterDataValue(player,"cultureFeatPoints", String.valueOf(points));
+        }
+
+        public static int getFeatPoints(Player player) {
+            try {
+                return Integer.parseInt(JsonPlayerBridge.getCharacterDataValue(player, "featPoints"));
+            } catch (NumberFormatException e) {
+                Logger.logError("Cannot load feat points for " + player.getName());
+                return 0;
             }
         }
-        return null;
-    }
 
-    public static PassiveAbilities getPassiveAbility(String ability) {
-        for(PassiveAbilities a : PassiveAbilities.values()) {
-            if(a.name().equalsIgnoreCase(ability)) {
-                return a;
+        public static int getCultureFeatPoints(Player player) {
+            try {
+                return Integer.parseInt(JsonPlayerBridge.getCharacterDataValue(player, "cultureFeatPoints"));
+            } catch (NumberFormatException e) {
+                Logger.logError("Cannot load culture feat points for " + player.getName());
+                return 0;
             }
         }
-        return null;
-    }
-
-    public static ArrayList<String> getAbilityScoreStrings(Player player) {
-        ArrayList<String> abilityScoreItemLore = new ArrayList<>();
-        abilityScoreItemLore.add(ChatColor.WHITE + "STR: " + ChatColor.RED + JsonPlayerBridge.getAttribute(player,"str") + ChatColor.DARK_RED +" (" + AttributeManager.calculateAttributeModifier(player, "str") + ")");
-        abilityScoreItemLore.add(ChatColor.WHITE + "DEX: " + ChatColor.RED + JsonPlayerBridge.getAttribute(player,"dex") + ChatColor.DARK_RED +" (" + AttributeManager.calculateAttributeModifier(player, "dex") + ")");
-        abilityScoreItemLore.add(ChatColor.WHITE + "CON: " + ChatColor.RED + JsonPlayerBridge.getAttribute(player,"con") + ChatColor.DARK_RED +" (" + AttributeManager.calculateAttributeModifier(player, "con") + ")");
-        abilityScoreItemLore.add(ChatColor.WHITE + "INT: " + ChatColor.AQUA + JsonPlayerBridge.getAttribute(player,"int") + ChatColor.BLUE +" (" + AttributeManager.calculateAttributeModifier(player, "int") + ")");
-        abilityScoreItemLore.add(ChatColor.WHITE + "WIS: " + ChatColor.AQUA + JsonPlayerBridge.getAttribute(player,"wis") + ChatColor.BLUE +" (" + AttributeManager.calculateAttributeModifier(player, "wis") + ")");
-        abilityScoreItemLore.add(ChatColor.WHITE + "CHA: " + ChatColor.AQUA + JsonPlayerBridge.getAttribute(player,"cha") + ChatColor.BLUE +" (" + AttributeManager.calculateAttributeModifier(player, "cha") + ")");
-        return abilityScoreItemLore;
     }
 }

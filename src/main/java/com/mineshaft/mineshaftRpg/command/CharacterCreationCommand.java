@@ -20,6 +20,9 @@ package com.mineshaft.mineshaftRpg.command;
 
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.FeatManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

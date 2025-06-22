@@ -218,10 +218,10 @@ public class PlayerMenuManager {
             }
             // Culture mechanic
             if (!c.isLocked()) {
-                bookMeta.spigot().addPage(CultureManager.getPageDisplay(c.getId()));
+                bookMeta.spigot().addPage(CultureManager.UI.getPageDisplay(c.getId()));
                 Logger.logDebug("Displaying culture page for: " + c.getName());
             } else if(JsonProfileBridge.getUnlockedCultures(player).contains(c.getName().toLowerCase())) {
-                unlockedLockedCulturePages.add(CultureManager.getPageDisplay(c.getId()));
+                unlockedLockedCulturePages.add(CultureManager.UI.getPageDisplay(c.getId()));
                 Logger.logDebug("Displaying culture page for: " + c.getName());
             }
         }

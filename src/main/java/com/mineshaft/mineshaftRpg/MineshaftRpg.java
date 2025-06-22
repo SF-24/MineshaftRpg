@@ -29,6 +29,7 @@ import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.JsonCus
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.JsonLevellingRewards;
 import com.mineshaft.mineshaftapi.manager.player.ProfileManager;
 import com.mineshaft.mineshaftapi.util.Logger;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -40,6 +41,7 @@ public final class MineshaftRpg extends JavaPlugin {
 
     ArrayList<UUID> openUiPlayers = new ArrayList<>();
 
+    @Getter
     private final ConfigManager configManager = new ConfigManager();
 
     public final MineshaftCache cache = new MineshaftCache();
@@ -87,8 +89,6 @@ public final class MineshaftRpg extends JavaPlugin {
     public static MineshaftRpg getInstance() {
         return MineshaftRpg.getPlugin(MineshaftRpg.class);
     }
-
-    public ConfigManager getConfigManager() {return configManager;}
 
     public JsonCustomCultures getJsonCustomCultures() {
         return cache.jsonCustomCultures;

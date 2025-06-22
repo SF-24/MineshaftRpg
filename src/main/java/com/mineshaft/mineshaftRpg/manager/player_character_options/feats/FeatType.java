@@ -16,25 +16,11 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.manager.player_character_options.backgrounds;
+package com.mineshaft.mineshaftRpg.manager.player_character_options.feats;
 
-import lombok.Getter;
+public enum FeatType {
 
-import java.util.List;
+    CULTURAL_FEAT,
+    SKILL_FEAT
 
-public class CustomBackgroundClass {
-
-    @Getter
-    String name = "Example Background";
-    @Getter
-    String id = "example_background";
-
-    // Culture: leave empty for any
-    List<String> culture = List.of("culture1","culture2");
-    String event = "a_betonquest_package:a_betonquest_event";
-
-    // TODO:
-
-    public boolean isCultureRestricted() {return !culture.isEmpty();}
-    public List<String> getCultures() {return culture;}
 }

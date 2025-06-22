@@ -161,7 +161,7 @@ public class UIButtonManager {
             ArrayList<String> lore = new ArrayList<>();
             lore.add(Component.text(culture + ", Level " + JsonPlayerBridge.getLevel(player),NamedTextColor.GRAY).toString());
             lore.add("");
-            lore.addAll(MineshaftPlayerBridge.getAbilityScoreStrings(player));
+            lore.addAll(MineshaftPlayerBridge.Attributes.getAbilityScoreStrings(player));
 
             itemMeta.addAttributeModifier(Attribute.ATTACK_DAMAGE, new AttributeModifier(NamespacedKey.minecraft("dummy"), 0.0, AttributeModifier.Operation.ADD_NUMBER));
             itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -223,7 +223,7 @@ public class UIButtonManager {
             SkullMeta abilityScoreItemMeta = (SkullMeta) abilityScoreItem.getItemMeta();
             abilityScoreItemMeta.setDisplayName(ChatColor.AQUA + "Ability Scores:");
 
-            ArrayList<String> abilityScoreItemLore = (MineshaftPlayerBridge.getAbilityScoreStrings(player));
+            ArrayList<String> abilityScoreItemLore = (MineshaftPlayerBridge.Attributes.getAbilityScoreStrings(player));
             abilityScoreItemLore.add(ChatColor.WHITE.toString());
             abilityScoreItemLore.add(ChatColor.WHITE + "Skill points: " + ChatColor.GREEN + JsonPlayerBridge.getSkillPoints(player));
             abilityScoreItemLore.add("");

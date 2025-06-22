@@ -28,17 +28,16 @@ import org.bukkit.entity.Player;
 public class FeatManager {
 
     public static void addFeat(Player player, CustomFeatClass customFeatClass) {
-
-        if(!canLearnFeat(player, customFeatClass)) {
-            player.sendMessage(ChatColor.RED + "You do not fulfill the requirements to learn the feat.");
+        if(!hasPointsToLearnFeat(player, customFeatClass)||!canLearnFeat(player, customFeatClass)) {
+            player.sendMessage(ChatColor.RED + "You cannot learn this feat right now.");
             return;
         }
 
         for(AbilityScores abilityScores : customFeatClass.getAbilityScoreIncreases().keySet()) {
-            MineshaftPlayerBridge.addAttribute(player,abilityScores,customFeatClass.getAbilityScoreIncreases().get(abilityScores));
+            MineshaftPlayerBridge.Attributes.addAttribute(player,abilityScores,customFeatClass.getAbilityScoreIncreases().get(abilityScores));
         }
         for(String a : customFeatClass.getAbilities().keySet()) {
-            MineshaftPlayerBridge.addAbility(player,a,customFeatClass.getAbilities().get(a));
+            MineshaftPlayerBridge.Abilities.addAbility(player,a,customFeatClass.getAbilities().get(a));
         }
     }
 
@@ -58,11 +57,15 @@ public class FeatManager {
 
         // Ability score check
         for(AbilityScores abilityScores : customFeatClass.getMinimumAbilityScores().keySet()) {
-            if(MineshaftPlayerBridge.getAttribute(player,abilityScores)<customFeatClass.getMinimumAbilityScores().get(abilityScores)) {
+            if(MineshaftPlayerBridge.Attributes.getAttribute(player,abilityScores)<customFeatClass.getMinimumAbilityScores().get(abilityScores)) {
                 return false;
             }
         }
         return true;
     }
 
+    public static boolean hasPointsToLearnFeat(Player player, CustomFeatClass customFeatClass) {
+        if(MineshaftPlayerBridge.Feats.getFeatPoints(player)>0) return true;
+        return customFeatClass.getFeatType().equals(FeatType.CULTURAL_FEAT) && MineshaftPlayerBridge.Feats.getCultureFeatPoints(player) > 0;
+    }
 }

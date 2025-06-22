@@ -76,7 +76,7 @@ public class PlayerLevelManager {
 
     public static void giveLevel(Player player, int level) {
         switch(level) {
-            case 4,7,10,13,16,19 -> MineshaftPlayerBridge.giveFeatPoint(player);
+            case 4,7,10,13,16,19 -> MineshaftPlayerBridge.Feats.giveFeatPoint(player);
             default -> throw new IllegalStateException("Unexpected value: " + level);
         }
     }

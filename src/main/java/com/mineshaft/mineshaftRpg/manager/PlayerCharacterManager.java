@@ -54,8 +54,8 @@ public class PlayerCharacterManager {
         // Culture test, finishes character creation
         if(!CultureManager.hasCulture(player)) {
             PlayerMenuManager.openSpeciesSelector(player);
-        } else if(!MineshaftPlayerBridge.hasCultureStartingItems(player)) {
-            MineshaftPlayerBridge.giveCultureStartingItems(player,CultureManager.getCulture(player));
+        } else if(!CultureManager.Items.hasCultureStartingItems(player)) {
+            CultureManager.Items.giveCultureStartingItems(player,CultureManager.getCulture(player));
         }
     }
 
