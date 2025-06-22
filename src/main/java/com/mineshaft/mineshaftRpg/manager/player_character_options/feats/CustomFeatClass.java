@@ -50,7 +50,6 @@ public class CustomFeatClass {
 
     // Boolean - whether they just level up if you own them
     private final List<String> abilities = List.of("Ability1","Ability2","Ability3");
-    private final List<String> passiveAbilities = List.of("PassiveAbility1","PassiveAbility2");
 
     // ASI
     private final Map<AbilityScores,Integer> abilityScoreIncreases = Map.of(AbilityScores.WIS, 1, AbilityScores.DEX, 1);

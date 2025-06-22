@@ -18,45 +18,56 @@
 
 package com.mineshaft.mineshaftRpg.manager.player_character_options.abilities;
 
+import com.mineshaft.mineshaftapi.util.Logger;
+import lombok.Getter;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.block.data.CraftHatchable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class CustomAbilityClass {
 
-    boolean isSpell = false;
-    String name = "Example Ability";
     String id = "example_ability";
+    String name = "Example Ability";
+    String description = "Description";
+    AbilityType abilityType = AbilityType.ACTIVE_ABILITY;
+
+    // Only work for non-passive abilities
     List<String> customEvents = List.of("event1","event2");
     List<String> hardcodedEvents = List.of("event1","event2");
-    List<String> passiveAbilities = List.of("passive_ability_1,passive_ability_2");
     int castCost = 10;
+
+    // WIP
+    List<String> passiveAbilities = List.of("passive_ability_1,passive_ability_2");
+
     Material materialIcon = Material.IRON_SWORD;
     int customModelData = 5;
-
-    public String getId() {return id;}
-    public String getName() {return name;}
-    public int getCastCost() {return castCost;}
-    public List<String> getCustomEvents() {return customEvents;}
-    public List<String> getHardcodedEvents() {return hardcodedEvents;}
-
-    // Granted on gain
-    public List<String> getPassiveAbilities() {return passiveAbilities;}
 
     public ItemStack getIcon() {
         ItemStack item = new ItemStack(materialIcon);
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.setDisplayName(name);
         itemMeta.setCustomModelData(customModelData);
+        ArrayList<String> lore = new ArrayList<>();
+        if(abilityType==null) {
+            Logger.logError("Found invalid ability type for ability: " + id);
+        }
+        if(abilityType.equals(AbilityType.ACTIVE_ABILITY)) {
+            lore.add(ChatColor.GRAY + "Passive Ability");
+            lore.add("");
+        }
+        lore.add(ChatColor.GRAY + description);
         item.setItemMeta(itemMeta);
         return item;
     }
 
-    public int getCustomModelData() {return customModelData;}
-
-    public boolean isSpell() {return isSpell;}
+    public boolean isSpell() {return abilityType.equals(AbilityType.SPELL);}
+    public boolean isPassive() {return abilityType.equals(AbilityType.PASSIVE_ABILITY);}
 
     public CustomAbilityClass self() {
         return this;

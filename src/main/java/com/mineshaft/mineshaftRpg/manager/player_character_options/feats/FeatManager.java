@@ -36,8 +36,8 @@ public class FeatManager {
         for(AbilityScores abilityScores : customFeatClass.getAbilityScoreIncreases().keySet()) {
             MineshaftPlayerBridge.Attributes.addAttribute(player,abilityScores,customFeatClass.getAbilityScoreIncreases().get(abilityScores));
         }
-        for(String a : customFeatClass.getAbilities().keySet()) {
-            MineshaftPlayerBridge.Abilities.addAbility(player,a,customFeatClass.getAbilities().get(a));
+        for(String a : customFeatClass.getAbilities()) {
+            MineshaftPlayerBridge.Abilities.addAbility(player,a);
         }
     }
 

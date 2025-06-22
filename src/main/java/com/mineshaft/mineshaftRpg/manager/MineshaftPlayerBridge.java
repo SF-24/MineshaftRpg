@@ -18,7 +18,9 @@
 
 package com.mineshaft.mineshaftRpg.manager;
 
+import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.AbilityType;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.PassiveAbilities;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.AttributeManager;
@@ -41,31 +43,20 @@ public class MineshaftPlayerBridge {
 
 
     public static class Abilities {
-        public static void addAbility(Player player, String abilityName, boolean isPassive) {
-            if(isValidAbility(abilityName,isPassive)) {
-                if (isPassive) {
-                    JsonPlayerBridge.addPassiveAbility(player,abilityName, 1);
-                } else {
-                    JsonPlayerBridge.addAbility(player, abilityName, 1);
+        public static void addAbility(Player player, String abilityName) {
+            if(isValidAbility(abilityName)) {
+                AbilityType type = MineshaftRpg.getInstance().getCache().getAbility(abilityName).getAbilityType();
+                switch (type) {
+                    case ACTIVE_ABILITY -> JsonPlayerBridge.addAbility(player, abilityName, 1);
+                    case PASSIVE_ABILITY -> JsonPlayerBridge.addPassiveAbility(player,abilityName, 1);
+                    case SPELL -> JsonPlayerBridge.addSpell(player,abilityName, 1);
                 }
+
             }
         }
 
-        public static boolean isValidAbility(String ability, boolean isPassive) {
-            if(isPassive) {
-                return getPassiveAbility(ability)!=null;
-            } else {
-                return getAbility(ability)!=null;
-            }
-        }
-
-        public static com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.Abilities getAbility(String ability) {
-            for(com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.Abilities a : com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.Abilities.values()) {
-                if(a.name().equalsIgnoreCase(ability)) {
-                    return a;
-                }
-            }
-            return null;
+        public static boolean isValidAbility(String ability) {
+            return MineshaftRpg.getInstance().getCache().getAbilityIds().contains(ability);
         }
 
         public static PassiveAbilities getPassiveAbility(String ability) {
