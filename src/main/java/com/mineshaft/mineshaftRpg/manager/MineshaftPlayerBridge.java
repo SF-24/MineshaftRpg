@@ -21,7 +21,8 @@ package com.mineshaft.mineshaftRpg.manager;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.AbilityType;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.PassiveAbilities;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.passive_events.PassiveAbilities;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.AttributeManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
@@ -43,6 +44,25 @@ public class MineshaftPlayerBridge {
 
 
     public static class Abilities {
+
+        public static ArrayList<CustomAbilityClass> getAbilitiesOfType(Player player, AbilityType type) {
+            ArrayList<CustomAbilityClass> abilities = new ArrayList<>();
+            for(String ability : JsonPlayerBridge.getAbilities(player).keySet()) {
+                if(MineshaftRpg.getInstance().getCache().getAbility(ability)==null || !MineshaftRpg.getInstance().getCache().getAbility(ability).getAbilityType().equals(type)) continue;
+                abilities.add(MineshaftRpg.getInstance().getCache().getAbility(ability));
+            }
+            return abilities;
+        }
+
+        public static ArrayList<CustomAbilityClass> getAbilities(Player player) {
+            ArrayList<CustomAbilityClass> abilities = new ArrayList<>();
+            for(String ability : JsonPlayerBridge.getAbilities(player).keySet()) {
+                if(MineshaftRpg.getInstance().getCache().getAbility(ability)==null) continue;
+                abilities.add(MineshaftRpg.getInstance().getCache().getAbility(ability));
+            }
+            return abilities;
+        }
+
         public static void addAbility(Player player, String abilityName) {
             if(isValidAbility(abilityName)) {
                 AbilityType type = MineshaftRpg.getInstance().getCache().getAbility(abilityName).getAbilityType();

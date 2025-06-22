@@ -16,11 +16,11 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.manager.player_character_options.abilities;
+package com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.passive_events;
 
 public enum PassiveAbilities {
 
-    FINESSE, // Use all light weapons and long-swords as finesse weapons
+    WEAPON_FINESSE, // Use all light weapons and long-swords as finesse weapons
     KEEN,    // + ?
     FIERCE_SHOT
 }

@@ -22,12 +22,13 @@ import com.mineshaft.mineshaftapi.util.Logger;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.block.data.CraftHatchable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 public class CustomAbilityClass {
@@ -40,10 +41,9 @@ public class CustomAbilityClass {
     // Only work for non-passive abilities
     List<String> customEvents = List.of("event1","event2");
     List<String> hardcodedEvents = List.of("event1","event2");
+    Map<String,Map<String, Double>> passiveModifiers = Map.of("passiveEvent1",Map.of("DAMAGE", 1d),"passiveEvent2",Map.of("SPEED",2d));
+    List<String> hardcodedPassiveModifiers = List.of("event1","event2");
     int castCost = 10;
-
-    // WIP
-    List<String> passiveAbilities = List.of("passive_ability_1,passive_ability_2");
 
     Material materialIcon = Material.IRON_SWORD;
     int customModelData = 5;
