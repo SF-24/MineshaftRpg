@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftRpg.manager.ui;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.AbilityType;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
@@ -45,9 +46,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 
 public class PlayerMenuManager {
 
@@ -60,21 +59,38 @@ public class PlayerMenuManager {
         ui.setItem(2, UIButtonManager.Character.getPlayerAbilityScoreItem(player));
         ui.setItem(3, UIButtonManager.Character.getSkillsItem(player));
         ui.setItem(4, UIButtonManager.Character.getAbilityItem(player));
-        ui.setItem(5, UIButtonManager.Character.getCodexItem());
+        ui.setItem(5, UIButtonManager.Character.getSpellItem(player));
+        ui.setItem(6, UIButtonManager.Character.getCodexItem());
         ui.setItem(7, UIButtonManager.Character.getQuestItem());
         player.openInventory(ui);
     }
 
-    public static void openAbilityUI(Player player, boolean isUpdate) {
+    public static void openAbilityUI(Player player, boolean isUpdate, AbilityType type) {
         Inventory ui = getMediumMenuBackground("Abilities");
 
         ArrayList<String> included = new ArrayList<>();
 
-        for(String abilityId : JsonPlayerBridge.getAbilities(player).keySet()) {
+        HashMap<String, Integer> knownAbilities = JsonPlayerBridge.getAbilities(player);
+
+        switch (type) {
+            case ACTIVE_ABILITY -> {
+                knownAbilities=JsonPlayerBridge.getAbilities(player);
+            }
+            case PASSIVE_ABILITY -> {
+                knownAbilities=JsonPlayerBridge.getPassiveAbilities(player);
+            }
+            case SPELL -> {
+                knownAbilities=JsonPlayerBridge.getSpells(player);
+            }
+        }
+
+        for(String abilityId : knownAbilities.keySet()) {
             if(!included.contains(abilityId)) {
                 CustomAbilityClass ability = MineshaftRpg.getInstance().getCache().getAbility(abilityId);
-                ui.addItem(UIButtonManager.Abilities.getAbilityItem(player, ability, true));
-                included.add(abilityId);
+                if(ability.getAbilityType().equals(type)) {
+                    ui.addItem(UIButtonManager.Abilities.getAbilityItem(player, ability, true));
+                    included.add(abilityId);
+                }
             }
         }
 
@@ -95,6 +111,27 @@ public class PlayerMenuManager {
         inventoryManagement(player, isUpdate);
 
     }
+
+    public static void openSpellBindingUI(Player player, boolean isUpdate, CustomAbilityClass abilityClass) {
+        Inventory ui = getMediumMenuBackground("Spell");
+
+        ui.setItem(11, UIButtonManager.Abilities.getAbilityItem(player, abilityClass, false));
+
+        // Bind spell slots
+        for(int i = 1; i<8; i++) {
+            ItemStack item = UIButtonManager.Spells.getSpellBindToSlotItem(player,MineshaftRpg.getInstance().getCache().getClickCache().getEditedSpellHotbar(player),i,abilityClass.getId());
+            ui.setItem(i+8,item);
+        }
+
+        ui.setItem(5,UIButtonManager.Spells.getSpellItem(player,abilityClass,true));
+        ui.setItem(8,UIButtonManager.Spells.getHotbarUpItem());
+        ui.setItem(17,UIButtonManager.Spells.getHotbarItem(player));
+        ui.setItem(26,UIButtonManager.Spells.getHotbarDownItem());
+
+        player.openInventory(ui);
+        inventoryManagement(player, isUpdate);
+    }
+
 
     public static void openAbilityScoreMenu(Player player, boolean isUpdate) {
         Inventory ui = getMenuBackground("Ability Scores");

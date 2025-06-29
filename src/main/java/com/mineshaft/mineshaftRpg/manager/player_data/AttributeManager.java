@@ -26,7 +26,7 @@ public class AttributeManager {
 
 
     public static int calculateAttributeModifier(Player player, String attributeName) {
-        return PlayerStatManager.getAttributeModifier(JsonPlayerBridge.getAttribute(player, attributeName));
+        return PlayerStatManager.calculateAbilityScoreModifier(JsonPlayerBridge.getAbilityScoreValue(player, attributeName));
     }
 
 }

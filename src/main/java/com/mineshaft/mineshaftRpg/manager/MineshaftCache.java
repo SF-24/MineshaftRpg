@@ -22,6 +22,7 @@ import com.mineshaft.mineshaftRpg.ClickCache;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.JsonCustomAbilities;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.passive_events.PassiveAbilities;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.backgrounds.CustomBackgroundClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.backgrounds.JsonCustomBackgrounds;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
@@ -32,6 +33,7 @@ import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.Jso
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.LevellingRewardClass;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.util.Logger;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,6 +54,8 @@ public class MineshaftCache {
     private final ArrayList<LevellingRewardClass> levellingRewardCache = new ArrayList<>();
     private final HashMap<CustomBackgroundClass, Boolean> backgroundCache = new HashMap<>();
 
+    // Click cache
+    @Getter
     ClickCache clickCache = new ClickCache();
 
     public MineshaftCache() {
@@ -61,9 +65,6 @@ public class MineshaftCache {
         jsonCustomFeats=new JsonCustomFeats();
         jsonLevellingRewards=new JsonLevellingRewards();
     }
-
-    // Click cache
-    public ClickCache getClickCache() {return clickCache;}
 
     // Cache functions
 
@@ -77,6 +78,12 @@ public class MineshaftCache {
         this.abilityCache.add(customAbilityClass);
         Logger.logInfo("Cached custom ability with id: " + customAbilityClass.getId());
     }
+
+    public void cacheHardcodedPassiveAbility(PassiveAbilities passiveAbility) {
+        MineshaftApi.getInstance().cacheAbility(passiveAbility.name().toLowerCase());
+        Logger.logInfo("Cached hardcoded passive ability with id: " + passiveAbility.name());
+    }
+
 
     public void cacheCustomLevellingReward(LevellingRewardClass levellingRewardClass) {
         this.levellingRewardCache.add(levellingRewardClass);
@@ -128,6 +135,10 @@ public class MineshaftCache {
         // Clear parent cache
         MineshaftApi.getInstance().clearAbilities();
 
+        for(PassiveAbilities passiveAbility : PassiveAbilities.values()) {
+            cacheHardcodedPassiveAbility(passiveAbility);
+        }
+
         // Deal with own cache
         customCultureCache.clear();
         backgroundCache.clear();
@@ -143,6 +154,7 @@ public class MineshaftCache {
     }
 
     public void makeExamples() {
+
         MineshaftRpg.getInstance().getJsonCustomCultures().makeExample();
         MineshaftRpg.getInstance().getJsonCustomFeats().makeExample();
         MineshaftRpg.getInstance().getJsonCustomAbilities().makeExample();

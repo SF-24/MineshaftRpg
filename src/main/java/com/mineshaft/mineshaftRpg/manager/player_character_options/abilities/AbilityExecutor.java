@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftRpg.manager.player_character_options.abilities;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.event.Event;
+import com.mineshaft.mineshaftapi.manager.event.event_subclass.VectorPlayerEvent;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -50,6 +51,12 @@ public class AbilityExecutor {
         for(String eventName : ability.getCustomEvents()) {
             Event event = MineshaftApi.getInstance().getEventManagerInstance().getEvent(eventName);
             if (event != null) {
+                if(event instanceof VectorPlayerEvent) {
+                    if(!((VectorPlayerEvent)event).isAllowWhenFlying() &&!player.isOnGround()) {
+                        player.sendActionBar(Component.text("You must be on the ground to use this ability.",NamedTextColor.RED));
+                        return;
+                    }
+                }
                 MineshaftApi.getInstance().getEventManagerInstance().runEvent(event, player.getLocation(), player.getUniqueId(), player);
             } else {
                 player.sendMessage(Component.text("Error, event: " + eventName + " is null"));

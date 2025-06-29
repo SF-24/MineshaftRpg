@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftRpg.listener;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.PlayerCharacterManager;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.AbilityType;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftRpg.manager.ui.PlayerMenuManager;
 import com.mineshaft.mineshaftapi.manager.event.click.ClickType;
@@ -120,7 +121,7 @@ public class UIListener implements Listener {
                             }
                             MineshaftRpg.getInstance().getCache().getClickCache().saveSettingClicks((Player) e.getWhoClicked(),abilityName);
                         });
-                        PlayerMenuManager.openAbilityUI((Player) e.getWhoClicked(),true);
+                        PlayerMenuManager.openAbilityUI((Player) e.getWhoClicked(),true, AbilityType.ACTIVE_ABILITY);
                         break;
                     case "quest_tracker":
                         e.getWhoClicked().closeInventory();
@@ -138,11 +139,33 @@ public class UIListener implements Listener {
                         PlayerMenuManager.openQuestMenu((Player) e.getWhoClicked(), true);
                         break;
                     case "abilities":
-                        PlayerMenuManager.openAbilityUI((Player) e.getWhoClicked(), true);
+                        if(e.getClick().equals(org.bukkit.event.inventory.ClickType.LEFT) || e.getClick().equals(org.bukkit.event.inventory.ClickType.SHIFT_LEFT)) {
+                            PlayerMenuManager.openAbilityUI((Player) e.getWhoClicked(), true,AbilityType.ACTIVE_ABILITY);
+                        } else if(e.getClick().equals(org.bukkit.event.inventory.ClickType.RIGHT) || e.getClick().equals(org.bukkit.event.inventory.ClickType.SHIFT_RIGHT)) {
+                            PlayerMenuManager.openAbilityUI((Player) e.getWhoClicked(), true,AbilityType.PASSIVE_ABILITY);
+                        }
+                        break;
+                    case "spells":
+                        PlayerMenuManager.openAbilityUI((Player) e.getWhoClicked(), true,AbilityType.SPELL);
                         break;
                     case "ability":
                         CustomAbilityClass customAbilityClass = MineshaftRpg.getInstance().getCache().getAbility(UIUtil.getAbility(e.getCurrentItem()));
                         PlayerMenuManager.openAbilityBindingUI((Player) e.getWhoClicked(),true,customAbilityClass);
+                        break;
+                    case "bindSpell":
+                        CustomAbilityClass spellClass = MineshaftRpg.getInstance().getCache().getAbility(UIUtil.getAbility(e.getCurrentItem()));
+                        NBT.get(e.getCurrentItem(),nbt->{
+                            int slot = nbt.getInteger("slot");
+                            int hotbar = nbt.getInteger("hotbar");
+                            JsonSettingsBridge.addSpell((Player)e.getWhoClicked(),UIUtil.getAbility(e.getCurrentItem()),slot,hotbar);
+                            PlayerMenuManager.openAbilityBindingUI((Player) e.getWhoClicked(),true,spellClass);
+                        });
+                        break;
+                    case "spellHotbarUp":
+                        MineshaftRpg.getInstance().getCache().getClickCache().upEditedSpellHotbar((Player) e.getWhoClicked());
+                        break;
+                    case "spellHotbarDown":
+                        MineshaftRpg.getInstance().getCache().getClickCache().downEditedSpellHotbar((Player) e.getWhoClicked());
                         break;
                     case "ability_scores":
                         PlayerMenuManager.openAbilityScoreMenu((Player) e.getWhoClicked(),true);
@@ -163,8 +186,8 @@ public class UIListener implements Listener {
                 if(UIUtil.getOnclick(e.getCurrentItem())!=null) {
                     Player player = (Player) e.getWhoClicked();
                     String onClick = UIUtil.getOnclick(e.getCurrentItem());
-                    if(JsonPlayerBridge.getSkillPoints(player)>0 && JsonPlayerBridge.getAttribute(player,onClick)< ConfigBridge.getAbilityScoreCap(JsonPlayerBridge.getLevel(player))) {
-                        JsonPlayerBridge.setAttribute(player,UIUtil.getOnclick(e.getCurrentItem()),1+JsonPlayerBridge.getAttribute(player, onClick));
+                    if(JsonPlayerBridge.getSkillPoints(player)>0 && JsonPlayerBridge.getAbilityScoreValue(player,onClick)< ConfigBridge.getAbilityScoreCap(JsonPlayerBridge.getLevel(player))) {
+                        JsonPlayerBridge.setAbilityScore(player,UIUtil.getOnclick(e.getCurrentItem()),1+JsonPlayerBridge.getAbilityScoreValue(player, onClick));
                         JsonPlayerBridge.setSkillPoints(player,JsonPlayerBridge.getSkillPoints(player)-1);
                         PlayerMenuManager.openAbilityScoreMenu(player,true);
                     }
@@ -230,6 +253,8 @@ public class UIListener implements Listener {
         if (e.getInventory().getHolder() == null) {
             String title = ChatColor.translateAlternateColorCodes('&', e.getView().getTitle());
             if (title.equals(ChatColor.BLACK + "Menu") ||
+                title.equals(ChatColor.BLACK + "Spells") ||
+                title.equals(ChatColor.BLACK + "Spell") ||
                 title.equals(ChatColor.BLACK + "Ability Scores") ||
                 title.equals(ChatColor.BLACK + "Discoveries") ||
                 title.equals(ChatColor.BLACK + "Abilities") ||

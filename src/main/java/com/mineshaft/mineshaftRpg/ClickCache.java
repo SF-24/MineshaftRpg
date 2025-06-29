@@ -37,6 +37,7 @@ import com.mineshaft.mineshaftapi.manager.event.click.ClickType;
 
 public class ClickCache {
 
+    HashMap<UUID, Integer> currentlyEditedSpellHotbar = new HashMap<>();
 
     HashMap<UUID, ArrayList<ClickType>> clicks = new HashMap<>();
     private Cache<UUID, Long> activeTime = CacheBuilder.newBuilder().expireAfterWrite(2500, TimeUnit.MILLISECONDS).build();
@@ -200,6 +201,27 @@ public class ClickCache {
         // Used for UI
 
         return null;
+    }
+
+    public int getEditedSpellHotbar(Player player) {
+        if(currentlyEditedSpellHotbar.get(player.getUniqueId())<0 || currentlyEditedSpellHotbar.get(player.getUniqueId())>2) return 0;
+        return currentlyEditedSpellHotbar.get(player.getUniqueId());
+    }
+
+    public void setEditedSpellHotbar(Player player, int hotbar) {
+        currentlyEditedSpellHotbar.put(player.getUniqueId(), hotbar);
+    }
+
+    public void upEditedSpellHotbar(Player player) {
+        int hotbar = getEditedSpellHotbar(player)+1;
+        if(hotbar>2) hotbar=0;
+        currentlyEditedSpellHotbar.put(player.getUniqueId(), hotbar);
+    }
+
+    public void downEditedSpellHotbar(Player player) {
+        int hotbar = getEditedSpellHotbar(player)-1;
+        if(hotbar<0) hotbar=2;
+        currentlyEditedSpellHotbar.put(player.getUniqueId(), hotbar);
     }
 
 }

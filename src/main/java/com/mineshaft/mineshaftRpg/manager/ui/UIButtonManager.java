@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftRpg.manager.ui;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.AbilityType;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
@@ -36,6 +37,7 @@ import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonSettingsBridge;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
+import com.mineshaft.mineshaftapi.util.ItemUtil;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.UIUtil;
 import com.mineshaft.mineshaftapi.util.ui.ButtonType;
@@ -68,6 +70,59 @@ public class UIButtonManager {
 
         item.setItemMeta(itemMeta);
         return item;
+    }
+
+    /**
+     * Spells
+     * */
+    public static class Spells {
+
+        public static ItemStack getSpellItem(Player player, CustomAbilityClass customAbilityClass, boolean slotInfo) {
+            ItemStack itemStack = Abilities.getAbilityItem(player, customAbilityClass, false);
+            if(slotInfo) {
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                assert itemMeta != null;
+                ArrayList<String> lore = (ArrayList<String>) itemMeta.getLore();
+                lore.add(ChatColor.GRAY + "Slot: " + JsonSettingsBridge.getSpellSlot(player, customAbilityClass.getId()));
+                lore.add(ChatColor.GRAY + "Hotbar: " + JsonSettingsBridge.getSpellHotbar(player, customAbilityClass.getId()));
+                itemMeta.setLore(lore);
+                itemStack.setItemMeta(itemMeta);
+            }
+            return itemStack;
+        }
+
+        public static ItemStack getSpellItem(Player player, int hotbar, int slot, boolean slotInfo) {
+            String spell = JsonSettingsBridge.getSpell(player,hotbar,slot);
+            return getSpellItem(player, MineshaftRpg.getInstance().getCache().getAbility(spell), slotInfo);
+        }
+
+        public static ItemStack getHotbarItem(Player player) {
+            return ButtonUtil.getButton(ButtonType.QUESTION_MARK,ButtonVariant.YELLOW,"Current hotbar: " + MineshaftRpg.getInstance().getCache().getClickCache().getEditedSpellHotbar(player),new ArrayList<>(),"");
+        }
+
+        public static ItemStack getHotbarDownItem() {
+            return ButtonUtil.getButton(ButtonType.ARROW_DOWN,ButtonVariant.GREEN,"Down",new ArrayList<>(),"spellHotbarDown");
+        }
+
+        public static ItemStack getHotbarUpItem() {
+            return ButtonUtil.getButton(ButtonType.ARROW_UP,ButtonVariant.GREEN,"Up",new ArrayList<>(),"spellHotbarUp");
+        }
+
+        public static ItemStack getSpellBindToSlotItem(Player player, int hotbar, int slot, String spellName) {
+            ItemStack button;
+            if(JsonSettingsBridge.getSpell(player,hotbar,slot) != null) {
+                CustomAbilityClass spell = MineshaftRpg.getInstance().getCache().getAbility(JsonSettingsBridge.getSpell(player,hotbar,slot));
+                button = ButtonUtil.getButton(ButtonType.PLUS,ButtonVariant.YELLOW,"Click to bind to slot " + slot, (ArrayList<String>) Collections.singletonList(ChatColor.GRAY + "Current spell: " + spell.getName().toString()),"bindSpell");
+            } else {
+                button = ButtonUtil.getButton(ButtonType.PLUS,ButtonVariant.GREEN,"Click to bind to slot " + slot, (ArrayList<String>) Collections.singletonList(ChatColor.GRAY + "No bound spell"),"bindSpell");
+            }
+            NBT.modify(button, nbt->{
+                nbt.setInteger("slot",slot);
+                nbt.setInteger("hotbar",hotbar);
+                nbt.setString("ability",spellName);
+            });
+            return button;
+        }
     }
 
     /**
@@ -132,11 +187,24 @@ public class UIButtonManager {
 
             NBT.modify(abilityItem, nbt -> {
                 if(onClick) {
-                    nbt.setString("onClick", "ability");
-                }
-                nbt.setString("ability", ability.getId());
-            });
+                    switch (ability.getAbilityType()) {
+                        case ACTIVE_ABILITY -> {
+                            nbt.setString("onClick", "ability");
+                            nbt.setString("ability", ability.getId());
+                        }
+                        case PASSIVE_ABILITY -> {
+                            nbt.setString("onClick", "passiveAbility");
+                            nbt.setString("passiveAbility", ability.getId());
 
+                        }
+                        case SPELL -> {
+                            nbt.setString("onClick", "spell");
+                            nbt.setString("spell", ability.getId());
+
+                        }
+                    }
+                }
+            });
             return abilityItem;
         }
     }
@@ -204,14 +272,31 @@ public class UIButtonManager {
             ItemMeta abilityItemMeta = abilityItem.getItemMeta();
             assert abilityItemMeta != null;
             abilityItemMeta.setDisplayName(ChatColor.LIGHT_PURPLE + "Abilities");
-            if (JsonPlayerBridge.getAbilities(player).isEmpty()) {
+            if (JsonPlayerBridge.getAbilities(player).isEmpty() && JsonPlayerBridge.getPassiveAbilities(player).isEmpty()) {
+                abilityItemMeta.setLore(Collections.singletonList(ChatColor.GRAY + "None"));
+            } else {
+                abilityItemMeta.setLore(Collections.singletonList(ChatColor.GRAY + "Left click for active abilities. Right click for passive abilities"));
+            }
+            abilityItem.setItemMeta(abilityItemMeta);
+            NBT.modify(abilityItem, nbt -> {
+                nbt.setString("onClick", "abilities");
+            });
+            return abilityItem;
+        }
+
+        public static ItemStack getSpellItem(Player player) {
+            ItemStack abilityItem = new ItemStack(Material.ENCHANTED_BOOK);
+            ItemMeta abilityItemMeta = abilityItem.getItemMeta();
+            assert abilityItemMeta != null;
+            abilityItemMeta.setDisplayName(ChatColor.LIGHT_PURPLE + "Spells");
+            if (JsonPlayerBridge.getSpells(player).isEmpty()) {
                 abilityItemMeta.setLore(Collections.singletonList(ChatColor.GRAY + "None"));
             } else {
                 abilityItemMeta.setLore(Collections.singletonList(ChatColor.GRAY + "Click to view"));
             }
             abilityItem.setItemMeta(abilityItemMeta);
             NBT.modify(abilityItem, nbt -> {
-                nbt.setString("onClick", "abilities");
+                nbt.setString("onClick", "spells");
             });
             return abilityItem;
         }
@@ -275,9 +360,9 @@ public class UIButtonManager {
             assert abilityScoreItemMeta != null;
             abilityScoreItemMeta.setDisplayName(ChatColor.WHITE + abilityScore.getName());
             ArrayList<String> strLore = new ArrayList<>();
-            strLore.add(abilityScore.getColour() + JsonPlayerBridge.getAttribute(player, abilityScore.name().toLowerCase()) + abilityScore.getDarkerColour() + " (" + AttributeManager.calculateAttributeModifier(player, abilityScore.name().toLowerCase(Locale.ROOT)) + ")");
+            strLore.add(abilityScore.getColour() + JsonPlayerBridge.getAbilityScoreValue(player, abilityScore.name().toLowerCase()) + abilityScore.getDarkerColour() + " (" + AttributeManager.calculateAttributeModifier(player, abilityScore.name().toLowerCase(Locale.ROOT)) + ")");
 
-            if (JsonPlayerBridge.getAttribute(player, abilityScore.name().toLowerCase()) >= ConfigBridge.getAbilityScoreCap(JsonPlayerBridge.getLevel(player))) {
+            if (JsonPlayerBridge.getAbilityScoreValue(player, abilityScore.name().toLowerCase()) >= ConfigBridge.getAbilityScoreCap(JsonPlayerBridge.getLevel(player))) {
                 strLore.add(ChatColor.GOLD + "Can no longer be increased");
             } else if (JsonPlayerBridge.getSkillPoints(player) > 0) {
                 strLore.add(ChatColor.YELLOW + "Click to increase");
