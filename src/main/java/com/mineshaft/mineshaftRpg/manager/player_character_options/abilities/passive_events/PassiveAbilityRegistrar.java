@@ -19,9 +19,9 @@
 package com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.passive_events;
 
 import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.AbilityType;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
+import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.passive_modifiers.PassiveModifiers;
 import com.mineshaft.mineshaftapi.util.Logger;

@@ -18,6 +18,7 @@
 
 package com.mineshaft.mineshaftRpg.manager.player_character_options.abilities;
 
+import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.util.Logger;
 import lombok.Getter;
 import org.bukkit.ChatColor;
@@ -26,7 +27,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

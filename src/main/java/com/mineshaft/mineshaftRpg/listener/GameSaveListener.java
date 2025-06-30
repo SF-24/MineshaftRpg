@@ -31,6 +31,7 @@ public class GameSaveListener implements Listener {
     public void onWorldSaveEvent(WorldSaveEvent event) {
         for(Player player : Bukkit.getOnlinePlayers()) {
             if(!player.getOpenInventory().getTitle().contains("Menu") && !player.getOpenInventory().getTitle().contains("Ability Scores")) {
+                // TODO: Check for whether the player has a wand UI open. If so, do not save the hotbar but save the rest of the inventory.
                 JsonPlayerBridge.saveInventory(player);
                 JsonPlayerBridge.saveLocation(player);
                 JsonPlayerBridge.saveEffects(player);

@@ -32,6 +32,7 @@ import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.JsonCus
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.JsonLevellingRewards;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.LevellingRewardClass;
 import com.mineshaft.mineshaftapi.MineshaftApi;
+import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.util.Logger;
 import lombok.Getter;
 
@@ -74,13 +75,13 @@ public class MineshaftCache {
     }
 
     public void cacheCustomAbility(CustomAbilityClass customAbilityClass) {
-        MineshaftApi.getInstance().cacheAbility(customAbilityClass.getId());
+        MineshaftApi.getInstance().cacheAbility(customAbilityClass.getId(),customAbilityClass.getAbilityType());
         this.abilityCache.add(customAbilityClass);
         Logger.logInfo("Cached custom ability with id: " + customAbilityClass.getId());
     }
 
     public void cacheHardcodedPassiveAbility(PassiveAbilities passiveAbility) {
-        MineshaftApi.getInstance().cacheAbility(passiveAbility.name().toLowerCase());
+        MineshaftApi.getInstance().cacheAbility(passiveAbility.name().toLowerCase(), AbilityType.PASSIVE_ABILITY);
         Logger.logInfo("Cached hardcoded passive ability with id: " + passiveAbility.name());
     }
 

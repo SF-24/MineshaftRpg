@@ -19,12 +19,13 @@
 package com.mineshaft.mineshaftRpg.listener;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.AbilityType;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.passive_events.PassiveAbilityRegistrar;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
 import com.mineshaft.mineshaftapi.events.MineshaftAbilityModifyEvent;
 import com.mineshaft.mineshaftapi.events.MineshaftClickTypeEvent;
 import com.mineshaft.mineshaftapi.events.MineshaftTownDiscoveryEvent;
+import com.mineshaft.mineshaftapi.events.MineshaftUseItemEvent;
+import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.ui.notification.NotificationSender;
 import org.bukkit.event.EventHandler;
@@ -32,6 +33,7 @@ import org.bukkit.event.Listener;
 
 public class MineshaftListener implements Listener {
 
+    // Discoveries
     @EventHandler
     public void onPlayerDiscoverTown(MineshaftTownDiscoveryEvent e) {
         // Give experience on town discovery
@@ -46,11 +48,13 @@ public class MineshaftListener implements Listener {
         NotificationSender.sendTownDiscoveryTitle(e.getPlayer(),e.getTown());
     }
 
+    // Key press, via AriKeys from Mineshaft
     @EventHandler
     public void onClickKey(MineshaftClickTypeEvent e) {
         MineshaftRpg.getInstance().getCache().getClickCache().cacheClick(e.getPlayer(), e.getClickType());
     }
 
+    // Ability change
     @EventHandler
     public void onAbilityChange(MineshaftAbilityModifyEvent e) {
         // Reload passive abilities if the passive abilities are modified.
@@ -58,4 +62,14 @@ public class MineshaftListener implements Listener {
             PassiveAbilityRegistrar.initialisePassiveAbilities(e.getPlayer());
         }
     }
+
+    // Use of an item with events
+    @EventHandler
+    public void onItemUse(MineshaftUseItemEvent e) {
+        if(e.getEvents().contains("wand")) {
+            // TODO: Toggle spell ui.
+        }
+    }
+
+
 }
