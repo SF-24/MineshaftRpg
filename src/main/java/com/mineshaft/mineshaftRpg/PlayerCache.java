@@ -35,9 +35,11 @@ import java.util.concurrent.TimeUnit;
 
 import com.mineshaft.mineshaftapi.manager.event.click.ClickType;
 
-public class ClickCache {
+public class PlayerCache {
 
     HashMap<UUID, Integer> currentlyEditedSpellHotbar = new HashMap<>();
+
+    HashMap<UUID, Integer> jumpCache = new HashMap<>();
 
     HashMap<UUID, ArrayList<ClickType>> clicks = new HashMap<>();
     private Cache<UUID, Long> activeTime = CacheBuilder.newBuilder().expireAfterWrite(2500, TimeUnit.MILLISECONDS).build();
