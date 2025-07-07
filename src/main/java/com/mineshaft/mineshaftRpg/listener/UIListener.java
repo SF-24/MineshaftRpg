@@ -140,8 +140,10 @@ public class UIListener implements Listener {
                         break;
                     case "abilities":
                         if(e.getClick().equals(org.bukkit.event.inventory.ClickType.LEFT) || e.getClick().equals(org.bukkit.event.inventory.ClickType.SHIFT_LEFT)) {
+                            e.getWhoClicked().sendMessage("Showing active abilities");
                             PlayerMenuManager.openAbilityUI((Player) e.getWhoClicked(), true,AbilityType.ACTIVE_ABILITY);
                         } else if(e.getClick().equals(org.bukkit.event.inventory.ClickType.RIGHT) || e.getClick().equals(org.bukkit.event.inventory.ClickType.SHIFT_RIGHT)) {
+                            e.getWhoClicked().sendMessage("Showing passive abilities");
                             PlayerMenuManager.openAbilityUI((Player) e.getWhoClicked(), true,AbilityType.PASSIVE_ABILITY);
                         }
                         break;

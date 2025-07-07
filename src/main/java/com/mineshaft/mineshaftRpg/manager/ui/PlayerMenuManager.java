@@ -90,13 +90,14 @@ public class PlayerMenuManager {
         for(String abilityId : knownAbilities.keySet()) {
             if(!included.contains(abilityId)) {
                 CustomAbilityClass ability = MineshaftRpg.getInstance().getCache().getAbility(abilityId);
-                if(ability.getAbilityType().equals(type)) {
+                if(ability!=null && ability.getAbilityType().equals(type)) {
                     ui.addItem(UIButtonManager.Abilities.getAbilityItem(player, ability, true));
                     included.add(abilityId);
+                } else {
+                    // TODO:
                 }
             }
         }
-
         new GUI(player, 0, ui, UIButtonManager.Abilities.getAbilityItemArray(player,true),"",19,25, ButtonUtil.getArrowDirectionButton(Direction2D.LEFT, ButtonVariant.GREEN),ButtonUtil.getArrowDirectionButton(Direction2D.RIGHT,ButtonVariant.GREEN));
         inventoryManagement(player, isUpdate);
     }

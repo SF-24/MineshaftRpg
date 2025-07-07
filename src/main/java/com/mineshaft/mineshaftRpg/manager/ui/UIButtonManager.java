@@ -185,22 +185,20 @@ public class UIButtonManager {
             abilityItem.setItemMeta(abilityItemMeta);
 
             NBT.modify(abilityItem, nbt -> {
-                if(onClick) {
-                    switch (ability.getAbilityType()) {
-                        case ACTIVE_ABILITY -> {
-                            nbt.setString("onClick", "ability");
-                            nbt.setString("ability", ability.getId());
-                        }
-                        case PASSIVE_ABILITY -> {
-                            nbt.setString("onClick", "passiveAbility");
-                            nbt.setString("passiveAbility", ability.getId());
+                switch (ability.getAbilityType()) {
+                    case ACTIVE_ABILITY -> {
+                        if(onClick) nbt.setString("onClick", "ability");
+                        nbt.setString("ability", ability.getId());
+                    }
+                    case PASSIVE_ABILITY -> {
+                        if(onClick) nbt.setString("onClick", "passiveAbility");
+                        nbt.setString("passiveAbility", ability.getId());
 
-                        }
-                        case SPELL -> {
-                            nbt.setString("onClick", "spell");
-                            nbt.setString("spell", ability.getId());
+                    }
+                    case SPELL -> {
+                        if(onClick) nbt.setString("onClick", "spell");
+                        nbt.setString("spell", ability.getId());
 
-                        }
                     }
                 }
             });
