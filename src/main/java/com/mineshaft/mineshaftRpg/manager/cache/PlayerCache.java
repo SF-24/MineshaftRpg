@@ -16,13 +16,15 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg;
+package com.mineshaft.mineshaftRpg.manager.cache;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.AbilityExecutor;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonSettingsBridge;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -37,8 +39,10 @@ import com.mineshaft.mineshaftapi.manager.event.click.ClickType;
 
 public class PlayerCache {
 
-    HashMap<UUID, Integer> currentlyEditedSpellHotbar = new HashMap<>();
+    @Getter
+    SpellHotbarManager spellHotbarManager = new SpellHotbarManager();
 
+    HashMap<UUID, Integer> currentlyEditedSpellHotbar = new HashMap<>();
     HashMap<UUID, Integer> jumpCache = new HashMap<>();
 
     HashMap<UUID, ArrayList<ClickType>> clicks = new HashMap<>();

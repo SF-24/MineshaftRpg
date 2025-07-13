@@ -20,7 +20,7 @@ package com.mineshaft.mineshaftRpg;
 
 import com.mineshaft.mineshaftRpg.command.*;
 import com.mineshaft.mineshaftRpg.listener.*;
-import com.mineshaft.mineshaftRpg.manager.MineshaftCache;
+import com.mineshaft.mineshaftRpg.manager.cache.MineshaftCache;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.JsonCustomAbilities;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.backgrounds.JsonCustomBackgrounds;

@@ -16,9 +16,8 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.manager;
+package com.mineshaft.mineshaftRpg.manager.cache;
 
-import com.mineshaft.mineshaftRpg.PlayerCache;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.JsonCustomAbilities;
@@ -57,7 +56,7 @@ public class MineshaftCache {
 
     // Click cache
     @Getter
-    PlayerCache clickCache = new PlayerCache();
+    PlayerCache playerCache = new PlayerCache();
 
     public MineshaftCache() {
         jsonCustomCultures=new JsonCustomCultures();

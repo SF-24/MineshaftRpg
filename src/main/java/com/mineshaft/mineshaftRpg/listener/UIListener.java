@@ -73,7 +73,7 @@ public class UIListener implements Listener {
                         break;
                     case "reset_combo":
                         // Reset the combo
-                        MineshaftRpg.getInstance().getCache().getClickCache().resetSettingClicks((Player) e.getWhoClicked());
+                        MineshaftRpg.getInstance().getCache().getPlayerCache().resetSettingClicks((Player) e.getWhoClicked());
                         // Reload the UI
                         NBT.modify(Objects.requireNonNull(e.getView().getTopInventory().getItem(11)), nbt->{
                             String abilityName=nbt.getString("ability");
@@ -95,11 +95,11 @@ public class UIListener implements Listener {
                     case "add_click_to_combo":
                         // Add clicks to the ability combo
                         if(e.getClick().equals(org.bukkit.event.inventory.ClickType.SHIFT_LEFT) || e.getClick().equals(org.bukkit.event.inventory.ClickType.LEFT)) {
-                            MineshaftRpg.getInstance().getCache().getClickCache().addSettingClick((Player) e.getWhoClicked(), ClickType.LEFT);
+                            MineshaftRpg.getInstance().getCache().getPlayerCache().addSettingClick((Player) e.getWhoClicked(), ClickType.LEFT);
                         } else if(e.getClick().equals(org.bukkit.event.inventory.ClickType.SHIFT_RIGHT) || e.getClick().equals(org.bukkit.event.inventory.ClickType.RIGHT)) {
-                            MineshaftRpg.getInstance().getCache().getClickCache().addSettingClick((Player) e.getWhoClicked(), ClickType.RIGHT);
+                            MineshaftRpg.getInstance().getCache().getPlayerCache().addSettingClick((Player) e.getWhoClicked(), ClickType.RIGHT);
                         } else if(e.getClick().equals(org.bukkit.event.inventory.ClickType.MIDDLE)||e.getClick().equals(org.bukkit.event.inventory.ClickType.UNKNOWN)||e.getClick().equals(org.bukkit.event.inventory.ClickType.DROP)) {
-                            MineshaftRpg.getInstance().getCache().getClickCache().addSettingClick((Player) e.getWhoClicked(), ClickType.MIDDLE);
+                            MineshaftRpg.getInstance().getCache().getPlayerCache().addSettingClick((Player) e.getWhoClicked(), ClickType.MIDDLE);
                         } else {
                             return;
                         }
@@ -119,7 +119,7 @@ public class UIListener implements Listener {
                                 Logger.logError("Detected null ability name!");
                                 return;
                             }
-                            MineshaftRpg.getInstance().getCache().getClickCache().saveSettingClicks((Player) e.getWhoClicked(),abilityName);
+                            MineshaftRpg.getInstance().getCache().getPlayerCache().saveSettingClicks((Player) e.getWhoClicked(),abilityName);
                         });
                         PlayerMenuManager.openAbilityUI((Player) e.getWhoClicked(),true, AbilityType.ACTIVE_ABILITY);
                         break;
@@ -164,10 +164,10 @@ public class UIListener implements Listener {
                         });
                         break;
                     case "spellHotbarUp":
-                        MineshaftRpg.getInstance().getCache().getClickCache().upEditedSpellHotbar((Player) e.getWhoClicked());
+                        MineshaftRpg.getInstance().getCache().getPlayerCache().upEditedSpellHotbar((Player) e.getWhoClicked());
                         break;
                     case "spellHotbarDown":
-                        MineshaftRpg.getInstance().getCache().getClickCache().downEditedSpellHotbar((Player) e.getWhoClicked());
+                        MineshaftRpg.getInstance().getCache().getPlayerCache().downEditedSpellHotbar((Player) e.getWhoClicked());
                         break;
                     case "ability_scores":
                         PlayerMenuManager.openAbilityScoreMenu((Player) e.getWhoClicked(),true);

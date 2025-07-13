@@ -133,7 +133,7 @@ public class CultureManager {
                 BetonQuestBridge.runBetonPlayerEvent(player,CultureManager.getCustomCulture(culture).getBetonQuestEvents().get(eventName),eventName);
             }
 
-            JsonPlayerBridge.saveInventory(player);
+            MineshaftPlayerBridge.savePlayerData(player);
             // TODO:
         }
 

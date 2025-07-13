@@ -19,9 +19,11 @@
 package com.mineshaft.mineshaftRpg.listener;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
+import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
 import com.mineshaft.mineshaftRpg.manager.PlayerCharacterManager;
-import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,13 +38,12 @@ public class PlayerJoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         // Redundant null check?
         PlayerCharacterManager.initialiseCharacter(event.getPlayer());
+        event.getPlayer().sendMessage(Component.text("This server uses the plugin MineshaftRpg by https://github.com/SF-24", NamedTextColor.AQUA));
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        JsonPlayerBridge.saveInventory(event.getPlayer());
-        JsonPlayerBridge.saveLocation(event.getPlayer());
-        JsonPlayerBridge.saveLocation(event.getPlayer());
+        MineshaftPlayerBridge.savePlayerData(event.getPlayer());
     }
 
     @EventHandler

@@ -22,6 +22,8 @@ import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.VectorPlayerEvent;
+import com.mineshaft.mineshaftapi.manager.item.ItemManager;
+import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -74,7 +76,7 @@ public class AbilityExecutor {
         if(sender instanceof Player player) {
             if (args.length == 1) {
                 if(MineshaftRpg.getInstance().getCache().getAbilityIds().contains(args[0])) {
-                    if (!checkOwnership || JsonPlayerBridge.getAbilities(player).containsKey(args[0])) {
+                    if (!checkOwnership || JsonPlayerBridge.getAbilities(player).containsKey(args[0]) || (ItemManager.getItemSubcategory(player.getInventory().getItemInMainHand()).equals(ItemSubcategory.WAND) && JsonPlayerBridge.getSpells(player).containsKey(args[0]))) {
                         // Trigger the ability:
                         executeAbilityOnSelf(player,getAbilityClass(args[0]));
                     } else {

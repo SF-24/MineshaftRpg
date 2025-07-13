@@ -36,7 +36,6 @@ import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonSettingsBridge;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
-import com.mineshaft.mineshaftapi.util.ItemUtil;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.UIUtil;
 import com.mineshaft.mineshaftapi.util.ui.ButtonType;
@@ -96,7 +95,7 @@ public class UIButtonManager {
         }
 
         public static ItemStack getHotbarItem(Player player) {
-            return ButtonUtil.getButton(ButtonType.QUESTION_MARK,ButtonVariant.YELLOW,"Current hotbar: " + MineshaftRpg.getInstance().getCache().getClickCache().getEditedSpellHotbar(player),new ArrayList<>(),"");
+            return ButtonUtil.getButton(ButtonType.QUESTION_MARK,ButtonVariant.YELLOW,"Current hotbar: " + MineshaftRpg.getInstance().getCache().getPlayerCache().getEditedSpellHotbar(player),new ArrayList<>(),"");
         }
 
         public static ItemStack getHotbarDownItem() {
@@ -153,7 +152,7 @@ public class UIButtonManager {
         }
 
         public static ItemStack getComboAddClickItem(Player player) {
-            ArrayList<String> lore = MineshaftRpg.getInstance().getCache().getClickCache().getSettingClicksAsStringList(player,ChatColor.GRAY.toString(),"Click");
+            ArrayList<String> lore = MineshaftRpg.getInstance().getCache().getPlayerCache().getSettingClicksAsStringList(player,ChatColor.GRAY.toString(),"Click");
             return ButtonUtil.getButton(ButtonType.PLUS, ButtonVariant.GREEN, "Add Clicks", lore, "add_click_to_combo");
         }
 
@@ -224,7 +223,7 @@ public class UIButtonManager {
             }
 
             ArrayList<String> lore = new ArrayList<>();
-            lore.add(Component.text(culture + ", Level " + JsonPlayerBridge.getLevel(player),NamedTextColor.GRAY).toString());
+            lore.add(ChatColor.GRAY + culture + ", Level " + JsonPlayerBridge.getLevel(player));
             lore.add("");
             lore.addAll(MineshaftPlayerBridge.Attributes.getAbilityScoreStrings(player));
 

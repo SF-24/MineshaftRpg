@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftRpg.manager.ui;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
+import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
@@ -123,7 +124,7 @@ public class PlayerMenuManager {
 
         // Bind spell slots
         for(int i = 1; i<8; i++) {
-            ItemStack item = UIButtonManager.Spells.getSpellBindToSlotItem(player,MineshaftRpg.getInstance().getCache().getClickCache().getEditedSpellHotbar(player),i,abilityClass.getId());
+            ItemStack item = UIButtonManager.Spells.getSpellBindToSlotItem(player,MineshaftRpg.getInstance().getCache().getPlayerCache().getEditedSpellHotbar(player),i,abilityClass.getId());
             ui.setItem(i+8,item);
         }
 
@@ -220,7 +221,7 @@ public class PlayerMenuManager {
                         AnvilGUI.ResponseAction.run(() -> {
                             // On confirm
                             if(!JsonProfileBridge.getCurrentProfile(player).equalsIgnoreCase("Default") && JsonProfileBridge.getCurrentProfile(player)!=null) {
-                                JsonPlayerBridge.saveInventory(player);
+                                MineshaftPlayerBridge.savePlayerData(player);
                                 player.getInventory().clear();
                             }
                             JsonProfileBridge.setCurrentProfile(player, name);
@@ -368,7 +369,7 @@ public class PlayerMenuManager {
     }
 
     public static void genericInventoryOpen(Player player) {
-        JsonPlayerBridge.saveInventory(player);
+        MineshaftPlayerBridge.savePlayerData(player);
         player.getInventory().clear();
         MineshaftRpg.getInstance().addUiBrowsingPlayer(player.getUniqueId());
     }

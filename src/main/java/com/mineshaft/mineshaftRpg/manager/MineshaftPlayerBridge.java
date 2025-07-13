@@ -35,6 +35,15 @@ import java.util.List;
 
 public class MineshaftPlayerBridge {
 
+    public static void saveInventory(Player player) {
+        JsonPlayerBridge.saveInventory(player, !MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().isHotbarInUse(player));
+    }
+
+    public static void savePlayerData(Player player) {
+        JsonPlayerBridge.saveLocation(player);
+        JsonPlayerBridge.saveEffects(player);
+    }
+
     public static void setLanguages(Player player, List<String> languages) {
         if(!languages.contains(ConfigBridge.getDefaultLanguage())) {
             JsonPlayerBridge.addToCharDataList(player, "languages",ConfigBridge.getDefaultLanguage() );

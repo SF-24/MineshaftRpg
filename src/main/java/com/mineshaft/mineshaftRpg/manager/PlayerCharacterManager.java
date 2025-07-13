@@ -69,9 +69,7 @@ public class PlayerCharacterManager {
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(MineshaftRpg.getInstance(), () -> {
             // Save user daya
-            JsonPlayerBridge.saveInventory(player);
-            JsonPlayerBridge.saveEffects(player);
-            JsonPlayerBridge.saveLocation(player);
+            MineshaftPlayerBridge.savePlayerData(player);
 
             // Clear inventory
             player.getInventory().clear();

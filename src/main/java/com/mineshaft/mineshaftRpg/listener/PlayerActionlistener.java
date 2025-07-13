@@ -19,13 +19,22 @@
 package com.mineshaft.mineshaftRpg.listener;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.AbilityExecutor;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.nbtapi.NBT;
+import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class PlayerActionlistener implements Listener {
 
@@ -40,6 +49,24 @@ public class PlayerActionlistener implements Listener {
     public void onItemPickup(PlayerAttemptPickupItemEvent e) {
         if(MineshaftRpg.getInstance().getUiBrowsingPlayers().contains(e.getPlayer().getUniqueId())) {
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onHotbarChange(PlayerInventorySlotChangeEvent e) {
+        if(MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().hasSpellHotbar(e.getPlayer())) {
+            ItemStack slotItem = e.getPlayer().getInventory().getItem(e.getSlot());
+            if(slotItem!=null && slotItem.getType()!= Material.AIR) {
+                try {
+                    NBT.get(slotItem, nbt->{
+                        if(JsonPlayerBridge.getSpells(e.getPlayer()).containsKey(nbt.getString("Spell"))) {
+                            AbilityExecutor.executeAbilityOnSelf(e.getPlayer(),MineshaftRpg.getInstance().getCache().getAbility(nbt.getString("Spell")));
+                        }
+                    });
+                } catch (NullPointerException ignored) {
+                    e.getPlayer().sendMessage(Component.text("Null spell detected. Please contact the author of the plugin MineshaftRpg.", NamedTextColor.RED));
+                }
+            }
         }
     }
 
