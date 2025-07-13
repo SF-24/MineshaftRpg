@@ -21,6 +21,8 @@ package com.mineshaft.mineshaftRpg.listener;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.AbilityExecutor;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
+import com.mineshaft.mineshaftapi.manager.item.ItemManager;
+import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
 import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
@@ -28,15 +30,42 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 public class PlayerActionlistener implements Listener {
+
+    @EventHandler
+    public void onDrop(PlayerDropItemEvent e) {
+        if(!e.isCancelled()) {
+            Player player = e.getPlayer();
+            if (!MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().hasSpellHotbar(player)) {
+                final UUID[] uuid = new UUID[1];
+                try {
+                    NBT.get(e.getItemDrop(), nbt -> {
+                        String id = nbt.getOrDefault("uuid", "null");
+                        if (id.equalsIgnoreCase("null")) return;
+                        uuid[0] = UUID.fromString(id);
+                    });
+                } catch (Exception ignored) {
+                }
+                UUID uniqueId = uuid[0];
+
+                if (ItemManager.getInteractEventsFromItem(ItemManager.getItemName(uniqueId), ActionType.RIGHT_CLICK).contains("wand")) {
+                    MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().deactivateSpellHotbar(player);
+                }
+            }
+        }
+    }
 
     @EventHandler
     public void onPlayerPickupExperience(PlayerExpChangeEvent e) {
