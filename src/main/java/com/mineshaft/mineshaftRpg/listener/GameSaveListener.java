@@ -34,9 +34,7 @@ public class GameSaveListener implements Listener {
         for(Player player : Bukkit.getOnlinePlayers()) {
             if(!player.getOpenInventory().getTitle().contains("Menu") && !player.getOpenInventory().getTitle().contains("Ability Scores")) {
                 MineshaftPlayerBridge.savePlayerData(player);
-
                 // Toggle the spell hotbar UI
-                MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().toggleSpellHotbar(player);
             }
         }
     }

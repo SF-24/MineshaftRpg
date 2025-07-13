@@ -133,7 +133,7 @@
         <dependency>
             <groupId>com.mineshaft</groupId>
             <artifactId>mineshaft-api</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>1.1.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

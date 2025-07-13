@@ -69,8 +69,9 @@ public class MineshaftListener implements Listener {
     // Use of an item with events
     @EventHandler
     public void onItemUse(MineshaftUseItemEvent e) {
-        if(e.getEvents().contains("wand") && e.getClickType().equals(ActionType.RIGHT_CLICK)) {
+        if(e.getEvents()!=null && e.getEvents().contains("wand") && e.getClickType().equals(ActionType.RIGHT_CLICK)) {
             MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().toggleSpellHotbar(e.getPlayer());
+            e.setCancelled(true);
         }
     }
 

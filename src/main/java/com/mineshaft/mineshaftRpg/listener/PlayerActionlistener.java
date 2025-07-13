@@ -25,10 +25,8 @@ import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
-import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,9 +34,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -51,8 +48,8 @@ public class PlayerActionlistener implements Listener {
             if (!MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().hasSpellHotbar(player)) {
                 final UUID[] uuid = new UUID[1];
                 try {
-                    NBT.get(e.getItemDrop(), nbt -> {
-                        String id = nbt.getOrDefault("uuid", "null");
+                    NBT.get(e.getItemDrop().getItemStack(), nbt -> {
+                        String id = nbt.getString("uuid");
                         if (id.equalsIgnoreCase("null")) return;
                         uuid[0] = UUID.fromString(id);
                     });
@@ -62,6 +59,7 @@ public class PlayerActionlistener implements Listener {
 
                 if (ItemManager.getInteractEventsFromItem(ItemManager.getItemName(uniqueId), ActionType.RIGHT_CLICK).contains("wand")) {
                     MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().deactivateSpellHotbar(player);
+                    player.sendMessage("shutting wand ui");
                 }
             }
         }
@@ -82,10 +80,10 @@ public class PlayerActionlistener implements Listener {
     }
 
     @EventHandler
-    public void onHotbarChange(PlayerInventorySlotChangeEvent e) {
+    public void onHotbarChange(PlayerItemHeldEvent e) {
         if(MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().hasSpellHotbar(e.getPlayer())) {
-            ItemStack slotItem = e.getPlayer().getInventory().getItem(e.getSlot());
-            if(slotItem!=null && slotItem.getType()!= Material.AIR) {
+            ItemStack slotItem = e.getPlayer().getInventory().getItem(e.getNewSlot());
+            if(slotItem!=null && slotItem.getType() != Material.AIR) {
                 try {
                     NBT.get(slotItem, nbt->{
                         if(JsonPlayerBridge.getSpells(e.getPlayer()).containsKey(nbt.getString("Spell"))) {
@@ -95,6 +93,10 @@ public class PlayerActionlistener implements Listener {
                 } catch (NullPointerException ignored) {
                     e.getPlayer().sendMessage(Component.text("Null spell detected. Please contact the author of the plugin MineshaftRpg.", NamedTextColor.RED));
                 }
+            }
+            e.setCancelled(true);
+            if(e.getNewSlot()!=8) {
+                e.getPlayer().getInventory().setHeldItemSlot(8);
             }
         }
     }

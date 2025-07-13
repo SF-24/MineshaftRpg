@@ -40,6 +40,7 @@ public class MineshaftPlayerBridge {
     }
 
     public static void savePlayerData(Player player) {
+        saveInventory(player);
         JsonPlayerBridge.saveLocation(player);
         JsonPlayerBridge.saveEffects(player);
     }

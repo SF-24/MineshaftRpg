@@ -43,6 +43,9 @@ public class PlayerJoinListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        if(MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().hasSpellHotbar(event.getPlayer())) {
+            MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().deactivateSpellHotbar(event.getPlayer());
+        }
         MineshaftPlayerBridge.savePlayerData(event.getPlayer());
     }
 

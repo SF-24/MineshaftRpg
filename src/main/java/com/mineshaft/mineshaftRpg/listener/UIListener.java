@@ -247,6 +247,16 @@ public class UIListener implements Listener {
                 }
 
             }
+        } else {
+            if(e.getCurrentItem()!=null && e.getCurrentItem().getType()!=Material.AIR) {
+                try {
+                    NBT.get(e.getCurrentItem(),nbt->{
+                        if(nbt.getBoolean("Immutable")) {
+                            e.setCancelled(true);
+                        }
+                    });
+                } catch (NullPointerException ignored) {}
+            }
         }
     }
 

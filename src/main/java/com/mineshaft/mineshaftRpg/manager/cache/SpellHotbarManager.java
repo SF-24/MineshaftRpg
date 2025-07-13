@@ -28,6 +28,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,11 +70,13 @@ public class SpellHotbarManager {
             this.initialWandSlot.put(player.getUniqueId(), player.getInventory().getHeldItemSlot());
 
             // Fill the hotbar
-            fillSpellHotbar(player,JsonSettingsBridge.getCurrentSpellHotbar(player));
+            fillSpellHotbar(player);
 
             // Set the wand
             player.getInventory().setItem(8, wand);
             player.getInventory().setHeldItemSlot(8);
+        } else {
+            player.sendMessage("Cannot open spell hotbar");
         }
     }
 
@@ -89,15 +92,15 @@ public class SpellHotbarManager {
             }
 
             // Update the cache
+            hotbarType.remove(player.getUniqueId());
             hotbarType.put(player.getUniqueId(), HotbarType.DEFAULT);
 
             // Return saved items
             ArrayList<ItemStack> itemList = savedItems.get(player.getUniqueId());
             for (int i = 0; i < 9; i++) {
-
                 ItemStack is = itemList.get(i);
+                if(is==null || is.isEmpty()) player.getInventory().setItem(i, new ItemStack(Material.AIR));
                 player.getInventory().setItem(i, is);
-
             }
 
             // Return the wand
@@ -105,6 +108,8 @@ public class SpellHotbarManager {
                 player.getInventory().setHeldItemSlot(slot);
             }
             player.getInventory().setItemInMainHand(wand);
+        } else {
+            player.sendMessage("Cannot shut!");
         }
     }
 
@@ -130,7 +135,7 @@ public class SpellHotbarManager {
             JsonSettingsBridge.setCurrentSpellHotbar(player,hotBar);
             player.playSound(player.getLocation(), Sound.ITEM_BOOK_PAGE_TURN,1.0f,1.0f);
 
-            fillSpellHotbar(player,hotBar);
+            fillSpellHotbar(player);
         }
     }
 
@@ -139,6 +144,7 @@ public class SpellHotbarManager {
     }
 
     public boolean hasSpellHotbar(Player player) {
+        if(!hotbarType.containsKey(player.getUniqueId())) return false;
         return hotbarType.get(player.getUniqueId()).equals(HotbarType.SPELL_HOTBAR);
     }
 
@@ -147,7 +153,7 @@ public class SpellHotbarManager {
         return !hotbarType.get(player.getUniqueId()).equals(HotbarType.DEFAULT);
     }
 
-    public void fillSpellHotbar(Player player, int hotbar) {
+    public void fillSpellHotbar(Player player) {
         if(hasSpellHotbar(player)) {
             for (int i = 0; i < 8; i++) {
                 player.getInventory().setItem(i, getSpellHotbarItem(player, JsonSettingsBridge.getCurrentSpellHotbar(player), i));
@@ -157,6 +163,21 @@ public class SpellHotbarManager {
 
     public ItemStack getSpellHotbarItem(Player player, int spellHotbar, int slot) {
         String id = JsonSettingsBridge.getSpell(player, spellHotbar, slot);
+
+        if(id==null || id.isBlank()) {
+            ItemStack blank = new ItemStack(Material.PEONY);
+            ItemMeta blankMeta = blank.getItemMeta();
+            blankMeta.setDisplayName(" ");
+            // TODO: add ButtonUtil definition
+            blankMeta.setCustomModelData(99);
+            blank.setItemMeta(blankMeta);
+            NBT.modify(blank, nbt->{
+                nbt.setBoolean("Immutable",true);
+                nbt.setString("Spell",null);
+            });
+            return blank;
+        }
+
         CustomAbilityClass spellClass = MineshaftRpg.getInstance().getCache().getAbility(id);
 
         ItemStack item = spellClass.getIcon();
