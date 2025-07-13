@@ -21,15 +21,18 @@ package com.mineshaft.mineshaftRpg.listener;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.passive_events.PassiveAbilityRegistrar;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
-import com.mineshaft.mineshaftapi.events.MineshaftAbilityModifyEvent;
-import com.mineshaft.mineshaftapi.events.MineshaftClickTypeEvent;
-import com.mineshaft.mineshaftapi.events.MineshaftTownDiscoveryEvent;
-import com.mineshaft.mineshaftapi.events.MineshaftUseItemEvent;
+import com.mineshaft.mineshaftapi.events.*;
+import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.player.AbilityType;
+import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.ui.notification.NotificationSender;
+import com.mineshaft.mineshaftapi.nbtapi.NBT;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+
+import java.util.UUID;
 
 public class MineshaftListener implements Listener {
 
@@ -66,10 +69,31 @@ public class MineshaftListener implements Listener {
     // Use of an item with events
     @EventHandler
     public void onItemUse(MineshaftUseItemEvent e) {
-        if(e.getEvents().contains("wand")) {
-            // TODO: Toggle spell ui.
+        if(e.getEvents().contains("wand") && e.getClickType().equals(ActionType.RIGHT_CLICK)) {
+            MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().toggleSpellHotbar(e.getPlayer());
         }
     }
 
+    // Use of an item with events
+    @EventHandler
+    public void onItemUse(MineshaftEntityDisarmEvent e) {
+        if(!e.isCancelled() && e.getEntity() instanceof Player player) {
+            if (!MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().hasSpellHotbar(player)) {
+                final UUID[] uuid = new UUID[1];
+                try {
+                    NBT.get(e.getItem(), nbt -> {
+                        String id = nbt.getOrDefault("uuid", "null");
+                        if (id.equalsIgnoreCase("null")) return;
+                        uuid[0] = UUID.fromString(id);
+                    });
+                } catch (Exception ignored) {
+                }
+                UUID uniqueId = uuid[0];
 
+                if (ItemManager.getInteractEventsFromItem(ItemManager.getItemName(uniqueId), ActionType.RIGHT_CLICK).contains("wand")) {
+                    MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().deactivateSpellHotbar(player);
+                }
+            }
+        }
+    }
 }
