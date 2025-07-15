@@ -25,7 +25,6 @@ import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.Cus
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
-import com.mineshaft.mineshaftRpg.manager.player_data.AttributeManager;
 import com.mineshaft.mineshaftapi.dependency.world_guard.DiscoveryCategory;
 import com.mineshaft.mineshaftapi.dependency.world_guard.Town;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
@@ -41,8 +40,6 @@ import com.mineshaft.mineshaftapi.util.UIUtil;
 import com.mineshaft.mineshaftapi.util.ui.ButtonType;
 import com.mineshaft.mineshaftapi.util.ui.ButtonUtil;
 import com.mineshaft.mineshaftapi.util.ui.ButtonVariant;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -95,7 +92,7 @@ public class UIButtonManager {
         }
 
         public static ItemStack getHotbarItem(Player player) {
-            return ButtonUtil.getButton(ButtonType.QUESTION_MARK,ButtonVariant.YELLOW,"Current hotbar: " + MineshaftRpg.getInstance().getCache().getPlayerCache().getEditedSpellHotbar(player),new ArrayList<>(),"");
+            return ButtonUtil.getButton(ButtonType.QUESTION_MARK,ButtonVariant.YELLOW,"Current hotbar: " + MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellCache().getEditedSpellHotbar(player),new ArrayList<>(),"");
         }
 
         public static ItemStack getHotbarDownItem() {
@@ -152,7 +149,7 @@ public class UIButtonManager {
         }
 
         public static ItemStack getComboAddClickItem(Player player) {
-            ArrayList<String> lore = MineshaftRpg.getInstance().getCache().getPlayerCache().getSettingClicksAsStringList(player,ChatColor.GRAY.toString(),"Click");
+            ArrayList<String> lore = MineshaftRpg.getInstance().getCache().getPlayerCache().getClickCache().getSettingClicksAsStringList(player,ChatColor.GRAY.toString(),"Click");
             return ButtonUtil.getButton(ButtonType.PLUS, ButtonVariant.GREEN, "Add Clicks", lore, "add_click_to_combo");
         }
 
@@ -356,7 +353,7 @@ public class UIButtonManager {
             assert abilityScoreItemMeta != null;
             abilityScoreItemMeta.setDisplayName(ChatColor.WHITE + abilityScore.getName());
             ArrayList<String> strLore = new ArrayList<>();
-            strLore.add(abilityScore.getColour() + JsonPlayerBridge.getAbilityScoreValue(player, abilityScore.name().toLowerCase()) + abilityScore.getDarkerColour() + " (" + AttributeManager.calculateAttributeModifier(player, abilityScore.name().toLowerCase(Locale.ROOT)) + ")");
+            strLore.add(abilityScore.getColour() + JsonPlayerBridge.getAbilityScoreValue(player, abilityScore.name().toLowerCase()) + abilityScore.getDarkerColour() + " (" + JsonPlayerBridge.getAbilityScoreModifier(player, abilityScore.name().toLowerCase(Locale.ROOT)) + ")");
 
             if (JsonPlayerBridge.getAbilityScoreValue(player, abilityScore.name().toLowerCase()) >= ConfigBridge.getAbilityScoreCap(JsonPlayerBridge.getLevel(player))) {
                 strLore.add(ChatColor.GOLD + "Can no longer be increased");

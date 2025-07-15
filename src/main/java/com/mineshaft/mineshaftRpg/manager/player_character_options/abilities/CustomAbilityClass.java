@@ -33,18 +33,26 @@ import java.util.Map;
 @Getter
 public class CustomAbilityClass {
 
+    // Basic data
     String id = "example_ability";
     String name = "Example Ability";
     String description = "Description";
     AbilityType abilityType = AbilityType.ACTIVE_ABILITY;
 
+    // Events triggered and modifiers
     // Only work for non-passive abilities
     List<String> customEvents = List.of("event1","event2");
     List<String> hardcodedEvents = List.of("event1","event2");
     Map<String,Map<String, Double>> passiveModifiers = Map.of("passiveEvent1",Map.of("DAMAGE", 1d),"passiveEvent2",Map.of("SPEED",2d));
     List<String> hardcodedPassiveModifiers = List.of("event1","event2");
-    int castCost = 10;
 
+    // Energy cost of using the ability or spell
+    int castCost = 5;
+
+    // How hard the spell is to learn, used only for spells
+    int learnDifficulty = 10;
+
+    // Icon
     Material materialIcon = Material.IRON_SWORD;
     int customModelData = 5;
 

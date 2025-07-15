@@ -16,17 +16,26 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.manager.player_data;
+package com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.spells;
 
-import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
-import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
-import org.bukkit.entity.Player;
+import lombok.Getter;
 
-public class AttributeManager {
+@Getter
+public enum SpellCastResult {
 
 
-    public static int calculateAttributeModifier(Player player, String attributeName) {
-        return PlayerStatManager.calculateAbilityScoreModifier(JsonPlayerBridge.getAbilityScoreValue(player, attributeName));
+    FAILS(1,2),
+    FIZZLES(2,3),
+
+    SEMI_SUCCESS(3,4),
+    SUCCESS(3,5);
+
+    final int minimumExperience;
+    final int maximumExperience;
+
+    SpellCastResult(int minimumExperience, int maximumExperience) {
+        this.minimumExperience = minimumExperience;
+        this.maximumExperience = maximumExperience;
     }
 
 }

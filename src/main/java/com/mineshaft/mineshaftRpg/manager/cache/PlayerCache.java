@@ -42,192 +42,204 @@ public class PlayerCache {
     @Getter
     SpellHotbarManager spellHotbarManager = new SpellHotbarManager();
 
+    HashMap<UUID, Integer> playerEnergy = new HashMap<>();
+
     HashMap<UUID, Integer> currentlyEditedSpellHotbar = new HashMap<>();
     HashMap<UUID, Integer> jumpCache = new HashMap<>();
 
     HashMap<UUID, ArrayList<ClickType>> clicks = new HashMap<>();
-    private Cache<UUID, Long> activeTime = CacheBuilder.newBuilder().expireAfterWrite(2500, TimeUnit.MILLISECONDS).build();
-    private Cache<UUID, Long> cooldown = CacheBuilder.newBuilder().expireAfterWrite(100, TimeUnit.MILLISECONDS).build();
+    private final Cache<UUID, Long> activeTime = CacheBuilder.newBuilder().expireAfterWrite(2500, TimeUnit.MILLISECONDS).build();
+    private final Cache<UUID, Long> cooldown = CacheBuilder.newBuilder().expireAfterWrite(100, TimeUnit.MILLISECONDS).build();
 
-    private HashMap<UUID, ArrayList<ClickType>> settableClicks = new HashMap<>();
+    private final HashMap<UUID, ArrayList<ClickType>> settableClicks = new HashMap<>();
 
-    // Of the player has clicked
-    public boolean hasActiveClicks(Player player) {
-        if(clicks.containsKey(player.getUniqueId()) && activeTime.asMap().containsKey(player.getUniqueId())) {
-            return true;
+    @Getter
+    PlayerClicks clickCache = new PlayerClicks();
+    @Getter
+    SpellCache spellCache = new SpellCache();
+
+    public class PlayerClicks {
+        // If the player has clicked
+        public boolean hasActiveClicks(Player player) {
+            if(clicks.containsKey(player.getUniqueId()) && activeTime.asMap().containsKey(player.getUniqueId())) {
+                return true;
+            }
+            return false;
         }
-        return false;
-    }
 
-    // Cache a combo click
-    public void cacheClick(Player player, ClickType clickType) {
-        UUID uuid = player.getUniqueId();
-        ArrayList<ClickType> clickTypes = new ArrayList<>();
-        if(hasActiveClicks(player)) {
-            clickTypes = clicks.get(uuid);
+        // Cache a combo click
+        public void cacheClick(Player player, ClickType clickType) {
+            UUID uuid = player.getUniqueId();
+            ArrayList<ClickType> clickTypes = new ArrayList<>();
+            if(hasActiveClicks(player)) {
+                clickTypes = clicks.get(uuid);
 
-            if(clickTypes.size() > 5) {
-                clickTypes = new ArrayList<>();
+                if(clickTypes.size() > 5) {
+                    clickTypes = new ArrayList<>();
+                }
+
+            }
+            activeTime.put(player.getUniqueId(), System.currentTimeMillis() + 2500 );
+            clickTypes.add(clickType);
+            clicks.put(uuid,clickTypes);
+
+            onUpdate(player);
+        }
+
+        // Executed when the player clicks
+        public void onUpdate(Player player) {
+            ArrayList<ClickType> clickTypes = new ArrayList<>();
+
+            if(clicks.containsKey(player.getUniqueId())) {
+                clickTypes = clicks.get(player.getUniqueId());
             }
 
-        }
-        activeTime.put(player.getUniqueId(), System.currentTimeMillis() + 2500 );
-        clickTypes.add(clickType);
-        clicks.put(uuid,clickTypes);
+            // Generate string for actionbar display:
+            StringBuilder actionBar = new StringBuilder();
+            int elements = 0;
 
-        onUpdate(player);
-    }
-
-    // Executed when the player clicks
-    public void onUpdate(Player player) {
-        ArrayList<ClickType> clickTypes = new ArrayList<>();
-
-        if(clicks.containsKey(player.getUniqueId())) {
-            clickTypes = clicks.get(player.getUniqueId());
-        }
-
-        // Generate string for actionbar display:
-        StringBuilder actionBar = new StringBuilder();
-        int elements = 0;
-
-        for(ClickType click: clickTypes) {
-            if(elements < 1) {
-                actionBar = new StringBuilder(String.valueOf(click.getAbbreviation()));
-            } else {
-                actionBar.append("-").append(click.getAbbreviation());
+            for(ClickType click: clickTypes) {
+                if(elements < 1) {
+                    actionBar = new StringBuilder(String.valueOf(click.getAbbreviation()));
+                } else {
+                    actionBar.append("-").append(click.getAbbreviation());
+                }
+                elements++;
             }
-            elements++;
+
+            // Show the actionbar
+            player.sendActionBar(Component.text(actionBar.toString(), NamedTextColor.GREEN));
+
+            // Check if a valid combo has been crated
+            testAbilities(player);
         }
 
-        // Show the actionbar
-        player.sendActionBar(Component.text(actionBar.toString(), NamedTextColor.GREEN));
+        // Get click list. Clean if necessary
+        public ArrayList<ClickType> getKeys(Player player) {
+            ArrayList<ClickType> clickTypes = new ArrayList<>();
 
-        // Check if a valid combo has been crated
-        testAbilities(player);
-    }
+            if(hasActiveClicks(player)) {
+                clickTypes = clicks.get(player.getUniqueId());
+                if(clickTypes.size() > 5) {
+                    clickTypes.clear();
+                }
+            }
+            return clickTypes;
+        }
 
-    // Get click list. Clean if necessary
-    public ArrayList<ClickType> getKeys(Player player) {
-        ArrayList<ClickType> clickTypes = new ArrayList<>();
+        // Get the keys as a string. Used for display purposes
+        public String getKeysAsString(Player player) {
+            ArrayList<ClickType> clickTypes = getKeys(player);
+            int elements = 0;
+            StringBuilder clickList = new StringBuilder();
 
-        if(hasActiveClicks(player)) {
-            clickTypes = clicks.get(player.getUniqueId());
-            if(clickTypes.size() > 5) {
-                clickTypes.clear();
+            for(ClickType click: clickTypes) {
+                if(elements < 1) {
+                    clickList = new StringBuilder(String.valueOf(click.getAbbreviation()));
+                } else {
+                    clickList.append(click.getAbbreviation());
+                }
+                elements++;
+            }
+            return clickList.toString();
+        }
+
+
+        // Test whether the combo exists
+        public void testAbilities(Player player) {
+            // Get the combos
+            String combo = getKeysAsString(player);
+
+            if(combo != null && JsonSettingsBridge.getAbility(player,combo) != null) {
+                CustomAbilityClass ability = MineshaftRpg.getInstance().getCache().getAbility(JsonSettingsBridge.getAbility(player,combo));
+                player.sendActionBar(Component.text(ability.getName(),NamedTextColor.WHITE, TextDecoration.BOLD));
+                AbilityExecutor.executeAbilityOnSelf(player,ability);
+                clicks.clear();
             }
         }
-        return clickTypes;
-    }
 
-    // Get the keys as a string. Used for display purposes
-    public String getKeysAsString(Player player) {
-        ArrayList<ClickType> clickTypes = getKeys(player);
-        int elements = 0;
-        StringBuilder clickList = new StringBuilder();
+        /**
+         * Clicks used for saving a combo in the UI
+         * */
 
-        for(ClickType click: clickTypes) {
-            if(elements < 1) {
-                clickList = new StringBuilder(String.valueOf(click.getAbbreviation()));
-            } else {
-                clickList.append(click.getAbbreviation());
+        public void addSettingClick(Player player, ClickType clickType) {
+            ArrayList<ClickType> clickList = getSettingClicks(player);
+            clickList.add(clickType);
+            settableClicks.put(player.getUniqueId(),clickList);
+        }
+
+        public void resetSettingClicks(Player player) {
+            settableClicks.put(player.getUniqueId(),new ArrayList<>());
+        }
+
+        public void saveSettingClicks(Player player, String ability) {
+            JsonSettingsBridge.addAbility(player,ability,getSettingClicksAsString(player));
+            settableClicks.clear();
+        }
+
+        // Get the player click array
+        public ArrayList<ClickType> getSettingClicks(Player player) {
+            if(settableClicks.containsKey(player.getUniqueId())) {
+                return settableClicks.get(player.getUniqueId());
             }
-            elements++;
+            return new ArrayList<>();
         }
-        return clickList.toString();
-    }
 
+        // Get the player click array as a string
+        public String getSettingClicksAsString(Player player) {
 
-    // Test whether the combo exists
-    public void testAbilities(Player player) {
-        // Get the combos
-        String combo = getKeysAsString(player);
+            StringBuilder value = new StringBuilder();
+            if(!getSettingClicks(player).isEmpty()) {
+                for(ClickType click : getSettingClicks(player)) {
+                    value.append(click.getAbbreviation());
+                }
+                return value.toString();
+            }
 
-        if(combo != null && JsonSettingsBridge.getAbility(player,combo) != null) {
-            CustomAbilityClass ability = MineshaftRpg.getInstance().getCache().getAbility(JsonSettingsBridge.getAbility(player,combo));
-            player.sendActionBar(Component.text(ability.getName(),NamedTextColor.WHITE, TextDecoration.BOLD));
-            AbilityExecutor.executeAbilityOnSelf(player,ability);
-            clicks.clear();
+            return null;
         }
-    }
 
-    /**
-     * Clicks used for saving a combo in the UI
-     * */
+        // Get the player click array as a string list, for displaying in the ui
+        public ArrayList<String> getSettingClicksAsStringList(Player player, String prefix, String suffix) {
+            ArrayList<String> clickStrings = new ArrayList<>();
 
-    public void addSettingClick(Player player, ClickType clickType) {
-        ArrayList<ClickType> clickList = getSettingClicks(player);
-        clickList.add(clickType);
-        settableClicks.put(player.getUniqueId(),clickList);
-    }
-
-    public void resetSettingClicks(Player player) {
-        settableClicks.put(player.getUniqueId(),new ArrayList<>());
-    }
-
-    public void saveSettingClicks(Player player, String ability) {
-        JsonSettingsBridge.addAbility(player,ability,getSettingClicksAsString(player));
-        settableClicks.clear();
-    }
-
-    // Get the player click array
-    public ArrayList<ClickType> getSettingClicks(Player player) {
-        if(settableClicks.containsKey(player.getUniqueId())) {
-            return settableClicks.get(player.getUniqueId());
-        }
-        return new ArrayList<>();
-    }
-
-    // Get the player click array as a string
-    public String getSettingClicksAsString(Player player) {
-
-        StringBuilder value = new StringBuilder();
-        if(!getSettingClicks(player).isEmpty()) {
             for(ClickType click : getSettingClicks(player)) {
-                value.append(click.getAbbreviation());
+                clickStrings.add(prefix + " " + click.getName() + " " + suffix);
             }
-            return value.toString();
+
+            return clickStrings;
         }
 
-        return null;
+        public ArrayList<String> getAbilityClicksAsString(Player player, String ability) {
+            // Get the clicks for a specific ability as a string
+            // Used for UI
+
+            return null;
+        }
     }
 
-    // Get the player click array as a string list, for displaying in the ui
-    public ArrayList<String> getSettingClicksAsStringList(Player player, String prefix, String suffix) {
-        ArrayList<String> clickStrings = new ArrayList<>();
-
-        for(ClickType click : getSettingClicks(player)) {
-            clickStrings.add(prefix + " " + click.getName() + " " + suffix);
+    public class SpellCache {
+        public int getEditedSpellHotbar(Player player) {
+            if(currentlyEditedSpellHotbar.get(player.getUniqueId())<0 || currentlyEditedSpellHotbar.get(player.getUniqueId())>2) return 0;
+            return currentlyEditedSpellHotbar.get(player.getUniqueId());
         }
 
-        return clickStrings;
-    }
+        public void setEditedSpellHotbar(Player player, int hotbar) {
+            currentlyEditedSpellHotbar.put(player.getUniqueId(), hotbar);
+        }
 
-    public ArrayList<String> getAbilityClicksAsString(Player player, String ability) {
-        // Get the clicks for a specific ability as a string
-        // Used for UI
+        public void upEditedSpellHotbar(Player player) {
+            int hotbar = getEditedSpellHotbar(player)+1;
+            if(hotbar>2) hotbar=0;
+            currentlyEditedSpellHotbar.put(player.getUniqueId(), hotbar);
+        }
 
-        return null;
-    }
+        public void downEditedSpellHotbar(Player player) {
+            int hotbar = getEditedSpellHotbar(player)-1;
+            if(hotbar<0) hotbar=2;
+            currentlyEditedSpellHotbar.put(player.getUniqueId(), hotbar);
+        }
 
-    public int getEditedSpellHotbar(Player player) {
-        if(currentlyEditedSpellHotbar.get(player.getUniqueId())<0 || currentlyEditedSpellHotbar.get(player.getUniqueId())>2) return 0;
-        return currentlyEditedSpellHotbar.get(player.getUniqueId());
-    }
-
-    public void setEditedSpellHotbar(Player player, int hotbar) {
-        currentlyEditedSpellHotbar.put(player.getUniqueId(), hotbar);
-    }
-
-    public void upEditedSpellHotbar(Player player) {
-        int hotbar = getEditedSpellHotbar(player)+1;
-        if(hotbar>2) hotbar=0;
-        currentlyEditedSpellHotbar.put(player.getUniqueId(), hotbar);
-    }
-
-    public void downEditedSpellHotbar(Player player) {
-        int hotbar = getEditedSpellHotbar(player)-1;
-        if(hotbar<0) hotbar=2;
-        currentlyEditedSpellHotbar.put(player.getUniqueId(), hotbar);
     }
 
 }

@@ -50,7 +50,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Set;
 
 public class PlayerMenuManager {
 
@@ -74,21 +74,16 @@ public class PlayerMenuManager {
 
         ArrayList<String> included = new ArrayList<>();
 
-        HashMap<String, Integer> knownAbilities = JsonPlayerBridge.getAbilities(player);
+        Set<String> knownAbilities;
 
         switch (type) {
-            case ACTIVE_ABILITY -> {
-                knownAbilities=JsonPlayerBridge.getAbilities(player);
-            }
-            case PASSIVE_ABILITY -> {
-                knownAbilities=JsonPlayerBridge.getPassiveAbilities(player);
-            }
-            case SPELL -> {
-                knownAbilities=JsonPlayerBridge.getSpells(player);
-            }
+            case PASSIVE_ABILITY -> knownAbilities=JsonPlayerBridge.getPassiveAbilities(player).keySet();
+            case SPELL -> knownAbilities=JsonPlayerBridge.getSpells(player).keySet();
+            // Active abilities or default
+            default -> knownAbilities=JsonPlayerBridge.getAbilities(player).keySet();
         }
 
-        for(String abilityId : knownAbilities.keySet()) {
+        for(String abilityId : knownAbilities) {
             if(!included.contains(abilityId)) {
                 CustomAbilityClass ability = MineshaftRpg.getInstance().getCache().getAbility(abilityId);
                 if(ability!=null && ability.getAbilityType().equals(type)) {
@@ -124,7 +119,7 @@ public class PlayerMenuManager {
 
         // Bind spell slots
         for(int i = 1; i<8; i++) {
-            ItemStack item = UIButtonManager.Spells.getSpellBindToSlotItem(player,MineshaftRpg.getInstance().getCache().getPlayerCache().getEditedSpellHotbar(player),i,abilityClass.getId());
+            ItemStack item = UIButtonManager.Spells.getSpellBindToSlotItem(player,MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellCache().getEditedSpellHotbar(player),i,abilityClass.getId());
             ui.setItem(i+8,item);
         }
 

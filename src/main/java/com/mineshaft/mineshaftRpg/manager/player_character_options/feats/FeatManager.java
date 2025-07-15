@@ -34,7 +34,7 @@ public class FeatManager {
         }
 
         for(AbilityScores abilityScores : customFeatClass.getAbilityScoreIncreases().keySet()) {
-            MineshaftPlayerBridge.Attributes.addAttribute(player,abilityScores,customFeatClass.getAbilityScoreIncreases().get(abilityScores));
+            MineshaftPlayerBridge.Attributes.addAbilityScore(player,abilityScores,customFeatClass.getAbilityScoreIncreases().get(abilityScores));
         }
         for(String a : customFeatClass.getAbilities()) {
             MineshaftPlayerBridge.Abilities.addAbility(player,a);
@@ -57,7 +57,7 @@ public class FeatManager {
 
         // Ability score check
         for(AbilityScores abilityScores : customFeatClass.getMinimumAbilityScores().keySet()) {
-            if(MineshaftPlayerBridge.Attributes.getAttribute(player,abilityScores)<customFeatClass.getMinimumAbilityScores().get(abilityScores)) {
+            if(MineshaftPlayerBridge.Attributes.getAbilityScore(player,abilityScores)<customFeatClass.getMinimumAbilityScores().get(abilityScores)) {
                 return false;
             }
         }

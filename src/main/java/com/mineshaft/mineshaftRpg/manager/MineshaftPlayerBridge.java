@@ -23,9 +23,9 @@ import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.passive_events.PassiveAbilities;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
-import com.mineshaft.mineshaftRpg.manager.player_data.AttributeManager;
 import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.spells.SpellClass;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -79,7 +79,7 @@ public class MineshaftPlayerBridge {
                 switch (type) {
                     case ACTIVE_ABILITY -> JsonPlayerBridge.addAbility(player, abilityName, 1);
                     case PASSIVE_ABILITY -> JsonPlayerBridge.addPassiveAbility(player,abilityName, 1);
-                    case SPELL -> JsonPlayerBridge.addSpell(player,abilityName, 1);
+                    case SPELL -> JsonPlayerBridge.addSpell(player,abilityName, new SpellClass(true));
                 }
 
             }
@@ -102,22 +102,26 @@ public class MineshaftPlayerBridge {
     public static class Attributes {
         public static ArrayList<String> getAbilityScoreStrings(Player player) {
             ArrayList<String> abilityScoreItemLore = new ArrayList<>();
-            abilityScoreItemLore.add(ChatColor.WHITE + "STR: " + ChatColor.RED + JsonPlayerBridge.getAbilityScoreValue(player,"str") + ChatColor.DARK_RED +" (" + AttributeManager.calculateAttributeModifier(player, "str") + ")");
-            abilityScoreItemLore.add(ChatColor.WHITE + "DEX: " + ChatColor.RED + JsonPlayerBridge.getAbilityScoreValue(player,"dex") + ChatColor.DARK_RED +" (" + AttributeManager.calculateAttributeModifier(player, "dex") + ")");
-            abilityScoreItemLore.add(ChatColor.WHITE + "CON: " + ChatColor.RED + JsonPlayerBridge.getAbilityScoreValue(player,"con") + ChatColor.DARK_RED +" (" + AttributeManager.calculateAttributeModifier(player, "con") + ")");
-            abilityScoreItemLore.add(ChatColor.WHITE + "INT: " + ChatColor.AQUA + JsonPlayerBridge.getAbilityScoreValue(player,"int") + ChatColor.BLUE +" (" + AttributeManager.calculateAttributeModifier(player, "int") + ")");
-            abilityScoreItemLore.add(ChatColor.WHITE + "WIS: " + ChatColor.AQUA + JsonPlayerBridge.getAbilityScoreValue(player,"wis") + ChatColor.BLUE +" (" + AttributeManager.calculateAttributeModifier(player, "wis") + ")");
-            abilityScoreItemLore.add(ChatColor.WHITE + "CHA: " + ChatColor.AQUA + JsonPlayerBridge.getAbilityScoreValue(player,"cha") + ChatColor.BLUE +" (" + AttributeManager.calculateAttributeModifier(player, "cha") + ")");
+            abilityScoreItemLore.add(ChatColor.WHITE + "STR: " + ChatColor.RED + JsonPlayerBridge.getAbilityScoreValue(player,"str") + ChatColor.DARK_RED +" (" + JsonPlayerBridge.getAbilityScoreModifier(player, "str") + ")");
+            abilityScoreItemLore.add(ChatColor.WHITE + "DEX: " + ChatColor.RED + JsonPlayerBridge.getAbilityScoreValue(player,"dex") + ChatColor.DARK_RED +" (" + JsonPlayerBridge.getAbilityScoreModifier(player, "dex") + ")");
+            abilityScoreItemLore.add(ChatColor.WHITE + "CON: " + ChatColor.RED + JsonPlayerBridge.getAbilityScoreValue(player,"con") + ChatColor.DARK_RED +" (" + JsonPlayerBridge.getAbilityScoreModifier(player, "con") + ")");
+            abilityScoreItemLore.add(ChatColor.WHITE + "INT: " + ChatColor.AQUA + JsonPlayerBridge.getAbilityScoreValue(player,"int") + ChatColor.BLUE +" (" + JsonPlayerBridge.getAbilityScoreModifier(player, "int") + ")");
+            abilityScoreItemLore.add(ChatColor.WHITE + "WIS: " + ChatColor.AQUA + JsonPlayerBridge.getAbilityScoreValue(player,"wis") + ChatColor.BLUE +" (" + JsonPlayerBridge.getAbilityScoreModifier(player, "wis") + ")");
+            abilityScoreItemLore.add(ChatColor.WHITE + "CHA: " + ChatColor.AQUA + JsonPlayerBridge.getAbilityScoreValue(player,"cha") + ChatColor.BLUE +" (" + JsonPlayerBridge.getAbilityScoreModifier(player, "cha") + ")");
             return abilityScoreItemLore;
         }
 
-        public static void addAttribute(Player player, AbilityScores abilityScores, int value) {
-            int newValue = value + Math.max(getAttribute(player,abilityScores),8);
+        public static void addAbilityScore(Player player, AbilityScores abilityScores, int value) {
+            int newValue = value + Math.max(getAbilityScore(player,abilityScores),8);
             JsonPlayerBridge.setAbilityScore(player, (abilityScores).name().toLowerCase(),newValue);
         }
 
-        public static int getAttribute(Player player, AbilityScores abilityScores) {
+        public static int getAbilityScore(Player player, AbilityScores abilityScores) {
             return JsonPlayerBridge.getAbilityScoreValue(player,abilityScores.name().toLowerCase());
+        }
+
+        public static int getAbilityScoreModifier(Player player, AbilityScores abilityScores) {
+            return JsonPlayerBridge.getAbilityScoreModifier(player, abilityScores.name().toLowerCase());
         }
     }
 

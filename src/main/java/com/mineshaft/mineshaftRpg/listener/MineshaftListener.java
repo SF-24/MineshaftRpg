@@ -54,7 +54,7 @@ public class MineshaftListener implements Listener {
     // Key press, via AriKeys from Mineshaft
     @EventHandler
     public void onClickKey(MineshaftClickTypeEvent e) {
-        MineshaftRpg.getInstance().getCache().getPlayerCache().cacheClick(e.getPlayer(), e.getClickType());
+        MineshaftRpg.getInstance().getCache().getPlayerCache().getClickCache().cacheClick(e.getPlayer(), e.getClickType());
     }
 
     // Ability change

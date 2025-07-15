@@ -80,7 +80,7 @@ public class CultureManager {
 
         // Base values
         for(AbilityScores element : c.getAbilityScores().keySet()) {
-            MineshaftPlayerBridge.Attributes.addAttribute(player,element,c.getAbilityScores().get(element));
+            MineshaftPlayerBridge.Attributes.addAbilityScore(player,element,c.getAbilityScores().get(element));
         }
         JsonPlayerBridge.addSkillPoints(player,c.getAbilityScorePoints());
         CultureManager.setCulture(player, c.getId());
