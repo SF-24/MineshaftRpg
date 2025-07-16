@@ -67,71 +67,9 @@ public class PlayerMenuManager {
         ui.setItem(6, UIButtonManager.Character.getCodexItem());
         ui.setItem(7, UIButtonManager.Character.getQuestItem());
         player.openInventory(ui);
+
+        player.getInventory().setItem(10, UIButtonManager.Character.getVirtueItem(player));
     }
-
-    public static void openAbilityUI(Player player, boolean isUpdate, AbilityType type) {
-        Inventory ui = getMediumMenuBackground("Abilities");
-
-        ArrayList<String> included = new ArrayList<>();
-
-        Set<String> knownAbilities;
-
-        switch (type) {
-            case PASSIVE_ABILITY -> knownAbilities=JsonPlayerBridge.getPassiveAbilities(player).keySet();
-            case SPELL -> knownAbilities=JsonPlayerBridge.getSpells(player).keySet();
-            // Active abilities or default
-            default -> knownAbilities=JsonPlayerBridge.getAbilities(player).keySet();
-        }
-
-        for(String abilityId : knownAbilities) {
-            if(!included.contains(abilityId)) {
-                CustomAbilityClass ability = MineshaftRpg.getInstance().getCache().getAbility(abilityId);
-                if(ability!=null && ability.getAbilityType().equals(type)) {
-                    ui.addItem(UIButtonManager.Abilities.getAbilityItem(player, ability, true));
-                    included.add(abilityId);
-                } else {
-                    // TODO:
-                }
-            }
-        }
-        new GUI(player, 0, ui, UIButtonManager.Abilities.getAbilityItemArray(player,true),"",19,25, ButtonUtil.getArrowDirectionButton(Direction2D.LEFT, ButtonVariant.GREEN),ButtonUtil.getArrowDirectionButton(Direction2D.RIGHT,ButtonVariant.GREEN));
-        inventoryManagement(player, isUpdate);
-    }
-
-    public static void openAbilityBindingUI(Player player, boolean isUpdate, CustomAbilityClass abilityClass) {
-        Inventory ui = getMediumMenuBackground("Ability");
-
-        ui.setItem(11, UIButtonManager.Abilities.getAbilityItem(player, abilityClass, false));
-        ui.setItem(13, UIButtonManager.Abilities.getComboAddClickItem(player));
-        ui.setItem(15, UIButtonManager.Abilities.getComboSaveItem());
-        ui.setItem(16, UIButtonManager.Abilities.getComboResetItem());
-//        ui.setItem(17, UIButtonManager.Abilities.getComboClearItem());
-
-        player.openInventory(ui);
-        inventoryManagement(player, isUpdate);
-
-    }
-
-    public static void openSpellBindingUI(Player player, boolean isUpdate, CustomAbilityClass abilityClass) {
-        Inventory ui = getMediumMenuBackground("Spell");
-
-        ui.setItem(11, UIButtonManager.Abilities.getAbilityItem(player, abilityClass, false));
-
-        // Bind spell slots
-        for(int i = 1; i<8; i++) {
-            ItemStack item = UIButtonManager.Spells.getSpellBindToSlotItem(player,MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellCache().getEditedSpellHotbar(player),i,abilityClass.getId());
-            ui.setItem(i+8,item);
-        }
-
-        ui.setItem(5,UIButtonManager.Spells.getSpellItem(player,abilityClass,true));
-        ui.setItem(8,UIButtonManager.Spells.getHotbarUpItem());
-        ui.setItem(17,UIButtonManager.Spells.getHotbarItem(player));
-        ui.setItem(26,UIButtonManager.Spells.getHotbarDownItem());
-
-        player.openInventory(ui);
-        inventoryManagement(player, isUpdate);
-    }
-
 
     public static void openAbilityScoreMenu(Player player, boolean isUpdate) {
         Inventory ui = getMenuBackground("Ability Scores");
@@ -145,6 +83,12 @@ public class PlayerMenuManager {
         inventoryManagement(player,isUpdate);
     }
 
+    public static void openFeatMenu(Player player, boolean isUpdate) {
+        Inventory ui = getMenuBackground("Virtues");
+        player.openInventory(ui);
+        inventoryManagement(player,isUpdate);
+    }
+
     public static void openQuestMenu(Player player, boolean isUpdate) {
         Inventory ui = getMenuBackground("Quests");
         ui.addItem(UIButtonManager.Quests.getQuestCanceller());
@@ -155,125 +99,195 @@ public class PlayerMenuManager {
         inventoryManagement(player,isUpdate);
     }
 
-    public static void openDiscoveryMenu(Player player, boolean isUpdate) {
-        Inventory ui = getMenuBackground("Discoveries");
-        ui.addItem(UIButtonManager.Discoveries.getDiscoveryCategory(player, DiscoveryCategory.TOWN));
-        ui.addItem(UIButtonManager.Discoveries.getDiscoveryCategory(player, DiscoveryCategory.MOB));
-        ui.addItem(UIButtonManager.Discoveries.getDiscoveryCategory(player, DiscoveryCategory.LORE));
-        player.openInventory(ui);
+    public static class Abilities {
+        public static void openAbilityUI(Player player, boolean isUpdate, AbilityType type) {
+            Inventory ui = getMediumMenuBackground("Abilities");
 
-        inventoryManagement(player,isUpdate);
-    }
+            ArrayList<String> included = new ArrayList<>();
 
-    public static void openTownRegionMenu(Player player, boolean isUpdate) {
-        Inventory ui = getMenuBackground("Discoveries");
+            Set<String> knownAbilities;
 
-        for(String region : JsonDiscoveryBridge.getDiscoveredRegions(player)) {
-            ui.addItem(UIButtonManager.Discoveries.getLocationRegion(player,region));
-        }
-        player.openInventory(ui);
+            switch (type) {
+                case PASSIVE_ABILITY -> knownAbilities=JsonPlayerBridge.getPassiveAbilities(player).keySet();
+                case SPELL -> knownAbilities=JsonPlayerBridge.getSpells(player).keySet();
+                // Active abilities or default
+                default -> knownAbilities=JsonPlayerBridge.getAbilities(player).keySet();
+            }
 
-        inventoryManagement(player,isUpdate);
-
-    }
-
-    // Open town discovery menu
-    public static void openTownDiscoveries(Player player, String region, int page, boolean isUpdate) {
-        ArrayList<ItemStack> items = new ArrayList<>();
-
-        for(Town town : JsonDiscoveryBridge.getDiscoveredTowns(player)) {
-            items.add(UIButtonManager.Discoveries.getTownDiscovery(town));
-        }
-        new GUI(player,page,Bukkit.createInventory(null,54, NamedTextColor.BLACK+"Region"), items, region);
-    }
-
-    public static void openProfileMenu(Player player, boolean isUpdate) {
-        Inventory ui = getMenuBackground("Profiles");
-
-        for(String profile : JsonProfileBridge.getProfiles(player)) {
-            ui.addItem(UIButtonManager.Character.getProfileButton(player,profile));
-        }
-
-        ui.addItem(UIButtonManager.getGreenPlusButton("New Profile"));
-        player.openInventory(ui);
-
-        inventoryManagement(player,isUpdate);
-    }
-
-    public static void openProfileNameSelector(Player player, boolean isUpdate) {
-        // Using anvil gui: https://github.com/WesJD/AnvilGUI
-        // Thank you for making this plugin, WesJD!
-
-        // Open anvil ui
-        new AnvilGUI.Builder()
-                .onClick((slot, stateSnapshot) -> {
-                    if (slot != AnvilGUI.Slot.OUTPUT) {
-                        return Collections.emptyList();
+            for(String abilityId : knownAbilities) {
+                if(!included.contains(abilityId)) {
+                    CustomAbilityClass ability = MineshaftRpg.getInstance().getCache().getAbility(abilityId);
+                    if(ability!=null && ability.getAbilityType().equals(type)) {
+                        ui.addItem(UIButtonManager.Abilities.getAbilityItem(player, ability, true));
+                        included.add(abilityId);
+                    } else {
+                        // TODO:
                     }
-                    String name = stateSnapshot.getText();
-                    return Arrays.asList(
-                        AnvilGUI.ResponseAction.close(),
-                        AnvilGUI.ResponseAction.run(() -> {
-                            // On confirm
-                            if(!JsonProfileBridge.getCurrentProfile(player).equalsIgnoreCase("Default") && JsonProfileBridge.getCurrentProfile(player)!=null) {
-                                MineshaftPlayerBridge.savePlayerData(player);
-                                player.getInventory().clear();
-                            }
-                            JsonProfileBridge.setCurrentProfile(player, name);
-                            JsonProfileBridge.addProfile(player, name);
-                            CharacterCreationManager.setDefaultData(player);
-                            openSpeciesSelector(player);
-                        })
-                    );
-                })
-                .preventClose().text("...").title("Character name").itemLeft(new ItemStack(Material.NAME_TAG)).itemOutput(new ItemStack(Material.NAME_TAG)).plugin(MineshaftRpg.getInstance()).open(player);
+                }
+            }
+            new GUI(player, 0, ui, UIButtonManager.Abilities.getAbilityItemArray(player,true),"",19,25, ButtonUtil.getArrowDirectionButton(Direction2D.LEFT, ButtonVariant.GREEN),ButtonUtil.getArrowDirectionButton(Direction2D.RIGHT,ButtonVariant.GREEN));
+            inventoryManagement(player, isUpdate);
+        }
 
-        inventoryManagement(player,isUpdate);
+        public static void openAbilityBindingUI(Player player, boolean isUpdate, CustomAbilityClass abilityClass) {
+            Inventory ui = getMediumMenuBackground("Ability");
+
+            ui.setItem(11, UIButtonManager.Abilities.getAbilityItem(player, abilityClass, false));
+            ui.setItem(13, UIButtonManager.Abilities.getComboAddClickItem(player));
+            ui.setItem(15, UIButtonManager.Abilities.getComboSaveItem());
+            ui.setItem(16, UIButtonManager.Abilities.getComboResetItem());
+//        ui.setItem(17, UIButtonManager.Abilities.getComboClearItem());
+
+            player.openInventory(ui);
+            inventoryManagement(player, isUpdate);
+
+        }
+
+        public static void openSpellBindingUI(Player player, boolean isUpdate, CustomAbilityClass abilityClass) {
+            Inventory ui = getMediumMenuBackground("Spell");
+
+            ui.setItem(11, UIButtonManager.Abilities.getAbilityItem(player, abilityClass, false));
+
+            // Bind spell slots
+            for(int i = 1; i<8; i++) {
+                ItemStack item = UIButtonManager.Spells.getSpellBindToSlotItem(player,MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellCache().getEditedSpellHotbar(player),i,abilityClass.getId());
+                ui.setItem(i+8,item);
+            }
+
+            ui.setItem(5,UIButtonManager.Spells.getSpellItem(player,abilityClass,true));
+            ui.setItem(8,UIButtonManager.Spells.getHotbarUpItem());
+            ui.setItem(17,UIButtonManager.Spells.getHotbarItem(player));
+            ui.setItem(26,UIButtonManager.Spells.getHotbarDownItem());
+
+            player.openInventory(ui);
+            inventoryManagement(player, isUpdate);
+        }
     }
 
-    public static void openSpeciesSelector(Player player) {
-        // TODO:
-        player.sendMessage("Character successfully created");
+    public static class Discoveries {
+        public static void openDiscoveryMenu(Player player, boolean isUpdate) {
+            Inventory ui = getMenuBackground("Discoveries");
+            ui.addItem(UIButtonManager.Discoveries.getDiscoveryCategory(player, DiscoveryCategory.TOWN));
+            ui.addItem(UIButtonManager.Discoveries.getDiscoveryCategory(player, DiscoveryCategory.MOB));
+            ui.addItem(UIButtonManager.Discoveries.getDiscoveryCategory(player, DiscoveryCategory.LORE));
+            player.openInventory(ui);
 
-        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-        BookMeta bookMeta = (BookMeta) book.getItemMeta();
-        assert bookMeta != null;
-        bookMeta.addPage(ChatColor.BOLD + "Select a culture: \n" +
-                "Use the arrows underneath the book to select a page with your desired culture and press select.");
-
-        ArrayList<BaseComponent[]> unlockedLockedCulturePages = new ArrayList<>();
-
-        for(CustomCultureClass c : MineshaftRpg.getInstance().getCache().getCultureCache()) {
-            Logger.logDebug("Successfull iteration");
-
-            if(!c.getDisabledWorlds().isEmpty() && c.getDisabledWorlds().contains(player.getWorld().getName())) {
-                Logger.logDebug("Detected disabled world '" + player.getWorld().getName() + "' for culture " + c.getName());
-                continue;
-            } else if(!c.getRequiredWorlds().isEmpty() && !c.getRequiredWorlds().contains(player.getWorld().getName())) {
-                Logger.logDebug("'" + player.getWorld().getName() + "' is not a required world for culture " + c.getName());
-                continue;
-            }
-            // Culture mechanic
-            if (!c.isLocked()) {
-                bookMeta.spigot().addPage(CultureManager.UI.getPageDisplay(c.getId()));
-                Logger.logDebug("Displaying culture page for: " + c.getName());
-            } else if(JsonProfileBridge.getUnlockedCultures(player).contains(c.getName().toLowerCase())) {
-                unlockedLockedCulturePages.add(CultureManager.UI.getPageDisplay(c.getId()));
-                Logger.logDebug("Displaying culture page for: " + c.getName());
-            }
+            inventoryManagement(player,isUpdate);
         }
 
-        // Make unlocked cultures, which are marked as locked appear at the end of the ui book
-        for(BaseComponent[] page : unlockedLockedCulturePages) {
-            bookMeta.spigot().addPage(page);
+        public static void openTownRegionMenu(Player player, boolean isUpdate) {
+            Inventory ui = getMenuBackground("Discoveries");
+
+            for(String region : JsonDiscoveryBridge.getDiscoveredRegions(player)) {
+                ui.addItem(UIButtonManager.Discoveries.getLocationRegion(player,region));
+            }
+            player.openInventory(ui);
+
+            inventoryManagement(player,isUpdate);
+
         }
 
-        book.setItemMeta(bookMeta);
+        // Open town discovery menu
+        public static void openTownDiscoveries(Player player, String region, int page, boolean isUpdate) {
+            ArrayList<ItemStack> items = new ArrayList<>();
 
-        ItemStack mh = player.getInventory().getItemInMainHand();
-        player.getInventory().setItemInMainHand(book);
-        player.openBook(book);
-        player.getInventory().setItemInMainHand(mh);
+            for(Town town : JsonDiscoveryBridge.getDiscoveredTowns(player)) {
+                items.add(UIButtonManager.Discoveries.getTownDiscovery(town));
+            }
+            new GUI(player,page,Bukkit.createInventory(null,54, NamedTextColor.BLACK+"Region"), items, region);
+        }
+    }
+
+    public static class Profile {
+
+        public static void openProfileMenu(Player player, boolean isUpdate) {
+            Inventory ui = getMenuBackground("Profiles");
+
+            for(String profile : JsonProfileBridge.getProfiles(player)) {
+                ui.addItem(UIButtonManager.Character.getProfileButton(player,profile));
+            }
+
+            ui.addItem(UIButtonManager.getGreenPlusButton("New Profile"));
+            player.openInventory(ui);
+
+            inventoryManagement(player,isUpdate);
+        }
+
+        public static void openProfileNameSelector(Player player, boolean isUpdate) {
+            // Using anvil gui: https://github.com/WesJD/AnvilGUI
+            // Thank you for making this plugin, WesJD!
+
+            // Open anvil ui
+            new AnvilGUI.Builder()
+                    .onClick((slot, stateSnapshot) -> {
+                        if (slot != AnvilGUI.Slot.OUTPUT) {
+                            return Collections.emptyList();
+                        }
+                        String name = stateSnapshot.getText();
+                        return Arrays.asList(
+                                AnvilGUI.ResponseAction.close(),
+                                AnvilGUI.ResponseAction.run(() -> {
+                                    // On confirm
+                                    if(!JsonProfileBridge.getCurrentProfile(player).equalsIgnoreCase("Default") && JsonProfileBridge.getCurrentProfile(player)!=null) {
+                                        MineshaftPlayerBridge.savePlayerData(player);
+                                        player.getInventory().clear();
+                                    }
+                                    JsonProfileBridge.setCurrentProfile(player, name);
+                                    JsonProfileBridge.addProfile(player, name);
+                                    CharacterCreationManager.setDefaultData(player);
+                                    openSpeciesSelector(player);
+                                })
+                        );
+                    })
+                    .preventClose().text("...").title("Character name").itemLeft(new ItemStack(Material.NAME_TAG)).itemOutput(new ItemStack(Material.NAME_TAG)).plugin(MineshaftRpg.getInstance()).open(player);
+
+            inventoryManagement(player,isUpdate);
+        }
+
+        public static void openSpeciesSelector(Player player) {
+            // TODO:
+            player.sendMessage("Character successfully created");
+
+            ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+            BookMeta bookMeta = (BookMeta) book.getItemMeta();
+            assert bookMeta != null;
+            bookMeta.addPage(ChatColor.BOLD + "Select a culture: \n" +
+                    "Use the arrows underneath the book to select a page with your desired culture and press select.");
+
+            ArrayList<BaseComponent[]> unlockedLockedCulturePages = new ArrayList<>();
+
+            for(CustomCultureClass c : MineshaftRpg.getInstance().getCache().getCultureCache()) {
+                Logger.logDebug("Successfull iteration");
+
+                if(!c.getDisabledWorlds().isEmpty() && c.getDisabledWorlds().contains(player.getWorld().getName())) {
+                    Logger.logDebug("Detected disabled world '" + player.getWorld().getName() + "' for culture " + c.getName());
+                    continue;
+                } else if(!c.getRequiredWorlds().isEmpty() && !c.getRequiredWorlds().contains(player.getWorld().getName())) {
+                    Logger.logDebug("'" + player.getWorld().getName() + "' is not a required world for culture " + c.getName());
+                    continue;
+                }
+                // Culture mechanic
+                if (!c.isLocked()) {
+                    bookMeta.spigot().addPage(CultureManager.UI.getPageDisplay(c.getId()));
+                    Logger.logDebug("Displaying culture page for: " + c.getName());
+                } else if(JsonProfileBridge.getUnlockedCultures(player).contains(c.getName().toLowerCase())) {
+                    unlockedLockedCulturePages.add(CultureManager.UI.getPageDisplay(c.getId()));
+                    Logger.logDebug("Displaying culture page for: " + c.getName());
+                }
+            }
+
+            // Make unlocked cultures, which are marked as locked appear at the end of the ui book
+            for(BaseComponent[] page : unlockedLockedCulturePages) {
+                bookMeta.spigot().addPage(page);
+            }
+
+            book.setItemMeta(bookMeta);
+
+            ItemStack mh = player.getInventory().getItemInMainHand();
+            player.getInventory().setItemInMainHand(book);
+            player.openBook(book);
+            player.getInventory().setItemInMainHand(mh);
+        }
     }
 
     public static Inventory getLargeMenuBackground(String name) {

@@ -37,7 +37,7 @@ public class PlayerCharacterManager {
         // Opens character creation menu if not created
         if(JsonProfileBridge.getCurrentProfile(player).equals("Default")) {
             // TODO: Create Profile
-            PlayerMenuManager.openProfileMenu(player,true);
+            PlayerMenuManager.Profile.openProfileMenu(player,true);
         }
 
         // Sets default data, if not set
@@ -53,7 +53,7 @@ public class PlayerCharacterManager {
 
         // Culture test, finishes character creation
         if(!CultureManager.hasCulture(player)) {
-            PlayerMenuManager.openSpeciesSelector(player);
+            PlayerMenuManager.Profile.openSpeciesSelector(player);
         } else if(!CultureManager.Items.hasCultureStartingItems(player)) {
             CultureManager.Items.giveCultureStartingItems(player,CultureManager.getCulture(player));
         }

@@ -51,7 +51,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 public class UIButtonManager {
 
@@ -258,6 +261,22 @@ public class UIButtonManager {
             });
 
             return levelItem;
+        }
+
+        // Virtues, I.E. feats. Opened from the main menu
+        public static ItemStack getVirtueItem(Player player) {
+            ItemStack featItem = new ItemStack(Material.KNOWLEDGE_BOOK);
+            ItemMeta featItemMeta = featItem.getItemMeta();
+            assert featItemMeta != null;
+            featItemMeta.setDisplayName(ChatColor.WHITE + "Feats");
+            List<String> lore = List.of(
+                    ChatColor.GOLD + String.valueOf(MineshaftPlayerBridge.Feats.getFeatPoints(player)) + ChatColor.GRAY + " virtue points remaining",
+                    ChatColor.GRAY + "Click to view virtues"
+            );
+            featItemMeta.setLore(lore);
+            featItem.setItemMeta(featItemMeta);
+            UIUtil.setOnclick(featItem,"virtues");
+            return featItem;
         }
 
         public static ItemStack getAbilityItem(Player player) {
