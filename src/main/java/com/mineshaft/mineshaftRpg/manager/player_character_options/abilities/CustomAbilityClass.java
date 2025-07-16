@@ -50,7 +50,9 @@ public class CustomAbilityClass {
     int castCost = 5;
 
     // How hard the spell is to learn, used only for spells
-    int learnDifficulty = 10;
+    int castDifficulty = 10;
+    // Experience per level. Used to find the maximum level
+    List<Integer> experiencePerLevel = List.of(15,25);
 
     // Icon
     Material materialIcon = Material.IRON_SWORD;
@@ -79,6 +81,14 @@ public class CustomAbilityClass {
 
     public CustomAbilityClass self() {
         return this;
+    }
+
+    public int getMaximumLevel() {
+        return 1 + experiencePerLevel.size();
+    }
+
+    public int getExperienceToNextLevel(int currentLevel) {
+        return experiencePerLevel.get(currentLevel-1);
     }
 
 }

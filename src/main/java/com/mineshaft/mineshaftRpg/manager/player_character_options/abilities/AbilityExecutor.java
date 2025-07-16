@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftRpg.manager.player_character_options.abilities;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.spells.SpellCaster;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.VectorPlayerEvent;
@@ -43,8 +44,12 @@ public class AbilityExecutor {
         return returnValue[0];
     }
 
-    // Cast the ability on the player
     public static void executeAbilityOnSelf(Player player, CustomAbilityClass ability) {
+        executeAbilityOnSelf(player,ability,0);
+    }
+
+        // Cast the ability on the player
+    public static void executeAbilityOnSelf(Player player, CustomAbilityClass ability, int castStrength) {
         if(ability == null) {
             return;
         }
@@ -59,7 +64,7 @@ public class AbilityExecutor {
                         return;
                     }
                 }
-                MineshaftApi.getInstance().getEventManagerInstance().runEvent(event, player.getLocation(), player.getUniqueId(), player);
+                MineshaftApi.getInstance().getEventManagerInstance().runEvent(event, player.getLocation(), player.getUniqueId(), player,castStrength);
             } else {
                 player.sendMessage(Component.text("Error, event: " + eventName + " is null"));
             }
@@ -67,7 +72,7 @@ public class AbilityExecutor {
         for(String hardcodedEventName : ability.getHardcodedEvents()) {
             // TODO: Add hardcoded event support (very complex mechanics)
         }
-        // TODO: Add cast cost and cooldown
+        // TODO: Add cast cost and cooldown. Partly works for abilities
 
         // Passive abilities are not triggered, due to no having active execution mechanics.
     }
@@ -76,9 +81,13 @@ public class AbilityExecutor {
         if(sender instanceof Player player) {
             if (args.length == 1) {
                 if(MineshaftRpg.getInstance().getCache().getAbilityIds().contains(args[0])) {
-                    if (!checkOwnership || JsonPlayerBridge.getAbilities(player).containsKey(args[0]) || (ItemManager.getItemSubcategory(player.getInventory().getItemInMainHand()).equals(ItemSubcategory.WAND) && JsonPlayerBridge.getSpells(player).containsKey(args[0]))) {
+                    // Check if it is a spell.
+
+                    if (!checkOwnership || JsonPlayerBridge.getAbilities(player).containsKey(args[0])) {
                         // Trigger the ability:
                         executeAbilityOnSelf(player,getAbilityClass(args[0]));
+                    } else if((ItemManager.getItemSubcategory(player.getInventory().getItemInMainHand()).equals(ItemSubcategory.WAND) && JsonPlayerBridge.getSpells(player).containsKey(args[0]))) {
+                        SpellCaster.attemptCastSpell(player, getAbilityClass(args[0]), true);
                     } else {
                         player.sendMessage(Component.text("You have not learned this ability",NamedTextColor.RED));
                     }

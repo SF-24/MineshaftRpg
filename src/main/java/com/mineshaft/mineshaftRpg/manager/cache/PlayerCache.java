@@ -57,6 +57,8 @@ public class PlayerCache {
     PlayerClicks clickCache = new PlayerClicks();
     @Getter
     SpellCache spellCache = new SpellCache();
+    @Getter
+    EnergyCache energyManager = new EnergyCache();
 
     public class PlayerClicks {
         // If the player has clicked
@@ -235,11 +237,28 @@ public class PlayerCache {
         }
 
         public void downEditedSpellHotbar(Player player) {
-            int hotbar = getEditedSpellHotbar(player)-1;
-            if(hotbar<0) hotbar=2;
+            int hotbar = getEditedSpellHotbar(player) - 1;
+            if (hotbar < 0) hotbar = 2;
             currentlyEditedSpellHotbar.put(player.getUniqueId(), hotbar);
         }
+    }
 
+    public class EnergyCache {
+        public Integer getEnergy(Player player) {
+            return playerEnergy.get(player.getUniqueId());
+        }
+
+        public void setEnergy(Player player, int energy) {
+            playerEnergy.put(player.getUniqueId(), energy);
+        }
+
+        public void takeEnergy(Player player, int energy) {
+            playerEnergy.put(player.getUniqueId(), getEnergy(player)-energy);
+        }
+
+        public boolean hasEnergy(Player player, int energy) {
+            return playerEnergy.get(player.getUniqueId()) >= energy;
+        }
     }
 
 }
