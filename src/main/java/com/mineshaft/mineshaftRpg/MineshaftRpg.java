@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftRpg;
 
 import com.mineshaft.mineshaftRpg.command.*;
+import com.mineshaft.mineshaftRpg.dependencies.Dependencies;
 import com.mineshaft.mineshaftRpg.listener.*;
 import com.mineshaft.mineshaftRpg.manager.cache.MineshaftCache;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigManager;
@@ -31,6 +32,7 @@ import com.mineshaft.mineshaftapi.manager.player.ProfileManager;
 import com.mineshaft.mineshaftapi.util.Logger;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -40,6 +42,9 @@ import java.util.logging.Level;
 public final class MineshaftRpg extends JavaPlugin {
 
     ArrayList<UUID> openUiPlayers = new ArrayList<>();
+
+    @Getter
+    private Dependencies dependencies;
 
     @Getter
     private final ConfigManager configManager = new ConfigManager();
@@ -79,6 +84,14 @@ public final class MineshaftRpg extends JavaPlugin {
         configManager.setupConfig();
 
         getCache().reloadData();
+
+        // Load energy cache
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyCache().setEnergy(player,20);
+        }
+
+        // Load dependencies
+        dependencies=new Dependencies();
     }
 
     @Override

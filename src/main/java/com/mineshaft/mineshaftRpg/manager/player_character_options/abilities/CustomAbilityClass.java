@@ -52,7 +52,9 @@ public class CustomAbilityClass {
     // How hard the spell is to learn, used only for spells
     int castDifficulty = 10;
     // Experience per level. Used to find the maximum level
-    List<Integer> experiencePerLevel = List.of(15,25);
+    List<Integer> experiencePerLevel = List.of();
+    // The spell cast pattern.
+    List<Integer> spellPattern = List.of();
 
     // Icon
     Material materialIcon = Material.IRON_SWORD;

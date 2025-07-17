@@ -23,25 +23,27 @@ import com.google.common.cache.CacheBuilder;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.AbilityExecutor;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
+import com.mineshaft.mineshaftapi.manager.event.click.ClickType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonSettingsBridge;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import com.mineshaft.mineshaftapi.manager.event.click.ClickType;
-
 public class PlayerCache {
 
     @Getter
     SpellHotbarManager spellHotbarManager = new SpellHotbarManager();
 
+    @Getter
     HashMap<UUID, Integer> playerEnergy = new HashMap<>();
 
     HashMap<UUID, Integer> currentlyEditedSpellHotbar = new HashMap<>();
@@ -58,7 +60,7 @@ public class PlayerCache {
     @Getter
     SpellCache spellCache = new SpellCache();
     @Getter
-    EnergyCache energyManager = new EnergyCache();
+    EnergyCache energyCache = new EnergyCache();
 
     public class PlayerClicks {
         // If the player has clicked
@@ -67,6 +69,12 @@ public class PlayerCache {
                 return true;
             }
             return false;
+        }
+
+        public void clearClicks(Player player) {
+            activeTime.put(player.getUniqueId(), System.currentTimeMillis());
+            player.sendActionBar(Component.text());
+            clicks.remove(player.getUniqueId());
         }
 
         // Cache a combo click
@@ -222,6 +230,10 @@ public class PlayerCache {
 
     public class SpellCache {
         public int getEditedSpellHotbar(Player player) {
+            if(!currentlyEditedSpellHotbar.containsKey(player.getUniqueId())) {
+                currentlyEditedSpellHotbar.put(player.getUniqueId(),0);
+                return 0;
+            }
             if(currentlyEditedSpellHotbar.get(player.getUniqueId())<0 || currentlyEditedSpellHotbar.get(player.getUniqueId())>2) return 0;
             return currentlyEditedSpellHotbar.get(player.getUniqueId());
         }
@@ -244,6 +256,10 @@ public class PlayerCache {
     }
 
     public class EnergyCache {
+        BukkitTask runnable;
+        @Getter
+        int maxEnergy = 20;
+
         public Integer getEnergy(Player player) {
             return playerEnergy.get(player.getUniqueId());
         }
@@ -253,11 +269,26 @@ public class PlayerCache {
         }
 
         public void takeEnergy(Player player, int energy) {
-            playerEnergy.put(player.getUniqueId(), getEnergy(player)-energy);
+            playerEnergy.put(player.getUniqueId(), Math.max(0, getEnergy(player)-energy));
         }
 
+        public void addEnergy(Player player, int energy) {
+            playerEnergy.put(player.getUniqueId(), Math.min(getEnergy(player)+energy, maxEnergy));
+        }
         public boolean hasEnergy(Player player, int energy) {
             return playerEnergy.get(player.getUniqueId()) >= energy;
+        }
+
+        public void updateRegistry() {
+            if(!Bukkit.getOnlinePlayers().isEmpty() && runnable != null) {
+                runnable = Bukkit.getScheduler().runTaskTimerAsynchronously(MineshaftRpg.getInstance(), ()->{
+                    for(Player player:Bukkit.getOnlinePlayers()) {
+                        MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyCache().addEnergy(player, 1);
+                    }
+                }, 0, 20);
+            } else if(Bukkit.getOnlinePlayers().isEmpty()) {
+                runnable.cancel();
+            }
         }
     }
 

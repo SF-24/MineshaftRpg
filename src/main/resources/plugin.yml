@@ -5,6 +5,7 @@ api-version: '1.20'
 prefix: MineshaftRpg
 authors: [ SebastianFrynas ]
 depend: [ MineshaftApi ]
+softdepend: [PlaceholderAPI]
 description: A port of the RPG features, along with new features from "Another Rpg Plugin"
 website: https://github.com/SF-24
 commands:

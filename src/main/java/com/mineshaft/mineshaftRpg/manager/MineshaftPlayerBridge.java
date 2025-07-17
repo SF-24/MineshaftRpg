@@ -22,6 +22,7 @@ import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.passive_events.PassiveAbilities;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.CustomFeatClass;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
@@ -154,6 +155,20 @@ public class MineshaftPlayerBridge {
                 Logger.logError("Cannot load culture feat points for " + player.getName());
                 return 0;
             }
+        }
+
+        public static List<String> getFeats(Player player) {
+            return JsonPlayerBridge.getCharDataListElement(player,"feats");
+        }
+
+        public static void giveFeat(Player player, CustomFeatClass feat) {
+            ArrayList<String> feats = (ArrayList<String>) getFeats(player);
+            feats.add(feat.getId());
+            JsonPlayerBridge.setCharDataListElement(player, "feats",feats);
+        }
+
+        public boolean hasFeat(Player player, CustomFeatClass feat) {
+            return getFeats(player).contains(feat.getId());
         }
     }
 }

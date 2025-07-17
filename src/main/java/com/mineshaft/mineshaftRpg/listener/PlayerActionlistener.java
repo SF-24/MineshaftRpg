@@ -19,26 +19,21 @@
 package com.mineshaft.mineshaftRpg.listener;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.AbilityExecutor;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.spells.SpellCaster;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
-import com.mineshaft.mineshaftapi.manager.item.ItemManager;
-import com.mineshaft.mineshaftapi.manager.player.ActionType;
+import com.mineshaft.mineshaftapi.manager.block.BlockManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
+import com.mineshaft.mineshaftapi.util.ItemUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerExpChangeEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.UUID;
 
 public class PlayerActionlistener implements Listener {
 
@@ -47,18 +42,7 @@ public class PlayerActionlistener implements Listener {
         if(!e.isCancelled()) {
             Player player = e.getPlayer();
             if (!MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().hasSpellHotbar(player)) {
-                final UUID[] uuid = new UUID[1];
-                try {
-                    NBT.get(e.getItemDrop().getItemStack(), nbt -> {
-                        String id = nbt.getString("uuid");
-                        if (id.equalsIgnoreCase("null")) return;
-                        uuid[0] = UUID.fromString(id);
-                    });
-                } catch (Exception ignored) {
-                }
-                UUID uniqueId = uuid[0];
-
-                if (ItemManager.getInteractEventsFromItem(ItemManager.getItemName(uniqueId), ActionType.RIGHT_CLICK).contains("wand")) {
+                if (ItemUtil.isWand(e.getItemDrop().getItemStack())) {
                     MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().deactivateSpellHotbar(player);
                     player.sendMessage("shutting wand ui");
                 }
@@ -99,6 +83,19 @@ public class PlayerActionlistener implements Listener {
             e.setCancelled(true);
             if(e.getNewSlot()!=8) {
                 e.getPlayer().getInventory().setHeldItemSlot(8);
+            }
+        }
+    }
+
+    @EventHandler
+    void onInteract(PlayerInteractEvent e) {
+        Player player = e.getPlayer();
+        if (ItemUtil.isWand(e.getItem())) {
+            if((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (e.getClickedBlock()==null || !BlockManager.isInteractable(e.getClickedBlock().getType()))) {
+                MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().toggleSpellHotbar(player);
+                e.setCancelled(true);
+            } else if (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                // TODO:
             }
         }
     }

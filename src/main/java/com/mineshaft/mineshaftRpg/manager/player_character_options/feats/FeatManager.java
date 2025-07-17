@@ -41,6 +41,7 @@ public class FeatManager {
         }
     }
 
+    // Duplicate function
     public static boolean canLearnFeat(Player player, CustomFeatClass customFeatClass) {
 
         // Culture check
@@ -48,7 +49,7 @@ public class FeatManager {
             player.sendMessage(ChatColor.RED + "You have not selected a culture.");
             return false;
         }
-        if(!CultureManager.getCulture(player).equals(customFeatClass.getCulture())) {
+        if(!(customFeatClass.getCultures().contains(CultureManager.getCulture(player)))) {
             return false;
         }
 

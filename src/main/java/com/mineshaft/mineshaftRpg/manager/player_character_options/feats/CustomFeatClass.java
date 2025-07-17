@@ -18,9 +18,14 @@
 
 package com.mineshaft.mineshaftRpg.manager.player_character_options.feats;
 
+import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import lombok.Getter;
+import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +45,7 @@ public class CustomFeatClass {
     private final boolean cultureRestricted = true;
 
     // The culture it is restricted to (if the above boolean is checked)
-    private final String culture = "human_bree";
+    private final List<String> cultures = Collections.singletonList("human_bree");
 
     // Minimum level
     private final int minimumLevel = 1;
@@ -53,4 +58,23 @@ public class CustomFeatClass {
 
     // ASI
     private final Map<AbilityScores,Integer> abilityScoreIncreases = Map.of(AbilityScores.WIS, 1, AbilityScores.DEX, 1);
+
+    public boolean canPickFeat(Player player) {
+        // TODO: CHECK IF THE PLAYER HAS THE FEAT ALREADY
+
+        if(!MineshaftPlayerBridge.Feats.getFeats(player).contains(id)) {
+            if(!isCultureRestricted() || cultures.contains(CultureManager.getCulture(player))) {
+                if(minimumLevel>=JsonPlayerBridge.getLevel(player)) {
+                    for(AbilityScores abilityScore : minimumAbilityScores.keySet()) {
+                        if(MineshaftPlayerBridge.Attributes.getAbilityScore(player,abilityScore)<minimumAbilityScores.get(abilityScore)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

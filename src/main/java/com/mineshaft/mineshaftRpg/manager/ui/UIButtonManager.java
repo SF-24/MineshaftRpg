@@ -28,6 +28,7 @@ import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.dependency.world_guard.DiscoveryCategory;
 import com.mineshaft.mineshaftapi.dependency.world_guard.Town;
 import com.mineshaft.mineshaftapi.manager.item.ItemStats;
+import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonDiscoveryBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
@@ -81,8 +82,8 @@ public class UIButtonManager {
                 ItemMeta itemMeta = itemStack.getItemMeta();
                 assert itemMeta != null;
                 ArrayList<String> lore = (ArrayList<String>) itemMeta.getLore();
-                lore.add(ChatColor.GRAY + "Slot: " + JsonSettingsBridge.getSpellSlot(player, customAbilityClass.getId()));
-                lore.add(ChatColor.GRAY + "Hotbar: " + JsonSettingsBridge.getSpellHotbar(player, customAbilityClass.getId()));
+                if (lore==null) lore = new ArrayList<>();
+
                 itemMeta.setLore(lore);
                 itemStack.setItemMeta(itemMeta);
             }
@@ -95,7 +96,7 @@ public class UIButtonManager {
         }
 
         public static ItemStack getHotbarItem(Player player) {
-            return ButtonUtil.getButton(ButtonType.QUESTION_MARK,ButtonVariant.YELLOW,"Current hotbar: " + MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellCache().getEditedSpellHotbar(player),new ArrayList<>(),"");
+            return ButtonUtil.getButton(ButtonType.REFRESH,ButtonVariant.YELLOW,"Current hotbar: " + MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellCache().getEditedSpellHotbar(player),List.of(ChatColor.GRAY + "Click to unbind spell"),"spellUnbind");
         }
 
         public static ItemStack getHotbarDownItem() {
@@ -106,13 +107,17 @@ public class UIButtonManager {
             return ButtonUtil.getButton(ButtonType.ARROW_UP,ButtonVariant.GREEN,"Up",new ArrayList<>(),"spellHotbarUp");
         }
 
+        public static ItemStack getBackItem() {
+            return ButtonUtil.getButton(ButtonType.TICK,ButtonVariant.GREEN,"Back",new ArrayList<>(),"spellUiClose");
+        }
+
         public static ItemStack getSpellBindToSlotItem(Player player, int hotbar, int slot, String spellName) {
             ItemStack button;
             if(JsonSettingsBridge.getSpell(player,hotbar,slot) != null) {
                 CustomAbilityClass spell = MineshaftRpg.getInstance().getCache().getAbility(JsonSettingsBridge.getSpell(player,hotbar,slot));
-                button = ButtonUtil.getButton(ButtonType.PLUS,ButtonVariant.YELLOW,"Click to bind to slot " + slot, (ArrayList<String>) Collections.singletonList(ChatColor.GRAY + "Current spell: " + spell.getName().toString()),"bindSpell");
+                button = ButtonUtil.getButton(ButtonType.PLUS,ButtonVariant.YELLOW,"Click to bind to slot " + slot, List.of(ChatColor.GRAY + "Current spell: " + spell.getName()),"bindSpell");
             } else {
-                button = ButtonUtil.getButton(ButtonType.PLUS,ButtonVariant.GREEN,"Click to bind to slot " + slot, (ArrayList<String>) Collections.singletonList(ChatColor.GRAY + "No bound spell"),"bindSpell");
+                button = ButtonUtil.getButton(ButtonType.PLUS,ButtonVariant.GREEN,"Click to bind to slot " + slot, List.of(ChatColor.GRAY + "No bound spell"),"bindSpell");
             }
             NBT.modify(button, nbt->{
                 nbt.setInteger("slot",slot);
@@ -127,14 +132,14 @@ public class UIButtonManager {
      * Abilities
      */
     public static class Abilities {
-        public static ArrayList<ItemStack> getAbilityItemArray(Player player, boolean onClick) {
+        public static ArrayList<ItemStack> getAbilityItemArray(Player player, ArrayList<CustomAbilityClass> abilityList, boolean onClick) {
             ArrayList<ItemStack> itemArray = new ArrayList<>();
-            for (String abilityId : JsonPlayerBridge.getAbilities(player).keySet()) {
-                if(MineshaftRpg.getInstance().getCache().getAbility(abilityId)==null) {
-                    Logger.logError("Found null ability: " + abilityId);
+            for (CustomAbilityClass ability : abilityList) {
+                if(ability==null) {
+                    Logger.logError("Found null ability");
                     continue;
                 }
-                itemArray.add(getAbilityItem(player, MineshaftRpg.getInstance().getCache().getAbility(abilityId),onClick));
+                itemArray.add(getAbilityItem(player, MineshaftRpg.getInstance().getCache().getAbility(ability.getId()),onClick));
             }
             return itemArray;
         }
@@ -174,13 +179,25 @@ public class UIButtonManager {
             abilityItemMeta.setDisplayName(ChatColor.WHITE + ability.getName());
 
             ArrayList<String> lore = new ArrayList<>();
-            for(String abilityIteration : JsonSettingsBridge.getAbilities(player).keySet()) {
-                if(abilityIteration.equalsIgnoreCase(ability.getId())) {
-                    lore.add(ChatColor.GRAY + JsonSettingsBridge.getAbilities(player).get(abilityIteration));
+
+            if(ability.getAbilityType().equals(AbilityType.ACTIVE_ABILITY)) {
+                for (String abilityIteration : JsonSettingsBridge.getAbilities(player).keySet()) {
+                    if (abilityIteration.equalsIgnoreCase(ability.getId())) {
+                        lore.add(ChatColor.GRAY + JsonSettingsBridge.getAbilities(player).get(abilityIteration));
+                    }
                 }
             }
-            abilityItem.setLore(lore);
+            if(ability.getAbilityType().equals(AbilityType.SPELL)) {
+                lore.add(ChatColor.GRAY + "Level " + JsonPlayerBridge.getSpellClass(player,ability.getId()).getLevel());
 
+                if (JsonSettingsBridge.getSpellHotbar(player,ability.getId())>=0) {
+                    lore.add(ChatColor.GRAY + "Hotbar " + JsonSettingsBridge.getSpellHotbar(player, ability.getId()));
+                    lore.add(ChatColor.GRAY + "Slot " + JsonSettingsBridge.getSpellSlot(player, ability.getId()));
+                } else {
+                    lore.add(ChatColor.GRAY + "Unbound");
+                }
+            }
+            abilityItemMeta.setLore(lore);
             abilityItem.setItemMeta(abilityItemMeta);
 
             NBT.modify(abilityItem, nbt -> {

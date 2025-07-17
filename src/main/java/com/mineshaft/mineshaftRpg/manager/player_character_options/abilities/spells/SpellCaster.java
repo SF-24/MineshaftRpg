@@ -27,6 +27,7 @@ import com.mineshaft.mineshaftapi.manager.StringManager;
 import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.spells.SpellClass;
+import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.maths.RNGUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -39,6 +40,15 @@ import org.jetbrains.annotations.NotNull;
 public class SpellCaster {
 
     public static void attemptCastSpell(Player player, CustomAbilityClass spell, boolean isQuickCast) {
+
+        if(spell==null) {
+            Logger.logError("Null spell detected. Aborting!");
+            return;
+        }
+
+        if(JsonPlayerBridge.getSpellClass(player,spell.getId())==null) {
+            JsonPlayerBridge.addSpell(player,spell.getId(),new SpellClass());
+        }
 
         // If the spell has been learned
         if(JsonPlayerBridge.getSpellClass(player, spell.getId()).isLearned()) {
@@ -75,17 +85,18 @@ public class SpellCaster {
 
         // if req. energy >0
         if(requiredEnergy>0) {
-            if (!MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyManager().hasEnergy(player,requiredEnergy)) {
+            if (!MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyCache().hasEnergy(player,requiredEnergy)) {
                 StringManager.sendActionBar(player, "Not enough energy to cast spell");
                 result = SpellCastResult.FAILS;
             }
-            MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyManager().takeEnergy(player,requiredEnergy);
+            MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyCache().takeEnergy(player,requiredEnergy);
         }
 
         if(result.equals(SpellCastResult.SUCCESS)) {
             int spellStrength = ((castRoll-spell.getCastDifficulty())/40)*spell.getCastDifficulty()+1;
-            player.sendMessage("Spell Strength: " + spellStrength + " | Learn Difficulty: " + spell.getCastDifficulty());
-            player.sendMessage("Original D20 roll: " + originalCastRoll + " | D20 roll with modifier: " + castRoll);
+            Logger.logDebug("Spell Strength: " + spellStrength + " | Learn Difficulty: " + spell.getCastDifficulty());
+            Logger.logDebug("Original D20 roll: " + originalCastRoll + " | D20 roll with modifier: " + castRoll);
+
             AbilityExecutor.executeAbilityOnSelf(player,spell);
             learnSpell(player,spell);
         } else {
@@ -134,21 +145,21 @@ public class SpellCaster {
 
     // Get the cast result for a learned spell
     private static @NotNull SpellCastResult getLearnedSpellCastResult(Player player, CustomAbilityClass spell, int castRoll, boolean isQuickCast) {
-        int energyBonus = (MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyManager().getEnergy(player))-spell.getCastCost();
+        int energyBonus = (MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyCache().getEnergy(player))-spell.getCastCost();
         if(energyBonus>0) {
             castRoll+= energyBonus/6;
         } else if(energyBonus<0) {
-            castRoll-=energyBonus;
+            castRoll-=energyBonus*5;
         }
 
         // If the spell is not quick cast, apply a cast bonus
         if(!isQuickCast) castRoll+=5;
 
         if(castRoll> spell.getCastDifficulty()) {
-            MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyManager().takeEnergy(player,spell.getCastCost());
+            MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyCache().takeEnergy(player,spell.getCastCost());
             return SpellCastResult.SUCCESS;
         }
-        MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyManager().takeEnergy(player,spell.getCastCost()/2);
+        MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyCache().takeEnergy(player,spell.getCastCost()/2);
         return SpellCastResult.FIZZLES;
     }
 
@@ -174,7 +185,7 @@ public class SpellCaster {
 
         // Ignored. Used only for debug
         // TODO: remove
-        int tempEnergyBonus = (MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyManager().getEnergy(player))-spell.getCastCost();
+        int tempEnergyBonus = (MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyCache().getEnergy(player))-spell.getCastCost();
 
         // Get the cast result, includes taking the energy cast cost
         SpellCastResult result = getLearnedSpellCastResult(player,spell,castRoll,isQuickCast);
@@ -184,13 +195,11 @@ public class SpellCaster {
         int newSpellStrength = (spellStrength/20)*spell.getCastDifficulty()+1;
 
         // debug
-        if(player.hasPermission("mineshaft.debug")) {
-            player.sendMessage("STR: " + spellStrength + " | NEW STR: " + newSpellStrength + " | CDIFF: " + spell.getCastDifficulty());
-            player.sendMessage("ROLL: " + tempOriginalRoll + " | ROLL WITH MOD: " + castRoll);
-            player.sendMessage("PR MOD: " + primaryCastingMod + " | SEC MOD: " + secondaryCastingMod);
-            player.sendMessage("SKILL MOD: " + 0 + " | SPELL LVL: " + JsonPlayerBridge.getSpellClass(player,spell.getId()).getLevel());
-            player.sendMessage("ENERGY BONUS: " + tempEnergyBonus + " | IS QUICK CASTED: " + isQuickCast);
-        }
+        Logger.logDebug("STR: " + spellStrength + " | NEW STR: " + newSpellStrength + " | CDIFF: " + spell.getCastDifficulty());
+        Logger.logDebug("ROLL: " + tempOriginalRoll + " | ROLL WITH MOD: " + castRoll);
+        Logger.logDebug("PR MOD: " + primaryCastingMod + " | SEC MOD: " + secondaryCastingMod);
+        Logger.logDebug("SKILL MOD: " + 0 + " | SPELL LVL: " + JsonPlayerBridge.getSpellClass(player,spell.getId()).getLevel());
+        Logger.logDebug("ENERGY BONUS: " + tempEnergyBonus + " | IS QUICK CASTED: " + isQuickCast);
 
         // Give EXP for casting the spell
         giveExpForLearnedSpell(player,spell,RNGUtil.randIntInRange(result.minimumExperience, result.maximumExperience));

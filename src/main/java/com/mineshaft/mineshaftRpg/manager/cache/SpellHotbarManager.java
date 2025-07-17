@@ -156,7 +156,7 @@ public class SpellHotbarManager {
     public void fillSpellHotbar(Player player) {
         if(hasSpellHotbar(player)) {
             for (int i = 0; i < 8; i++) {
-                player.getInventory().setItem(i, getSpellHotbarItem(player, JsonSettingsBridge.getCurrentSpellHotbar(player), i));
+                player.getInventory().setItem(i, getSpellHotbarItem(player, JsonSettingsBridge.getCurrentSpellHotbar(player), i+1));
             }
         }
     }

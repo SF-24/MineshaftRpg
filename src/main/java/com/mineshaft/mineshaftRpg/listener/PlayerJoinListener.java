@@ -39,6 +39,8 @@ public class PlayerJoinListener implements Listener {
         // Redundant null check?
         PlayerCharacterManager.initialiseCharacter(event.getPlayer());
         event.getPlayer().sendMessage(Component.text("This server uses the plugin MineshaftRpg by https://github.com/SF-24", NamedTextColor.AQUA));
+        MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyCache().setEnergy(event.getPlayer(), 20);
+        MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyCache().updateRegistry();
     }
 
     @EventHandler
@@ -47,6 +49,7 @@ public class PlayerJoinListener implements Listener {
             MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().deactivateSpellHotbar(event.getPlayer());
         }
         MineshaftPlayerBridge.savePlayerData(event.getPlayer());
+        MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyCache().updateRegistry();
     }
 
     @EventHandler

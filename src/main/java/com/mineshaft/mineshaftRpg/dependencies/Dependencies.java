@@ -16,24 +16,18 @@
  *
  */
 
-package com.mineshaft.mineshaftRpg.listener;
+package com.mineshaft.mineshaftRpg.dependencies;
 
-import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.world.WorldSaveEvent;
 
-public class GameSaveListener implements Listener {
-
-    @EventHandler
-    public void onWorldSaveEvent(WorldSaveEvent event) {
-        for(Player player : Bukkit.getOnlinePlayers()) {
-            if(!player.getOpenInventory().getTitle().contains("Menu") && !player.getOpenInventory().getTitle().contains("Ability Scores")) {
-                MineshaftPlayerBridge.savePlayerData(player);
-            }
+public class Dependencies {
+    public Dependencies() {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            /*
+             * We register the EventListener here, when PlaceholderAPI is installed.
+             * Since all events are in the main class (this class), we simply use "this"
+             */
+            new PlaceholderExpansion().register();
         }
     }
-
 }

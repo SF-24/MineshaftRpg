@@ -124,34 +124,46 @@ public class ButtonClickExecutor {
                 break;
             case "abilities":
                 if(e.getClick().equals(org.bukkit.event.inventory.ClickType.LEFT) || e.getClick().equals(org.bukkit.event.inventory.ClickType.SHIFT_LEFT)) {
-                    player.sendMessage("Showing active abilities");
                     PlayerMenuManager.Abilities.openAbilityUI(player, true,AbilityType.ACTIVE_ABILITY);
                 } else if(e.getClick().equals(org.bukkit.event.inventory.ClickType.RIGHT) || e.getClick().equals(org.bukkit.event.inventory.ClickType.SHIFT_RIGHT)) {
-                    player.sendMessage("Showing passive abilities");
                     PlayerMenuManager.Abilities.openAbilityUI(player, true,AbilityType.PASSIVE_ABILITY);
                 }
                 break;
-            case "spells":
+            case "spells", "spellUiClose":
                 PlayerMenuManager.Abilities.openAbilityUI(player, true,AbilityType.SPELL);
                 break;
             case "ability":
                 CustomAbilityClass customAbilityClass = MineshaftRpg.getInstance().getCache().getAbility(UIUtil.getAbility(e.getCurrentItem()));
                 PlayerMenuManager.Abilities.openAbilityBindingUI(player,true,customAbilityClass);
                 break;
+            case "spell":
+                CustomAbilityClass spell = MineshaftRpg.getInstance().getCache().getAbility(UIUtil.getString(e.getCurrentItem(),"spell"));
+                PlayerMenuManager.Abilities.openSpellBindingUI(player,true,spell);
+                break;
             case "bindSpell":
                 CustomAbilityClass spellClass = MineshaftRpg.getInstance().getCache().getAbility(UIUtil.getAbility(e.getCurrentItem()));
                 NBT.get(e.getCurrentItem(),nbt->{
                     int slot = nbt.getInteger("slot");
                     int hotbar = nbt.getInteger("hotbar");
-                    JsonSettingsBridge.addSpell(player,UIUtil.getAbility(e.getCurrentItem()),slot,hotbar);
-                    PlayerMenuManager.Abilities.openAbilityBindingUI(player,true,spellClass);
+                    player.sendMessage("Spell " + spellClass.getName() + " bound to slot " + slot + " in hotbar " + hotbar);
+                    JsonSettingsBridge.addSpell(player,UIUtil.getAbility(e.getCurrentItem()),hotbar,slot);
+                    PlayerMenuManager.Abilities.openSpellBindingUI(player,true,spellClass);
                 });
                 break;
             case "spellHotbarUp":
                 MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellCache().upEditedSpellHotbar(player);
+                CustomAbilityClass spellClass1 = MineshaftRpg.getInstance().getCache().getAbility(UIUtil.getString(Objects.requireNonNull(e.getInventory().getItem(5)),"spell"));
+                PlayerMenuManager.Abilities.openSpellBindingUI(player,true,spellClass1);
+                break;
+            case "spellUnbind":
+                CustomAbilityClass spellClass4 = MineshaftRpg.getInstance().getCache().getAbility(UIUtil.getString(Objects.requireNonNull(e.getInventory().getItem(5)),"spell"));
+                JsonSettingsBridge.removeSpell(player,spellClass4.getId());
+                PlayerMenuManager.Abilities.openSpellBindingUI(player,true,spellClass4);
                 break;
             case "spellHotbarDown":
                 MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellCache().downEditedSpellHotbar(player);
+                CustomAbilityClass spellClass2 = MineshaftRpg.getInstance().getCache().getAbility(UIUtil.getString(Objects.requireNonNull(e.getInventory().getItem(5)),"spell"));
+                PlayerMenuManager.Abilities.openSpellBindingUI(player,true,spellClass2);
                 break;
             case "ability_scores":
                 PlayerMenuManager.openAbilityScoreMenu(player,true);

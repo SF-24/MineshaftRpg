@@ -19,15 +19,23 @@
 package com.mineshaft.mineshaftRpg.listener;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
+import com.mineshaft.mineshaftRpg.manager.cache.MineshaftCache;
+import com.mineshaft.mineshaftRpg.manager.cache.SpellHotbarManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.passive_events.PassiveAbilityRegistrar;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.spells.SpellCaster;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
 import com.mineshaft.mineshaftapi.events.*;
+import com.mineshaft.mineshaftapi.manager.block.BlockManager;
+import com.mineshaft.mineshaftapi.manager.event.click.ClickType;
 import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.json.JsonSettingsBridge;
 import com.mineshaft.mineshaftapi.manager.ui.notification.NotificationSender;
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
+import com.mineshaft.mineshaftapi.util.ItemUtil;
+import com.mineshaft.mineshaftapi.util.UIUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -54,6 +62,24 @@ public class MineshaftListener implements Listener {
     // Key press, via AriKeys from Mineshaft
     @EventHandler
     public void onClickKey(MineshaftClickTypeEvent e) {
+        if(e.getClickType().equals(ClickType.CLEAR)) {
+            MineshaftRpg.getInstance().getCache().getPlayerCache().getClickCache().clearClicks(e.getPlayer());
+            return;
+        }
+        if((e.getClickType().equals(ClickType.HOTBAR_UP) || e.getClickType().equals(ClickType.HOTBAR_DOWN)) && ItemUtil.isWand(e.getPlayer().getInventory().getItemInMainHand())) {
+            int hotbar = JsonSettingsBridge.getCurrentSpellHotbar(e.getPlayer());
+            if(e.getClickType().equals(ClickType.HOTBAR_DOWN)) {
+                hotbar--;
+            } else {
+                hotbar++;
+            }
+            if(hotbar>2) hotbar=0;
+            if(hotbar<0) hotbar=2;
+            JsonSettingsBridge.setCurrentSpellHotbar(e.getPlayer(), hotbar);
+            e.getPlayer().sendActionBar("updated hotbar to " + hotbar);
+            MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().fillSpellHotbar(e.getPlayer());
+            return;
+        }
         MineshaftRpg.getInstance().getCache().getPlayerCache().getClickCache().cacheClick(e.getPlayer(), e.getClickType());
     }
 
@@ -69,7 +95,7 @@ public class MineshaftListener implements Listener {
     // Use of an item with events
     @EventHandler
     public void onItemUse(MineshaftUseItemEvent e) {
-        if(e.getEvents()!=null && e.getEvents().contains("wand") && e.getClickType().equals(ActionType.RIGHT_CLICK)) {
+        if(ItemUtil.isWand(e.getItemStack())) {
             MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().toggleSpellHotbar(e.getPlayer());
             e.setCancelled(true);
         }
@@ -77,24 +103,24 @@ public class MineshaftListener implements Listener {
 
     // Use of an item with events
     @EventHandler
-    public void onItemUse(MineshaftEntityDisarmEvent e) {
+    public void onDisarm(MineshaftEntityDisarmEvent e) {
         if(!e.isCancelled() && e.getEntity() instanceof Player player) {
             if (!MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().hasSpellHotbar(player)) {
-                final UUID[] uuid = new UUID[1];
-                try {
-                    NBT.get(e.getItem(), nbt -> {
-                        String id = nbt.getOrDefault("uuid", "null");
-                        if (id.equalsIgnoreCase("null")) return;
-                        uuid[0] = UUID.fromString(id);
-                    });
-                } catch (Exception ignored) {
-                }
-                UUID uniqueId = uuid[0];
 
-                if (ItemManager.getInteractEventsFromItem(ItemManager.getItemName(uniqueId), ActionType.RIGHT_CLICK).contains("wand")) {
+                if(ItemUtil.isWand(e.getItem())) {
                     MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().deactivateSpellHotbar(player);
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void onSpellPattern(MineshaftPatternDrawEvent e) {
+        if(e.getPattern()==null) return;
+
+        e.getPlayer().sendMessage("Pattern " + e.getPattern());
+
+        if(MineshaftRpg.getInstance().getCache().getAbility(e.getPattern())==null) return;
+        SpellCaster.attemptCastSpell(e.getPlayer(), MineshaftRpg.getInstance().getCache().getAbility(e.getPattern()), false);
     }
 }

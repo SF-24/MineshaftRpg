@@ -22,10 +22,9 @@ import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.spells.SpellCaster;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.event.Event;
-import com.mineshaft.mineshaftapi.manager.event.event_subclass.VectorPlayerEvent;
-import com.mineshaft.mineshaftapi.manager.item.ItemManager;
-import com.mineshaft.mineshaftapi.manager.item.fields.ItemSubcategory;
+import com.mineshaft.mineshaftapi.manager.event.event_subclass.PlayerVectorEvent;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.util.ItemUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
@@ -58,8 +57,8 @@ public class AbilityExecutor {
         for(String eventName : ability.getCustomEvents()) {
             Event event = MineshaftApi.getInstance().getEventManagerInstance().getEvent(eventName);
             if (event != null) {
-                if(event instanceof VectorPlayerEvent) {
-                    if(!((VectorPlayerEvent)event).isAllowWhenFlying() &&!player.isOnGround()) {
+                if(event instanceof PlayerVectorEvent) {
+                    if(!((PlayerVectorEvent)event).isAllowWhenFlying() &&!player.isOnGround()) {
                         player.sendActionBar(Component.text("You must be on the ground to use this ability.",NamedTextColor.RED));
                         return;
                     }
@@ -86,7 +85,7 @@ public class AbilityExecutor {
                     if (!checkOwnership || JsonPlayerBridge.getAbilities(player).containsKey(args[0])) {
                         // Trigger the ability:
                         executeAbilityOnSelf(player,getAbilityClass(args[0]));
-                    } else if((ItemManager.getItemSubcategory(player.getInventory().getItemInMainHand()).equals(ItemSubcategory.WAND) && JsonPlayerBridge.getSpells(player).containsKey(args[0]))) {
+                    } else if(ItemUtil.isWand(player.getInventory().getItemInMainHand()) && JsonPlayerBridge.getSpells(player).containsKey(args[0])) {
                         SpellCaster.attemptCastSpell(player, getAbilityClass(args[0]), true);
                     } else {
                         player.sendMessage(Component.text("You have not learned this ability",NamedTextColor.RED));

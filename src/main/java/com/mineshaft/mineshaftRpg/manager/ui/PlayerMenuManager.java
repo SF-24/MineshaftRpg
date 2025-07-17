@@ -85,6 +85,7 @@ public class PlayerMenuManager {
 
     public static void openFeatMenu(Player player, boolean isUpdate) {
         Inventory ui = getMenuBackground("Virtues");
+
         player.openInventory(ui);
         inventoryManagement(player,isUpdate);
     }
@@ -103,6 +104,7 @@ public class PlayerMenuManager {
         public static void openAbilityUI(Player player, boolean isUpdate, AbilityType type) {
             Inventory ui = getMediumMenuBackground("Abilities");
 
+            ArrayList<ItemStack> itemArray = new ArrayList<>();
             ArrayList<String> included = new ArrayList<>();
 
             Set<String> knownAbilities;
@@ -111,21 +113,22 @@ public class PlayerMenuManager {
                 case PASSIVE_ABILITY -> knownAbilities=JsonPlayerBridge.getPassiveAbilities(player).keySet();
                 case SPELL -> knownAbilities=JsonPlayerBridge.getSpells(player).keySet();
                 // Active abilities or default
-                default -> knownAbilities=JsonPlayerBridge.getAbilities(player).keySet();
+                case ACTIVE_ABILITY -> knownAbilities=JsonPlayerBridge.getAbilities(player).keySet();
+                default -> {
+                    return;
+                }
             }
 
             for(String abilityId : knownAbilities) {
                 if(!included.contains(abilityId)) {
                     CustomAbilityClass ability = MineshaftRpg.getInstance().getCache().getAbility(abilityId);
                     if(ability!=null && ability.getAbilityType().equals(type)) {
-                        ui.addItem(UIButtonManager.Abilities.getAbilityItem(player, ability, true));
+                        itemArray.add(UIButtonManager.Abilities.getAbilityItem(player, ability, true));
                         included.add(abilityId);
-                    } else {
-                        // TODO:
                     }
                 }
             }
-            new GUI(player, 0, ui, UIButtonManager.Abilities.getAbilityItemArray(player,true),"",19,25, ButtonUtil.getArrowDirectionButton(Direction2D.LEFT, ButtonVariant.GREEN),ButtonUtil.getArrowDirectionButton(Direction2D.RIGHT,ButtonVariant.GREEN));
+            new GUI(player, 0, ui, itemArray,"",19,25, ButtonUtil.getArrowDirectionButton(Direction2D.LEFT, ButtonVariant.GREEN),ButtonUtil.getArrowDirectionButton(Direction2D.RIGHT,ButtonVariant.GREEN));
             inventoryManagement(player, isUpdate);
         }
 
@@ -149,14 +152,15 @@ public class PlayerMenuManager {
             ui.setItem(11, UIButtonManager.Abilities.getAbilityItem(player, abilityClass, false));
 
             // Bind spell slots
-            for(int i = 1; i<8; i++) {
+            for(int i = 1; i<9; i++) {
                 ItemStack item = UIButtonManager.Spells.getSpellBindToSlotItem(player,MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellCache().getEditedSpellHotbar(player),i,abilityClass.getId());
                 ui.setItem(i+8,item);
             }
 
-            ui.setItem(5,UIButtonManager.Spells.getSpellItem(player,abilityClass,true));
+            ui.setItem(4,UIButtonManager.Spells.getSpellItem(player,abilityClass,true));
             ui.setItem(8,UIButtonManager.Spells.getHotbarUpItem());
             ui.setItem(17,UIButtonManager.Spells.getHotbarItem(player));
+            ui.setItem(22,UIButtonManager.Spells.getBackItem());
             ui.setItem(26,UIButtonManager.Spells.getHotbarDownItem());
 
             player.openInventory(ui);

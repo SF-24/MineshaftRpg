@@ -34,7 +34,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UIListener implements Listener {
@@ -43,13 +42,7 @@ public class UIListener implements Listener {
     public void onInventoryClick(InventoryClickEvent e) {
         if (e.getInventory().getHolder() == null) {
             String title = ChatColor.translateAlternateColorCodes('&', e.getView().getTitle());
-            if (title.equals(ChatColor.BLACK + "Discoveries")||title.equals(ChatColor.BLACK + "Ability")||title.equals(ChatColor.BLACK + "Abilities")||title.equals(ChatColor.BLACK + "Quests")|| title.equals(ChatColor.BLACK + "Menu") && e.getClickedInventory() != null) {
-                e.setCancelled(true);
-
-                // Button execution
-                ButtonClickExecutor.click(e);
-
-            } else if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Ability Scores") && e.getClickedInventory() != null) {
+            if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Ability Scores") && e.getClickedInventory() != null) {
                 e.setCancelled(true);
 
                 if(e.getCurrentItem()==null) return;
@@ -115,10 +108,15 @@ public class UIListener implements Listener {
                     });
                 }
 
+            } else if (menuList.contains(ChatColor.translateAlternateColorCodes('&',title)) && e.getClickedInventory() != null) {
+                e.setCancelled(true);
+
+                // Button execution
+                ButtonClickExecutor.click(e);
             }
         } else {
             if(e.getCurrentItem()!=null && e.getCurrentItem().getType()!=Material.AIR) {
-                try {
+                try {I
                     NBT.get(e.getCurrentItem(),nbt->{
                         if(nbt.getBoolean("Immutable")) {
                             e.setCancelled(true);
