@@ -238,6 +238,9 @@ public class UIButtonManager {
             } else {
                 culture="No culture selected";
             }
+            if(CultureManager.hasSubCulture(player)) {
+                culture+=CultureManager.getCustomCulture(CultureManager.getSubCulture(player)).getName() + " ";
+            }
 
             ArrayList<String> lore = new ArrayList<>();
             lore.add(ChatColor.GRAY + culture + ", Level " + JsonPlayerBridge.getLevel(player));

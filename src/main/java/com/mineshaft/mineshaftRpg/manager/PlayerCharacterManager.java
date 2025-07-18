@@ -57,6 +57,12 @@ public class PlayerCharacterManager {
         } else if(!CultureManager.Items.hasCultureStartingItems(player)) {
             CultureManager.Items.giveCultureStartingItems(player,CultureManager.getCulture(player));
         }
+        if(CultureManager.hasSubCulture(player)) {
+            if(!CultureManager.hasSubCulture(player)) {
+                if(CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses().isEmpty()) return;
+                PlayerMenuManager.Profile.openSubspeciesSelector(player,CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses());
+            }
+        }
     }
 
     public static void setProfile(Player player, String profile) {

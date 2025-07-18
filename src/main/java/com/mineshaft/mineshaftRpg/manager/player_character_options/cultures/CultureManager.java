@@ -22,6 +22,7 @@ import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
+import com.mineshaft.mineshaftRpg.manager.ui.PlayerMenuManager;
 import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonQuestBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
@@ -67,24 +68,51 @@ public class CultureManager {
         JsonPlayerBridge.setCharacterDataValue(player, "culture", culture);
     }
 
+    public static void setSubCulture(Player player, String culture) {
+        JsonPlayerBridge.setCharacterDataValue(player, "subCulture", culture);
+    }
+
     public static boolean hasCulture(Player player) {
         return JsonPlayerBridge.getCharacterDataValue(player, "culture") != null;
+    }
+
+    public static boolean hasSubCulture(Player player) {
+        return JsonPlayerBridge.getCharacterDataValue(player, "subCulture") != null;
     }
 
     public static String getCulture(Player player) {
         return JsonPlayerBridge.getCharacterDataValue(player, "culture");
     }
 
+    public static String getSubCulture(Player player) {
+        return JsonPlayerBridge.getCharacterDataValue(player, "subCulture");
+    }
+
     public static void givePlayerCulture(Player player, String cultureName) {
         CustomCultureClass c = getCustomCulture(cultureName);
+        if(c==null) return;
 
         // Base values
-        for(AbilityScores element : c.getAbilityScores().keySet()) {
-            MineshaftPlayerBridge.Attributes.addAbilityScore(player,element,c.getAbilityScores().get(element));
+        if(c.getAbilityScores()!=null) {
+            for (AbilityScores element : c.getAbilityScores().keySet()) {
+                MineshaftPlayerBridge.Attributes.addAbilityScore(player, element, c.getAbilityScores().get(element));
+            }
         }
-        JsonPlayerBridge.addSkillPoints(player,c.getAbilityScorePoints());
-        CultureManager.setCulture(player, c.getId());
 
+        JsonPlayerBridge.addSkillPoints(player,c.getAbilityScorePoints());
+        if(!c.isSubculture()) {
+            CultureManager.setCulture(player, c.getId());
+            // Open subculture menu, if the culture has any subcultures
+            if(c.getSubcultures()!=null && !c.getSubcultures().isEmpty()) {
+                ArrayList<CustomCultureClass> subCultures = new ArrayList<>();
+                for(String id : c.getSubcultures()) {
+                    subCultures.add(getCustomCulture(id));
+                }
+                PlayerMenuManager.Profile.openSubspeciesSelector(player,subCultures);
+            }
+        } else {
+            CultureManager.setSubCulture(player, c.getId());
+        }
         // Proficiencies
 
         JsonPlayerBridge.setProficiencyLevels(player, c.getSkillProficiencies(),1);
@@ -120,17 +148,26 @@ public class CultureManager {
         // Starting items
 
         public static void giveCultureStartingItems(Player player, String culture) {
-            JsonPlayerBridge.setCharacterDataValue(player, "hasCultureStartingItems","true");
-            BetonQuestBridge.runBetonPlayerEvent(player, ConfigBridge.getBetonQuestStartingItemEventPackage(), ConfigBridge.getBetonQuestStartingItemEvent());
-
-            for(String item : CultureManager.getCustomCulture(culture).getStartingItems()) {
-                player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(item));
+            if(!CultureManager.getCustomCulture(culture).isSubculture()) {
+                JsonPlayerBridge.setCharacterDataValue(player, "hasCultureStartingItems","true");
+                BetonQuestBridge.runBetonPlayerEvent(player, ConfigBridge.getBetonQuestStartingItemEventPackage(), ConfigBridge.getBetonQuestStartingItemEvent());
+            } else {
+                JsonPlayerBridge.setCharacterDataValue(player, "hasSubCultureStartingItems","true");
             }
-            for(Material material : CultureManager.getCustomCulture(culture).getVanillaStartingItems()) {
-                player.getInventory().addItem(new ItemStack(material));
+            if(CultureManager.getCustomCulture(culture).getStartingItems()!=null && !CultureManager.getCustomCulture(culture).getStartingItems().isEmpty()) {
+                for (String item : CultureManager.getCustomCulture(culture).getStartingItems()) {
+                    player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(item));
+                }
             }
-            for(String eventName : CultureManager.getCustomCulture(culture).getBetonQuestEvents().keySet()) {
-                BetonQuestBridge.runBetonPlayerEvent(player,CultureManager.getCustomCulture(culture).getBetonQuestEvents().get(eventName),eventName);
+            if(CultureManager.getCustomCulture(culture).getVanillaStartingItems()!=null && !CultureManager.getCustomCulture(culture).getVanillaStartingItems().isEmpty()) {
+                for (Material material : CultureManager.getCustomCulture(culture).getVanillaStartingItems()) {
+                    player.getInventory().addItem(new ItemStack(material));
+                }
+            }
+            if(CultureManager.getCustomCulture(culture).getBetonQuestEvents()!=null && !CultureManager.getCustomCulture(culture).getBetonQuestEvents().keySet().isEmpty()) {
+                for (String eventName : CultureManager.getCustomCulture(culture).getBetonQuestEvents().keySet()) {
+                    BetonQuestBridge.runBetonPlayerEvent(player, CultureManager.getCustomCulture(culture).getBetonQuestEvents().get(eventName), eventName);
+                }
             }
 
             MineshaftPlayerBridge.savePlayerData(player);
@@ -146,15 +183,15 @@ public class CultureManager {
     public static class UI {
         public static BaseComponent[] getPageDisplay(String culture) {
 
-            String id = "";
-            String name = "";
-            String desc = "";
-            Map<AbilityScores, Integer> scores = Map.of();
-            int scorePoints = 0;
-            List<String> weaponProficiencies = List.of();
-            List<PlayerSkills> skillProficiencies = List.of();
+            String id;
+            String name;
+            String desc;
+            Map<AbilityScores, Integer> scores;
+            int scorePoints;
+            List<String> weaponProficiencies;
+            List<PlayerSkills> skillProficiencies;
             List<String> craftProficiencies = List.of();
-            boolean extraFeat = false;
+            boolean extraFeat;
 
             CustomCultureClass customCulture = getCustomCulture(culture);
             id=customCulture.getId().toLowerCase();
@@ -175,7 +212,9 @@ public class CultureManager {
             // Ability Scores
             StringBuilder builder = new StringBuilder();
             for(AbilityScores abilityScores : scores.keySet()) {
-                builder.append(abilityScores.getDarkerColour() + "+"  + ChatColor.BLACK + scores.get(abilityScores) + " " + abilityScores.getName() + "\n");
+                if (abilityScores != null) {
+                    builder.append(abilityScores.getDarkerColour() + "+" + ChatColor.BLACK + scores.get(abilityScores) + " " + abilityScores.getName() + "\n");
+                }
             }
             TextComponent abilityScores = new TextComponent(builder.toString());
 

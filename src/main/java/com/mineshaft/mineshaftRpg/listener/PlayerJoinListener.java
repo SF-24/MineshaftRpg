@@ -50,6 +50,7 @@ public class PlayerJoinListener implements Listener {
         }
         MineshaftPlayerBridge.savePlayerData(event.getPlayer());
         MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyCache().updateRegistry();
+        MineshaftRpg.getInstance().removeUiBrowsingPlayer(event.getPlayer().getUniqueId());
     }
 
     @EventHandler

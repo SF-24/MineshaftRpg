@@ -43,20 +43,37 @@ public class CharacterCreationCommand implements CommandExecutor {
         if(args[0].equalsIgnoreCase("set_culture")) {
             if(args.length < 2) {
                 player.sendMessage(ChatColor.RED + "Usage: /char_c set_culture <culture>");
-            } if(CultureManager.hasCulture(player)) {
-                player.sendMessage(ChatColor.RED + "You have already selected a culture.");
-                return false;
-            } else if(!CultureManager.isValidCulture(args[1])) {
-                player.sendMessage(ChatColor.RED + "Invalid culture.");
-                return false;
             } else {
-                if(CultureManager.getCustomCulture(args[1]) != null) {
-                    CustomCultureClass c = CultureManager.getCustomCulture(args[1]);
-                    CultureManager.givePlayerCulture(player,c.getId());
+                CustomCultureClass c = CultureManager.getCustomCulture(args[1]);
+
+                if(!c.isSubculture() && CultureManager.hasCulture(player)) {
+                    player.sendMessage(ChatColor.RED + "You have already selected a culture.");
+                    return false;
+                } else if(c.isSubculture() && CultureManager.hasSubCulture(player)) {
+                    player.sendMessage(ChatColor.RED + "You have already selected a culture type.");
+                    return false;
+                } else if(!CultureManager.isValidCulture(args[1])) {
+                    player.sendMessage(ChatColor.RED + "Invalid culture.");
+                    return false;
+                } else {
+                    if(CultureManager.getCustomCulture(args[1]) != null) {
+                        if (c!=null && c.isSubculture() && CultureManager.getCustomCulture(CultureManager.getCulture(player))!=null
+                                && CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultures()!=null
+                                && CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultures().contains(c.getId()
+                        )) {
+                            CultureManager.givePlayerCulture(player, c.getId());
+                        } else if (CultureManager.getCustomCulture(args[1]) != null) {
+                            CultureManager.givePlayerCulture(player, c.getId());
+                        } else {
+                            player.sendMessage(ChatColor.RED + "You may not select this option");
+                        }
+                    }
                 }
+            }
+
                 player.sendMessage(ChatColor.AQUA + "You have successfully selected a culture.");
                 // TODO: Next part of setup - class?
-            }
+
         }
 
         return false;

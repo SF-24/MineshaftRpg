@@ -261,7 +261,7 @@ public class PlayerMenuManager {
             ArrayList<BaseComponent[]> unlockedLockedCulturePages = new ArrayList<>();
 
             for(CustomCultureClass c : MineshaftRpg.getInstance().getCache().getCultureCache()) {
-                Logger.logDebug("Successfull iteration");
+                if(c.isSubculture()) continue;
 
                 if(!c.getDisabledWorlds().isEmpty() && c.getDisabledWorlds().contains(player.getWorld().getName())) {
                     Logger.logDebug("Detected disabled world '" + player.getWorld().getName() + "' for culture " + c.getName());
@@ -273,10 +273,43 @@ public class PlayerMenuManager {
                 // Culture mechanic
                 if (!c.isLocked()) {
                     bookMeta.spigot().addPage(CultureManager.UI.getPageDisplay(c.getId()));
-                    Logger.logDebug("Displaying culture page for: " + c.getName());
+//                    Logger.logDebug("Displaying culture page for: " + c.getName());
                 } else if(JsonProfileBridge.getUnlockedCultures(player).contains(c.getName().toLowerCase())) {
                     unlockedLockedCulturePages.add(CultureManager.UI.getPageDisplay(c.getId()));
-                    Logger.logDebug("Displaying culture page for: " + c.getName());
+//                    Logger.logDebug("Displaying culture page for: " + c.getName());
+                }
+            }
+
+            // Make unlocked cultures, which are marked as locked appear at the end of the ui book
+            for(BaseComponent[] page : unlockedLockedCulturePages) {
+                bookMeta.spigot().addPage(page);
+            }
+
+            book.setItemMeta(bookMeta);
+
+            ItemStack mh = player.getInventory().getItemInMainHand();
+            player.getInventory().setItemInMainHand(book);
+            player.openBook(book);
+            player.getInventory().setItemInMainHand(mh);
+        }
+
+        public static void openSubspeciesSelector(Player player,ArrayList<CustomCultureClass> subOptions) {
+            ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+            BookMeta bookMeta = (BookMeta) book.getItemMeta();
+            assert bookMeta != null;
+            bookMeta.addPage(ChatColor.BOLD + "Select a culture sub-option: \n" +
+                    "Use the arrows underneath the book to select a page with your desired culture and press select.");
+
+            ArrayList<BaseComponent[]> unlockedLockedCulturePages = new ArrayList<>();
+
+            for(CustomCultureClass c : subOptions) {
+                if(!c.isSubculture()) continue;
+
+                // Culture mechanic
+                if (!c.isLocked()) {
+                    bookMeta.spigot().addPage(CultureManager.UI.getPageDisplay(c.getId()));
+                } else if(JsonProfileBridge.getUnlockedCultures(player).contains(c.getName().toLowerCase())) {
+                    unlockedLockedCulturePages.add(CultureManager.UI.getPageDisplay(c.getId()));
                 }
             }
 
