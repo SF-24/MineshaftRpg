@@ -370,7 +370,7 @@ public class PlayerMenuManager {
             ArrayList<TextComponent> asi = new ArrayList<>();
 
             asi.add(new TextComponent(ChatColor.BOLD + "Select a background ability score increase\n" +
-                    "Click the text with the selected ability score to submit"));
+                    "Click the text with the selected ability score to submit\n"));
 
             for(AbilityScores abilityScores : background.getAbilityScores().keySet()) {
                 if (abilityScores != null) {
