@@ -23,6 +23,7 @@ import com.google.common.cache.CacheBuilder;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.AbilityExecutor;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
+import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.event.click.ClickType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonSettingsBridge;
 import lombok.Getter;
@@ -35,10 +36,13 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class PlayerCache {
+
+    HashMap<UUID, Map<String, AbilityScores>> selectedTempAbilityScore = new HashMap<>();
 
     @Getter
     SpellHotbarManager spellHotbarManager = new SpellHotbarManager();

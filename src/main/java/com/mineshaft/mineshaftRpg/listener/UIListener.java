@@ -31,8 +31,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 
 import java.util.List;
 
@@ -40,6 +42,8 @@ public class UIListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
+        System.out.println(e.getClick());
+
         if (e.getInventory().getHolder() == null) {
             String title = ChatColor.translateAlternateColorCodes('&', e.getView().getTitle());
             if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Ability Scores") && e.getClickedInventory() != null) {
@@ -59,16 +63,13 @@ public class UIListener implements Listener {
             } else if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).equals(ChatColor.BLACK + "Profiles") && e.getClickedInventory() != null) {
                 // Profile creation screen
 
-                    e.setCancelled(true);
+                e.setCancelled(true);
 
                 if(e.getCurrentItem()==null) {return;}
 
                 else if(e.getCurrentItem().getType().equals(Material.PEONY)) {
-
-                    {
-                        Player player = (Player) e.getWhoClicked();
-                        PlayerMenuManager.Profile.openProfileNameSelector(player, true);
-                    }
+                    Player player = (Player) e.getWhoClicked();
+                    PlayerMenuManager.Profile.openProfileNameSelector(player, true);
                 } else if(e.getCurrentItem().getItemMeta()!=null) {
                     if(UIUtil.getOnclick(e.getCurrentItem())!=null) {
                         Player player = (Player) e.getWhoClicked();
@@ -115,7 +116,9 @@ public class UIListener implements Listener {
                 ButtonClickExecutor.click(e);
             }
         } else {
-            if(e.getCurrentItem()!=null && e.getCurrentItem().getType()!=Material.AIR) {
+            if(e.getClick().equals(ClickType.WINDOW_BORDER_LEFT) || e.getClick().equals(ClickType.WINDOW_BORDER_RIGHT)) {
+                PlayerMenuManager.openCharacterMenu((Player) e.getWhoClicked());
+            } else if(e.getCurrentItem()!=null && e.getCurrentItem().getType()!=Material.AIR) {
                 try {
                     NBT.get(e.getCurrentItem(),nbt->{
                         if(nbt.getBoolean("Immutable")) {
@@ -126,6 +129,11 @@ public class UIListener implements Listener {
                         }
                     });
                 } catch (NullPointerException ignored) {}
+            } else if(e.getCurrentItem()==null || e.getCurrentItem().getType().equals(Material.AIR)) {
+                System.out.println(e.getSlot());
+                if(e.getInventory().getType().equals(InventoryType.PLAYER) && e.getSlotType().equals(InventoryType.SlotType.RESULT)) {
+                    PlayerMenuManager.openCharacterMenu((Player) e.getWhoClicked());
+                }
             }
         }
     }
@@ -152,7 +160,6 @@ public class UIListener implements Listener {
                 PlayerMenuManager.genericInventoryClose((Player) e.getPlayer());
             }
         }
-
     }
 
 }

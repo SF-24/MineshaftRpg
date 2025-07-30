@@ -22,10 +22,15 @@ import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.passive_events.PassiveAbilities;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.backgrounds.CustomBackgroundClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.CustomFeatClass;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
+import com.mineshaft.mineshaftRpg.manager.ui.PlayerMenuManager;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.BetonQuestBridge;
 import com.mineshaft.mineshaftapi.manager.player.AbilityType;
+import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.manager.player.spells.SpellClass;
 import com.mineshaft.mineshaftapi.util.Logger;
 import org.bukkit.ChatColor;
@@ -126,6 +131,64 @@ public class MineshaftPlayerBridge {
         }
     }
 
+    public static class Backgrounds {
+
+        public static void setBackground(Player player, String background) {
+            JsonPlayerBridge.setCharacterDataValue(player,"background",background);
+        }
+
+        public static String getBackground(Player player) {
+            return JsonPlayerBridge.getCharacterDataValue(player,"background");
+        }
+
+        public static boolean hasBackground(Player player) {
+            return JsonPlayerBridge.getCharacterDataValue(player,"background")!=null && !JsonPlayerBridge.getCharacterDataValue(player,"background").isBlank();
+        }
+
+        public static CustomBackgroundClass getBackgroundClass(Player player) {
+            return MineshaftRpg.getInstance().getCache().getBackground(getBackground(player));
+        }
+
+        public static void giveBackground(Player player, CustomBackgroundClass background) {
+
+            setBackground(player,background.getId());
+
+            player.sendMessage(background.getId() + " is the id of the selected background");
+
+            // Give the skill proficiencies
+            for(PlayerSkills skills : background.getProficiencies()) {
+                JsonPlayerBridge.setProficiencyLevel(player,skills,JsonPlayerBridge.getProficiencyLevel(player,skills)+1);
+            }
+
+            // TODO: Lore skills
+
+            if(background.getEvents()!=null) {
+                for (String eventName : background.getEvents().keySet()) {
+                    BetonQuestBridge.runBetonPlayerEvent(player, background.getEvents().get(eventName), eventName);
+                }
+            }
+            MineshaftPlayerBridge.savePlayerData(player);
+
+            if(!hasBackgroundAbilityScores(player)) {
+                PlayerMenuManager.Profile.openBackgroundAsiSelector(player);
+            }
+        }
+
+        public static void giveBackgroundAbilityScores(Player player, AbilityScores abilityScores) {
+            // Give the ability scores.
+            if (getBackgroundClass(player).getAbilityScores().containsKey(abilityScores)) {
+                MineshaftPlayerBridge.Attributes.addAbilityScore(player, abilityScores, getBackgroundClass(player).getAbilityScores().get(abilityScores));
+            } else {
+                player.sendMessage(ChatColor.RED + "Invalid ability score choice for the selected background");
+            }
+            JsonPlayerBridge.setCharacterDataValue(player,"hasBackgroundAsi","true");
+        }
+
+        public static boolean hasBackgroundAbilityScores(Player player) {
+            return JsonPlayerBridge.getCharacterDataValue(player,"hasBackgroundAsi")!=null && JsonPlayerBridge.getCharacterDataValue(player,"hasBackgroundAsi").equals("true");
+        }
+    }
+
     public static class Feats {
         // Feats
 
@@ -169,6 +232,35 @@ public class MineshaftPlayerBridge {
 
         public boolean hasFeat(Player player, CustomFeatClass feat) {
             return getFeats(player).contains(feat.getId());
+        }
+    }
+
+    public static class Skills {
+
+        public static int getProficiencyBonus(Player player, PlayerSkills skill) {
+            switch (JsonPlayerBridge.getProficiencyLevel(player,skill)) {
+                case 0 ->{}
+                case 1 -> {
+                    return PlayerStatManager.getProficiencyBonus(JsonPlayerBridge.getLevel(player));
+                }
+                case 2 -> {
+                    return (int) (PlayerStatManager.getProficiencyBonus(JsonPlayerBridge.getLevel(player))*1.5);
+                }
+                default -> {
+                    return PlayerStatManager.getProficiencyBonus(JsonPlayerBridge.getLevel(player))*2;
+                }
+            }
+            return 0;
+        }
+
+        public static int getSkillBonus(Player player, PlayerSkills skills) {
+            // Proficiency system:
+            // UNTRAINED -> TRAINED -> EXPERT -> MASTER
+            //
+            // TRAINED: +2 | +3 | +4 | +5  | +6
+            // EXPERT:  +3 | +4 | +6 | +7  | +9
+            // MASTER:  +4 | +6 | +8 | +10 | +12
+            return Attributes.getAbilityScore(player, AbilityScores.valueOf(skills.getBaseAbilityScore().toUpperCase())) + getProficiencyBonus(player, skills);
         }
     }
 }

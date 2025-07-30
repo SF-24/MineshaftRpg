@@ -57,11 +57,19 @@ public class PlayerCharacterManager {
         } else if(!CultureManager.Items.hasCultureStartingItems(player)) {
             CultureManager.Items.giveCultureStartingItems(player,CultureManager.getCulture(player));
         }
-        if(CultureManager.hasSubCulture(player)) {
+        if(CultureManager.hasCulture(player)) {
             if(!CultureManager.hasSubCulture(player)) {
-                if(CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses().isEmpty()) return;
-                PlayerMenuManager.Profile.openSubspeciesSelector(player,CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses());
+                if(!CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses().isEmpty()) {
+                    PlayerMenuManager.Profile.openSubspeciesSelector(player,CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses());
+                }
             }
+
+            if(!CultureManager.hasSubCulture(player) || CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses().isEmpty()) {
+                PlayerMenuManager.Profile.openBackgroundSelector(player);
+            }
+        }
+        if(MineshaftPlayerBridge.Backgrounds.hasBackground(player) && !MineshaftPlayerBridge.Backgrounds.hasBackgroundAbilityScores(player)) {
+            PlayerMenuManager.Profile.openBackgroundAsiSelector(player);
         }
     }
 

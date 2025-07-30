@@ -21,6 +21,7 @@ package com.mineshaft.mineshaftRpg.manager.ui;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.backgrounds.CustomBackgroundClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
@@ -36,7 +37,8 @@ import com.mineshaft.mineshaftapi.util.maths.Direction2D;
 import com.mineshaft.mineshaftapi.util.ui.ButtonUtil;
 import com.mineshaft.mineshaftapi.util.ui.ButtonVariant;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -272,10 +274,10 @@ public class PlayerMenuManager {
                 }
                 // Culture mechanic
                 if (!c.isLocked()) {
-                    bookMeta.spigot().addPage(CultureManager.UI.getPageDisplay(c.getId()));
+                    bookMeta.spigot().addPage(BookUIManager.getCulturePageDisplay(c.getId()));
 //                    Logger.logDebug("Displaying culture page for: " + c.getName());
                 } else if(JsonProfileBridge.getUnlockedCultures(player).contains(c.getName().toLowerCase())) {
-                    unlockedLockedCulturePages.add(CultureManager.UI.getPageDisplay(c.getId()));
+                    unlockedLockedCulturePages.add(BookUIManager.getCulturePageDisplay(c.getId()));
 //                    Logger.logDebug("Displaying culture page for: " + c.getName());
                 }
             }
@@ -307,9 +309,9 @@ public class PlayerMenuManager {
 
                 // Culture mechanic
                 if (!c.isLocked()) {
-                    bookMeta.spigot().addPage(CultureManager.UI.getPageDisplay(c.getId()));
+                    bookMeta.spigot().addPage(BookUIManager.getCulturePageDisplay(c.getId()));
                 } else if(JsonProfileBridge.getUnlockedCultures(player).contains(c.getName().toLowerCase())) {
-                    unlockedLockedCulturePages.add(CultureManager.UI.getPageDisplay(c.getId()));
+                    unlockedLockedCulturePages.add(BookUIManager.getCulturePageDisplay(c.getId()));
                 }
             }
 
@@ -320,6 +322,79 @@ public class PlayerMenuManager {
 
             book.setItemMeta(bookMeta);
 
+            ItemStack mh = player.getInventory().getItemInMainHand();
+            player.getInventory().setItemInMainHand(book);
+            player.openBook(book);
+            player.getInventory().setItemInMainHand(mh);
+        }
+
+
+        // Open the background selector
+        public static void openBackgroundSelector(Player player) {
+            ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+            BookMeta bookMeta = (BookMeta) book.getItemMeta();
+            assert bookMeta != null;
+            bookMeta.addPage(ChatColor.BOLD + "Select a background: \n" +
+                    "Use the arrows underneath the book to select a page with your desired background and press select. \n" +
+                    "Make sure to select the ability score bonus first");
+
+            ArrayList<BaseComponent[]> unlockedLockedCulturePages = new ArrayList<>();
+
+            for(CustomBackgroundClass backgroundClass : MineshaftRpg.getInstance().getCache().getBackgroundCache()) {
+                if(backgroundClass.isCultureRestricted()) {
+                    if(!backgroundClass.getCultures().contains(CultureManager.getCulture(player))) {
+                        continue;
+                    }
+                }
+                bookMeta.spigot().addPage(BookUIManager.getBackgroundPageDisplay(backgroundClass));
+            }
+
+            book.setItemMeta(bookMeta);
+
+            ItemStack mh = player.getInventory().getItemInMainHand();
+            player.getInventory().setItemInMainHand(book);
+            player.openBook(book);
+            player.getInventory().setItemInMainHand(mh);
+        }
+
+        // Open the background ability score increase selector
+        public static void openBackgroundAsiSelector(Player player) {
+            // Initial variable declaration
+            ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+            BookMeta bookMeta = (BookMeta) book.getItemMeta();
+            assert bookMeta != null;
+
+            CustomBackgroundClass background = MineshaftPlayerBridge.Backgrounds.getBackgroundClass(player);
+
+            // Create the page of the UI
+            ArrayList<TextComponent> asi = new ArrayList<>();
+
+            asi.add(new TextComponent(ChatColor.BOLD + "Select a background ability score increase\n" +
+                    "Click the text with the selected ability score to submit"));
+
+            for(AbilityScores abilityScores : background.getAbilityScores().keySet()) {
+                if (abilityScores != null) {
+                    TextComponent clickable = new TextComponent(abilityScores.getDarkerColour() + "+" + ChatColor.BLACK + background.getAbilityScores().get(abilityScores) + " " + abilityScores.getName() + "\n");
+                    clickable.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Only one ability score increase from the list may be chosen")));
+                    clickable.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/char_c set_background_asi " + abilityScores.name()));
+                    asi.add(clickable);
+                }
+            }
+            asi.add(new TextComponent("\n"));
+
+
+            ComponentBuilder component = new ComponentBuilder();
+            for(TextComponent element : asi) {
+                component.append(element);
+            }
+
+            // add the text as a page
+            bookMeta.spigot().addPage(component.create());
+
+            // apply the changes
+            book.setItemMeta(bookMeta);
+
+            // open the book
             ItemStack mh = player.getInventory().getItemInMainHand();
             player.getInventory().setItemInMainHand(book);
             player.openBook(book);

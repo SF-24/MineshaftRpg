@@ -18,20 +18,34 @@
 
 package com.mineshaft.mineshaftRpg.manager.player_character_options.backgrounds;
 
+import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
+import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Map;
 
+@Getter
 public class CustomBackgroundClass {
 
-    @Getter
     String name = "Example Background";
-    @Getter
     String id = "example_background";
+    String description = "Example Background Desc.";
 
     // Culture: leave empty for any
     List<String> culture = List.of("culture1","culture2");
-    String event = "a_betonquest_package:a_betonquest_event";
+    Map<String,String> events = Map.of("event1","package1","event2","package2");
+
+    List<PlayerSkills> proficiencies = List.of(PlayerSkills.ACROBATICS, PlayerSkills.LORE);
+
+    // Feat
+    String feat = "feat_name";
+
+    // Lore skills, all granted.
+    List<String> loreSkills = List.of("type1","type2","type3","type4");
+
+    // Pick 1 of the ones from the list.
+    Map<AbilityScores, Integer> abilityScores = Map.of(AbilityScores.DEX, 2, AbilityScores.INT, 2);
 
     // TODO:
 

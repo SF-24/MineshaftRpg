@@ -109,9 +109,16 @@ public class CultureManager {
                     subCultures.add(getCustomCulture(id));
                 }
                 PlayerMenuManager.Profile.openSubspeciesSelector(player,subCultures);
+            } else if(!MineshaftPlayerBridge.Backgrounds.hasBackground(player)) {
+                // Open the player background menu
+                PlayerMenuManager.Profile.openBackgroundSelector(player);
             }
         } else {
             CultureManager.setSubCulture(player, c.getId());
+            if(!MineshaftPlayerBridge.Backgrounds.hasBackground(player)) {
+                // Open the player background menu
+                PlayerMenuManager.Profile.openBackgroundSelector(player);
+            }
         }
         // Proficiencies
 
@@ -156,7 +163,9 @@ public class CultureManager {
             }
             if(CultureManager.getCustomCulture(culture).getStartingItems()!=null && !CultureManager.getCustomCulture(culture).getStartingItems().isEmpty()) {
                 for (String item : CultureManager.getCustomCulture(culture).getStartingItems()) {
-                    player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(item));
+                    if (item != null && MineshaftApi.getInstance().getItemManagerInstance().getItem(item) != null) {
+                        player.getInventory().addItem(MineshaftApi.getInstance().getItemManagerInstance().getItem(item));
+                    }
                 }
             }
             if(CultureManager.getCustomCulture(culture).getVanillaStartingItems()!=null && !CultureManager.getCustomCulture(culture).getVanillaStartingItems().isEmpty()) {
@@ -177,94 +186,6 @@ public class CultureManager {
 
         public static boolean hasCultureStartingItems(Player player) {
             return JsonPlayerBridge.getCharacterDataValue(player, "hasCultureStartingItems").equals("true");
-        }
-    }
-
-    public static class UI {
-        public static BaseComponent[] getPageDisplay(String culture) {
-
-            String id;
-            String name;
-            String desc;
-            Map<AbilityScores, Integer> scores;
-            int scorePoints;
-            List<String> weaponProficiencies;
-            List<PlayerSkills> skillProficiencies;
-            List<String> craftProficiencies = List.of();
-            boolean extraFeat;
-
-            CustomCultureClass customCulture = getCustomCulture(culture);
-            id=customCulture.getId().toLowerCase();
-            name = customCulture.getName();
-            desc = customCulture.getDescription();
-            scores = customCulture.getAbilityScores();
-            scorePoints=customCulture.getAbilityScorePoints();
-            weaponProficiencies=customCulture.getWeaponProficiencies();
-            skillProficiencies=customCulture.getSkillProficiencies();
-            craftProficiencies=customCulture.getToolProficienciesSelect();
-            extraFeat=customCulture.hasCulturalFeat();
-
-
-            TextComponent hoverable = new TextComponent("§4§l" + name + "\n");
-            hoverable.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(desc)));
-            ArrayList<TextComponent> page = new ArrayList<>();
-
-            // Ability Scores
-            StringBuilder builder = new StringBuilder();
-            for(AbilityScores abilityScores : scores.keySet()) {
-                if (abilityScores != null) {
-                    builder.append(abilityScores.getDarkerColour() + "+" + ChatColor.BLACK + scores.get(abilityScores) + " " + abilityScores.getName() + "\n");
-                }
-            }
-            TextComponent abilityScores = new TextComponent(builder.toString());
-
-            TextComponent points;
-            if(scorePoints>0) {
-                // Ability score points
-                points=(new TextComponent(ChatColor.GOLD + "+" + ChatColor.BLACK + scorePoints +  " Ability Score Points\n\n"));
-            } else {
-                points=new TextComponent("\n");
-            }
-
-            // Proficiencies
-            // SKILL, WEAPONS, TOOLS
-
-
-            StringBuilder proficiencies = new StringBuilder("Skill Proficiencies: ");
-            for(PlayerSkills e : skillProficiencies) {
-                if(e!=null) {
-                    proficiencies.append(e.getName()).append(", ");
-                } else {
-                    Logger.logError("Detected invalid skill in '" + skillProficiencies + "' declaration in culture " + id);
-                }
-            }
-            proficiencies.append("\n");
-            TextComponent proficiencyList = (new TextComponent(String.valueOf(proficiencies)));
-
-            StringBuilder otherProficiencies = new StringBuilder("Other Proficiencies: ");
-            for(String e : weaponProficiencies) {
-                otherProficiencies.append(e).append(", ");
-            }
-//            for(String e : c.getToolProficiencies()) {
-//                otherProficiencies.append(e).append(", ");
-//            }
-
-            TextComponent proficiencyList2 = (new TextComponent(otherProficiencies +"\n"));
-
-            TextComponent feat;
-            if(extraFeat) {
-                feat = new TextComponent(ChatColor.DARK_PURPLE+"\n+Cultural Virtue+\n");
-            } else {
-                feat = new TextComponent();
-            }
-
-            TextComponent select = new TextComponent("\n§3§lSELECT CULTURE" + "\n");
-            select.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/charcreation set_culture " + id));
-
-            // TODO: Abilities
-
-            BaseComponent[] component = new ComponentBuilder().append(hoverable).append(abilityScores).append(points).append(proficiencyList).append(proficiencyList2).append(feat).append(select).create();
-            return component;
         }
     }
 }

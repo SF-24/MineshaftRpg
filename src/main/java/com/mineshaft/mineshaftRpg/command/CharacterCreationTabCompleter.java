@@ -38,7 +38,7 @@ public class CharacterCreationTabCompleter implements TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
         if(!(sender instanceof Player)) return List.of();
         if(args.length==1) {
-            return StringUtil.copyPartialMatches(args[0], Collections.singleton("set_culture"),new ArrayList<>());
+            return StringUtil.copyPartialMatches(args[0], List.of("set_culture","set_background","set_background_asi"),new ArrayList<>());
         } else if(args.length==2 && args[0].equals("set_culture")) {
             ArrayList<String> list = new ArrayList<>();
             for(CustomCultureClass c : MineshaftRpg.getInstance().getCache().getCultureCache()) {

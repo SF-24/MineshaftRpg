@@ -58,7 +58,7 @@ public class MineshaftCache {
     @Getter
     private final ArrayList<LevellingRewardClass> levellingRewardCache = new ArrayList<>();
     @Getter
-    private final HashMap<CustomBackgroundClass, Boolean> backgroundCache = new HashMap<>();
+    private final List<CustomBackgroundClass> backgroundCache = new ArrayList<>();
     @Getter
     private final HashMap<List<Integer>, String> spellPatternCache = new HashMap<>();
 
@@ -105,8 +105,8 @@ public class MineshaftCache {
         Logger.logInfo("Cached custom levelling reward for level: " + levellingRewardClass.getLevel());
     }
 
-    public void cacheCustomBackground(CustomBackgroundClass customBackground, boolean isCultureRestricted) {
-        this.backgroundCache.put(customBackground, isCultureRestricted);
+    public void cacheCustomBackground(CustomBackgroundClass customBackground) {
+        this.backgroundCache.add(customBackground);
         Logger.logInfo("Cached custom background with id: " + customBackground.getId());
     }
 
@@ -126,6 +126,26 @@ public class MineshaftCache {
     public CustomAbilityClass getAbility(String id) {
         for(CustomAbilityClass customAbilityClass : abilityCache) {
             if(id.equalsIgnoreCase(customAbilityClass.getId())) return customAbilityClass;
+        }
+        return null;
+    }
+
+    public CustomBackgroundClass getBackground(String id) {
+        if(id==null) return null;
+
+        for(CustomBackgroundClass element : backgroundCache) {
+            if(element.getId()==null) {
+                Logger.logError("Detected background with null ID. Aborting");
+                return null;
+            }
+            if(id.equalsIgnoreCase(element.getId())) return element;
+        }
+        return null;
+    }
+
+    public CustomFeatClass getFeat(String id) {
+        for(CustomFeatClass element : featCache) {
+            if(id.equalsIgnoreCase(element.getId())) return element;
         }
         return null;
     }

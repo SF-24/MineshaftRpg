@@ -19,26 +19,33 @@
 package com.mineshaft.mineshaftRpg.listener;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
+import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.spells.SpellCaster;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
+import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.block.BlockManager;
+import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
+import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
 import com.mineshaft.mineshaftapi.util.ItemUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerActionlistener implements Listener {
 
     @EventHandler
-    public void onDrop(PlayerDropItemEvent e) {
+    void onDrop(PlayerDropItemEvent e) {
         if(!e.isCancelled()) {
             Player player = e.getPlayer();
             if (!MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().hasSpellHotbar(player)) {
@@ -51,21 +58,21 @@ public class PlayerActionlistener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerPickupExperience(PlayerExpChangeEvent e) {
+    void onPlayerPickupExperience(PlayerExpChangeEvent e) {
         JsonPlayerBridge.addXp(e.getPlayer(), e.getAmount());
         ExperienceManager.updateXpBar(e.getPlayer());
         e.setAmount(0);
     }
 
     @EventHandler
-    public void onItemPickup(PlayerAttemptPickupItemEvent e) {
+    void onItemPickup(PlayerAttemptPickupItemEvent e) {
         if(MineshaftRpg.getInstance().getUiBrowsingPlayers().contains(e.getPlayer().getUniqueId())) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onHeldItemChange(PlayerItemHeldEvent e) {
+    void onHeldItemChange(PlayerItemHeldEvent e) {
         if(MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().hasSpellHotbar(e.getPlayer())) {
             ItemStack slotItem = e.getPlayer().getInventory().getItem(e.getNewSlot());
             if(slotItem!=null && slotItem.getType() != Material.AIR) {
@@ -95,8 +102,16 @@ public class PlayerActionlistener implements Listener {
                 MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().toggleSpellHotbar(player);
                 e.setCancelled(true);
             } else if (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-                // TODO:
+                // TODO: cast default
             }
+        }
+    }
+
+    @EventHandler
+    void onDamage(EntityDamageEvent e) {
+        if(e.getCause().equals(EntityDamageEvent.DamageCause.FALL) && e instanceof Player player) {
+            double newDamage = Math.min(e.getDamage() - MineshaftPlayerBridge.Skills.getSkillBonus(player,PlayerSkills.ACROBATICS), e.getDamage());
+            e.setDamage(newDamage);
         }
     }
 
