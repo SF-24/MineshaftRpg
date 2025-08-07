@@ -107,8 +107,8 @@ public class ExperienceManager {
 
     public static int getTownDiscoveryExperiencePerLevel(Player player, int level, double townSize) {
         double multiplier = (2*townSize-1)/3;
-        if(JsonPlayerBridge.getProficiencyLevel(player,PlayerSkills.LORE)>0) {
-            if(JsonPlayerBridge.getProficiencyLevel(player,PlayerSkills.LORE)>1) {
+        if(JsonPlayerBridge.getProficiencyLevel(player,PlayerSkills.LORE_GREOGRAPHY)>0) {
+            if(JsonPlayerBridge.getProficiencyLevel(player,PlayerSkills.LORE_GREOGRAPHY)>1) {
                 multiplier*=1.666;
             } else {
                 multiplier*=1.333;

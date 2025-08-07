@@ -36,7 +36,7 @@ public class CustomBackgroundClass {
     List<String> culture = List.of("culture1","culture2");
     Map<String,String> events = Map.of("event1","package1","event2","package2");
 
-    List<PlayerSkills> proficiencies = List.of(PlayerSkills.ACROBATICS, PlayerSkills.LORE);
+    List<PlayerSkills> proficiencies = List.of(PlayerSkills.ACROBATICS, PlayerSkills.LORE_GREOGRAPHY);
 
     // Feat
     String feat = "feat_name";
