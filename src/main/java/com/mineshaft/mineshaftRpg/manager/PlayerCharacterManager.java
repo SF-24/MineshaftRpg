@@ -64,7 +64,7 @@ public class PlayerCharacterManager {
                 }
             }
 
-            if(!CultureManager.hasSubCulture(player) || CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses().isEmpty()) {
+            if((!CultureManager.hasSubCulture(player) || CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses().isEmpty()) && !MineshaftPlayerBridge.Backgrounds.hasBackground(player)) {
                 PlayerMenuManager.Profile.openBackgroundSelector(player);
             }
         }
