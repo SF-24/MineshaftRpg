@@ -1,6 +1,3 @@
-# Archived.
-## Succeded by: https://github.com/SF-24/MineshaftApi and dependents <br>
-### (at time of writing: https://github.com/SF-24/MineshaftRpg and https://github.com/SF-24/MineshaftItemPort)
 
 A bunch of RPG features. Some ported from the old [RpgPlugin](https://github.com/SF-24/RpgPlugin) and some completely new. Requires [MineshaftAPI](https://github.com/SF-24/MineshaftAPI) and Java 23.
 
