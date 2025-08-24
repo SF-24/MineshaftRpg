@@ -172,13 +172,15 @@ public class PlayerMenuManager {
 
     public static class Discoveries {
         public static void openDiscoveryMenu(Player player, boolean isUpdate) {
-            Inventory ui = getMenuBackground("Discoveries");
-            ui.addItem(UIButtonManager.Discoveries.getDiscoveryCategory(player, DiscoveryCategory.TOWN));
-            ui.addItem(UIButtonManager.Discoveries.getDiscoveryCategory(player, DiscoveryCategory.MOB));
-            ui.addItem(UIButtonManager.Discoveries.getDiscoveryCategory(player, DiscoveryCategory.LORE));
-            player.openInventory(ui);
-
-            inventoryManagement(player,isUpdate);
+            player.closeInventory();
+            player.performCommand("codex");
+            //            Inventory ui = getMenuBackground("Discoveries");
+//            ui.addItem(UIButtonManager.Discoveries.getDiscoveryCategory(player, DiscoveryCategory.TOWN));
+//            ui.addItem(UIButtonManager.Discoveries.getDiscoveryCategory(player, DiscoveryCategory.MOB));
+//            ui.addItem(UIButtonManager.Discoveries.getDiscoveryCategory(player, DiscoveryCategory.LORE));
+//            player.openInventory(ui);
+//
+//            inventoryManagement(player,isUpdate);
         }
 
         public static void openTownRegionMenu(Player player, boolean isUpdate) {
