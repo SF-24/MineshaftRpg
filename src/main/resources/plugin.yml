@@ -4,7 +4,7 @@ main: com.mineshaft.mineshaftRpg.MineshaftRpg
 api-version: '1.20'
 prefix: MineshaftRpg
 authors: [ SebastianFrynas ]
-depend: [ MineshaftApi ]
+depend: [ MineshaftApi, MythicMobs ]
 softdepend: [PlaceholderAPI]
 description: A port of the RPG features, along with new features from "Another Rpg Plugin"
 website: https://github.com/SF-24
