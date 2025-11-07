@@ -84,32 +84,7 @@ public class UIListener implements Listener {
                     }
                 }
 
-            } else if (ChatColor.translateAlternateColorCodes('&', e.getView().getTitle()).contains(ChatColor.BLACK + "Region") && e.getClickedInventory() != null) {
-                // Discovery screen
-
-                e.setCancelled(true);
-
-                if(e.getCurrentItem()==null) {return;}
-
-                if(e.getCurrentItem().getItemMeta()!=null && e.getCurrentItem().getItemMeta().getDisplayName().contains("Next Page")) {
-                    // Next page
-                    try {
-                        NBT.get(e.getCurrentItem(), nbt->{
-                            String region = nbt.getString("Identifier");
-                            int page = nbt.getInteger("Page");
-                            PlayerMenuManager.Discoveries.openTownDiscoveries((Player) e.getWhoClicked(),region,page+1,true);
-                        });
-                    } catch (NullPointerException ignored) {}
-                } else if(e.getCurrentItem().getItemMeta()!=null && e.getCurrentItem().getItemMeta().getDisplayName().contains("Previous Page")) {
-                    // Previous page
-                    NBT.get(e.getCurrentItem(), nbt->{
-                        String region = nbt.getString("Identifier");
-                        int page = nbt.getInteger("Page");
-                        PlayerMenuManager.Discoveries.openTownDiscoveries((Player) e.getWhoClicked(),region,page-1,true);
-                    });
-                }
-
-            } else if (menuList.contains(ChatColor.translateAlternateColorCodes('&',title)) && e.getClickedInventory() != null) {
+            }  else if (menuList.contains(ChatColor.translateAlternateColorCodes('&',title)) && e.getClickedInventory() != null) {
                 e.setCancelled(true);
 
                 // Button execution

@@ -43,15 +43,6 @@ public class ButtonClickExecutor {
             case "discoveries", "discovery_menu":
                 PlayerMenuManager.Discoveries.openDiscoveryMenu(player, true);
                 break;
-            case "category_town":
-                PlayerMenuManager.Discoveries.openTownRegionMenu(player,true);
-                break;
-            case "category_lore":
-                // TODO:
-                break;
-            case "category_mob":
-                // TODO:
-                break;
             case "profile_menu":
                 PlayerMenuManager.Profile.openProfileMenu(player,true);
                 break;
@@ -120,8 +111,10 @@ public class ButtonClickExecutor {
                 Bukkit.getServer().dispatchCommand(player,"journal");
                 break;
             case "quest_menu":
-                PlayerMenuManager.openQuestMenu(player, true);
+                PlayerMenuManager.Quests.openOldQuestMenu(player, true);
                 break;
+            case "quest_list":
+                PlayerMenuManager.Quests.openQuestMenu(player, true);
             case "abilities":
                 if(e.getClick().equals(org.bukkit.event.inventory.ClickType.LEFT) || e.getClick().equals(org.bukkit.event.inventory.ClickType.SHIFT_LEFT)) {
                     PlayerMenuManager.Abilities.openAbilityUI(player, true,AbilityType.ACTIVE_ABILITY);

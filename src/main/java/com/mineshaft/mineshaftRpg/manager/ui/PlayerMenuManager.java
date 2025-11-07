@@ -26,6 +26,7 @@ import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.Cult
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.CharacterCreationManager;
+import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
 import com.mineshaft.mineshaftapi.dependency.world_guard.DiscoveryCategory;
 import com.mineshaft.mineshaftapi.dependency.world_guard.Town;
 import com.mineshaft.mineshaftapi.manager.player.AbilityType;
@@ -43,6 +44,7 @@ import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -71,6 +73,7 @@ public class PlayerMenuManager {
         player.openInventory(ui);
 
         player.getInventory().setItem(10, UIButtonManager.Character.getVirtueItem(player));
+        player.getInventory().setItem(11, UIButtonManager.Character.getOldQuestItem());
     }
 
     public static void openAbilityScoreMenu(Player player, boolean isUpdate) {
@@ -92,14 +95,32 @@ public class PlayerMenuManager {
         inventoryManagement(player,isUpdate);
     }
 
-    public static void openQuestMenu(Player player, boolean isUpdate) {
-        Inventory ui = getMenuBackground("Quests");
-        ui.addItem(UIButtonManager.Quests.getQuestCanceller());
-        ui.addItem(UIButtonManager.Quests.getQuestTracker());
-        ui.addItem(UIButtonManager.Quests.getJournal());
-        player.openInventory(ui);
+    public static class Quests {
+        public static void openOldQuestMenu(Player player, boolean isUpdate) {
+            Inventory ui = getMenuBackground("Quests");
+            ui.addItem(UIButtonManager.Quests.getQuestCanceller());
+            ui.addItem(UIButtonManager.Quests.getQuestTracker());
+            ui.addItem(UIButtonManager.Quests.getJournal());
+            player.openInventory(ui);
 
-        inventoryManagement(player,isUpdate);
+            inventoryManagement(player,isUpdate);
+        }
+
+        public static void openQuestMenu(Player player, boolean isUpdate) {
+            Inventory ui = getMenuBackground("Quests");
+
+            // TODO: Add quests, with multi-page ui
+
+            ArrayList<ItemStack> inv = new ArrayList<>();
+
+            for(QuestObject questObject : JsonPlayerBridge.getQuests(player).values()) {
+                inv.add(questObject.getItem());
+            }
+
+            player.openInventory(ui);
+
+            inventoryManagement(player,isUpdate);
+        }
     }
 
     public static class Abilities {
@@ -174,15 +195,9 @@ public class PlayerMenuManager {
         public static void openDiscoveryMenu(Player player, boolean isUpdate) {
             player.closeInventory();
             player.performCommand("codex");
-            //            Inventory ui = getMenuBackground("Discoveries");
-//            ui.addItem(UIButtonManager.Discoveries.getDiscoveryCategory(player, DiscoveryCategory.TOWN));
-//            ui.addItem(UIButtonManager.Discoveries.getDiscoveryCategory(player, DiscoveryCategory.MOB));
-//            ui.addItem(UIButtonManager.Discoveries.getDiscoveryCategory(player, DiscoveryCategory.LORE));
-//            player.openInventory(ui);
-//
-//            inventoryManagement(player,isUpdate);
         }
 
+        @Deprecated(forRemoval = true)
         public static void openTownRegionMenu(Player player, boolean isUpdate) {
             Inventory ui = getMenuBackground("Discoveries");
 
@@ -196,6 +211,7 @@ public class PlayerMenuManager {
         }
 
         // Open town discovery menu
+        @Deprecated(forRemoval = true)
         public static void openTownDiscoveries(Player player, String region, int page, boolean isUpdate) {
             ArrayList<ItemStack> items = new ArrayList<>();
 

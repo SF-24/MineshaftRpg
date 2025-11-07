@@ -425,6 +425,19 @@ public class UIButtonManager {
         public static ItemStack getQuestItem() {
             ItemStack item = new ItemStack(Material.KNOWLEDGE_BOOK);
             ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName(ChatColor.WHITE + "Quest Journal");
+            meta.setLore(Collections.singletonList(ChatColor.GRAY + "Click to open the quest journal"));
+            item.setItemMeta(meta);
+            NBT.modify(item, nbt->{
+                nbt.setString("onClick", "quest_list");
+            });
+            return item;
+        }
+
+        @Deprecated
+        public static ItemStack getOldQuestItem() {
+            ItemStack item = new ItemStack(Material.PAPER);
+            ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(ChatColor.WHITE + "Quests");
             meta.setLore(Collections.singletonList(ChatColor.GRAY + "Click to open the quest menu"));
             item.setItemMeta(meta);
