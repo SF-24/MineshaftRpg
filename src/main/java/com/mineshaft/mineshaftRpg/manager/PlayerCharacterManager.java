@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftRpg.manager;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
+import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
 import com.mineshaft.mineshaftRpg.manager.player_data.CharacterCreationManager;
@@ -37,7 +38,9 @@ public class PlayerCharacterManager {
         // Opens character creation menu if not created
         if(JsonProfileBridge.getCurrentProfile(player).equals("Default")) {
             // TODO: Create Profile
-            PlayerMenuManager.Profile.openProfileMenu(player,true);
+            if (!ConfigBridge.getDisabledWorlds().contains(player.getWorld().getName())) {
+                PlayerMenuManager.Profile.openProfileMenu(player, true);
+            }
         }
 
         // Sets default data, if not set

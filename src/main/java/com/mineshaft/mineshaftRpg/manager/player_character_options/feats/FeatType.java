@@ -18,9 +18,18 @@
 
 package com.mineshaft.mineshaftRpg.manager.player_character_options.feats;
 
+import lombok.Getter;
+
+@Getter
 public enum FeatType {
 
-    CULTURAL_FEAT,
-    SKILL_FEAT
+    CULTURAL_FEAT("Cultural Feat"),
+    SKILL_FEAT("Skill Feat");
+
+    private final String name;
+
+    FeatType(String name) {
+        this.name=name;
+    }
 
 }

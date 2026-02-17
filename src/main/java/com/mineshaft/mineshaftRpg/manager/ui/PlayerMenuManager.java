@@ -34,6 +34,7 @@ import com.mineshaft.mineshaftapi.manager.player.json.JsonDiscoveryBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
 import com.mineshaft.mineshaftapi.util.Logger;
+import com.mineshaft.mineshaftapi.util.UIUtil;
 import com.mineshaft.mineshaftapi.util.maths.Direction2D;
 import com.mineshaft.mineshaftapi.util.ui.ButtonUtil;
 import com.mineshaft.mineshaftapi.util.ui.ButtonVariant;
@@ -91,6 +92,9 @@ public class PlayerMenuManager {
     public static void openFeatMenu(Player player, boolean isUpdate) {
         Inventory ui = getMenuBackground("Virtues");
 
+
+        // TODO: View list of feats
+
         player.openInventory(ui);
         inventoryManagement(player,isUpdate);
     }
@@ -111,10 +115,14 @@ public class PlayerMenuManager {
 
             // TODO: Add quests, with multi-page ui
 
-            ArrayList<ItemStack> inv = new ArrayList<>();
+            ArrayList<ItemStack> inventory = new ArrayList<>();
 
             for(QuestObject questObject : JsonPlayerBridge.getQuests(player).values()) {
-                inv.add(questObject.getItem());
+                inventory.add(questObject.getItem());
+            }
+
+            for(ItemStack itemStack : UIUtil.getPageItem(inventory,0,45)) {
+                ui.addItem(itemStack);
             }
 
             player.openInventory(ui);

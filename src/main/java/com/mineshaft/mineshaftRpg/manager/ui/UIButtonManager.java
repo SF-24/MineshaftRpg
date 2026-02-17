@@ -24,6 +24,7 @@ import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.CustomFeatClass;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.dependency.world_guard.DiscoveryCategory;
 import com.mineshaft.mineshaftapi.dependency.world_guard.Town;
@@ -52,10 +53,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class UIButtonManager {
 
@@ -219,6 +217,70 @@ public class UIButtonManager {
                 }
             });
             return abilityItem;
+        }
+    }
+
+    // Everything related to feats
+    public static class Virtues {
+
+        public static ItemStack getUnownedFeatItem(CustomFeatClass featClass) {
+            // Set item and its meta
+            ItemStack item = getFeatItem(featClass);
+            ItemMeta meta = item.getItemMeta();
+            meta.setCustomModelData(1);
+
+            item.setItemMeta(meta);
+
+            return item;
+        }
+
+        public static ItemStack getFeatItem(CustomFeatClass featClass) {
+            // Set item and its meta
+            ItemStack item = new ItemStack(Material.PAPER);
+            ItemMeta meta = item.getItemMeta();
+
+            // Name
+            meta.setDisplayName(featClass.getName());
+
+            ArrayList lore = new ArrayList();
+
+            // Feat Type:
+            lore.add(featClass.getFeatType().getName());
+
+            // Desc.
+            lore.add(ChatColor.GRAY + featClass.getDescription());
+
+            lore.add(" ");
+
+            // ASIs
+            for(AbilityScores asi :  featClass.getAbilityScoreIncreases().keySet()) {
+                lore.add(asi.getColour() + asi.getName() + " " + asi.getDarkerColour() + featClass.getAbilityScoreIncreases().get(asi));
+            }
+
+            // Abilities
+            if(!featClass.getAbilities().isEmpty()) {
+                lore.add(ChatColor.GRAY + "Abilities:");
+                for(String abilityId : featClass.getAbilities()) {
+                    CustomAbilityClass abilityClass = MineshaftRpg.getInstance().getCache().getAbility(abilityId);
+                    lore.add(ChatColor.GRAY + "- " + abilityClass.getName());
+                }
+                lore.add(" ");
+            }
+
+            //
+
+            lore.add(" ");
+            lore.add(ChatColor.RED + "Requires level: " + featClass.getMinimumLevel());
+
+            meta.setLore(lore);
+
+            item.setItemMeta(meta);
+
+            // Set nbt
+            NBT.modify(item, nbt -> {
+                nbt.setString("feat", featClass.getId());
+            });
+            return item;
         }
     }
 
