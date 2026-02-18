@@ -20,14 +20,17 @@ package com.mineshaft.mineshaftRpg.manager.ui;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
+import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.backgrounds.CustomBackgroundClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.CustomFeatClass;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.FeatManager;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.FeatType;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.CharacterCreationManager;
 import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
-import com.mineshaft.mineshaftapi.dependency.world_guard.DiscoveryCategory;
 import com.mineshaft.mineshaftapi.dependency.world_guard.Town;
 import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonDiscoveryBridge;
@@ -45,17 +48,13 @@ import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 
 public class PlayerMenuManager {
 
@@ -89,11 +88,30 @@ public class PlayerMenuManager {
         inventoryManagement(player,isUpdate);
     }
 
-    public static void openFeatMenu(Player player, boolean isUpdate) {
+    public static void openFeatMenu(Player player, FeatType featType, boolean isUpdate) {
         Inventory ui = getMenuBackground("Virtues");
 
+        // Also, gets list of eligible feats:
+        // TODO: Add option for admins to debug everything.
 
-        // TODO: View list of feats
+        // The top of the ui
+        for(int i = 1; i<8; i++) {
+            ui.setItem(i,new ItemStack(Material.PAPER));
+        }
+
+        ArrayList<CustomFeatClass> featList = FeatManager.getFeatSlotList(player);
+
+        // View the feat list
+        if(ConfigBridge.useFancyVirtueUi()) {
+            // Render the feats
+            for(int i = 0; i<Math.min(36, featList.size()); i++) {
+                int playerSlot;
+                if(i<27) playerSlot=i+9; else playerSlot=i-27;
+                Logger.logInfo("Showing feat in slot: " + playerSlot);
+                player.getInventory().setItem(playerSlot,UIButtonManager.Virtues.getFeatItem(featList.get(i),player));
+            }
+        }
+        // TODO: Add normal ui
 
         player.openInventory(ui);
         inventoryManagement(player,isUpdate);

@@ -72,6 +72,10 @@ public class CultureManager {
         JsonPlayerBridge.setCharacterDataValue(player, "subCulture", culture);
     }
 
+    public static void setAdoptedCulture(Player player, String culture) {
+        JsonPlayerBridge.setCharacterDataValue(player, "adoptedCulture", culture);
+    }
+
     public static boolean hasCulture(Player player) {
         return JsonPlayerBridge.getCharacterDataValue(player, "culture") != null;
     }
@@ -80,12 +84,20 @@ public class CultureManager {
         return JsonPlayerBridge.getCharacterDataValue(player, "subCulture") != null;
     }
 
+    public static boolean hasAdoptedCulture(Player player) {
+        return JsonPlayerBridge.getCharacterDataValue(player, "adoptedCulture") != null;
+    }
+
     public static String getCulture(Player player) {
         return JsonPlayerBridge.getCharacterDataValue(player, "culture");
     }
 
     public static String getSubCulture(Player player) {
         return JsonPlayerBridge.getCharacterDataValue(player, "subCulture");
+    }
+
+    public static String getAdoptedAncestry(Player player) {
+        return JsonPlayerBridge.getCharacterDataValue(player, "adoptedCulture");
     }
 
     public static void givePlayerCulture(Player player, String cultureName) {

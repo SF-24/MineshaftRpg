@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025. Sebastian Frynas
+ * Copyright (c) 2026. Sebastian Frynas
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Affero General Public License as
@@ -18,18 +18,10 @@
 
 package com.mineshaft.mineshaftRpg.manager.player_character_options.feats;
 
-import lombok.Getter;
+public enum FeatStatus {
 
-@Getter
-public enum FeatType {
-
-    CULTURAL_FEAT("Cultural Virtue"),
-    SKILL_FEAT("Skill Virtue");
-
-    private final String name;
-
-    FeatType(String name) {
-        this.name=name;
-    }
+    OWNED,
+    AVAILABLE,
+    LOCKED
 
 }

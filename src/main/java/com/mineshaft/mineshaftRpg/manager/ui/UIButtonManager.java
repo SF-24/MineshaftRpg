@@ -25,6 +25,8 @@ import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.Cus
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.CustomFeatClass;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.FeatStatus;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.FeatType;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.dependency.world_guard.DiscoveryCategory;
 import com.mineshaft.mineshaftapi.dependency.world_guard.Town;
@@ -53,7 +55,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 public class UIButtonManager {
 
@@ -223,18 +228,20 @@ public class UIButtonManager {
     // Everything related to feats
     public static class Virtues {
 
-        public static ItemStack getUnownedFeatItem(CustomFeatClass featClass) {
-            // Set item and its meta
-            ItemStack item = getFeatItem(featClass);
-            ItemMeta meta = item.getItemMeta();
-            meta.setCustomModelData(1);
-
-            item.setItemMeta(meta);
-
-            return item;
+        public static ItemStack getFeatItem(CustomFeatClass featClass) {
+            return getFeatItem(featClass,null);
         }
 
-        public static ItemStack getFeatItem(CustomFeatClass featClass) {
+        public static ItemStack getFeatItem(CustomFeatClass featClass, Player player) {
+            FeatStatus featStatus;
+            if(featClass.hasFeat(player)) {
+                featStatus=FeatStatus.OWNED;
+            } else if(featClass.canPickFeat(player)) {
+                featStatus=FeatStatus.AVAILABLE;
+            } else {
+                featStatus=FeatStatus.LOCKED;
+            }
+
             // Set item and its meta
             ItemStack item = new ItemStack(Material.PAPER);
             ItemMeta meta = item.getItemMeta();
@@ -245,7 +252,19 @@ public class UIButtonManager {
             ArrayList lore = new ArrayList();
 
             // Feat Type:
-            lore.add(featClass.getFeatType().getName());
+            if(featClass.getFeatType()==FeatType.CULTURAL_FEAT && !featClass.getCultures().isEmpty()) {
+                StringBuilder cultures = new StringBuilder();
+                for(String ancestryId : featClass.getCultures()) {
+                    if(ancestryId==null) continue;
+                    if(!cultures.isEmpty()) {
+                        cultures.append(", ");
+                    }
+                    cultures.append(CultureManager.getCustomCulture(ancestryId).getName());
+                }
+                lore.add(featClass.getFeatType().getName() + " (" + cultures + ")");
+            } else {
+                lore.add(featClass.getFeatType().getName());
+            }
 
             // Desc.
             lore.add(ChatColor.GRAY + featClass.getDescription());
@@ -261,16 +280,53 @@ public class UIButtonManager {
             if(!featClass.getAbilities().isEmpty()) {
                 lore.add(ChatColor.GRAY + "Abilities:");
                 for(String abilityId : featClass.getAbilities()) {
-                    CustomAbilityClass abilityClass = MineshaftRpg.getInstance().getCache().getAbility(abilityId);
-                    lore.add(ChatColor.GRAY + "- " + abilityClass.getName());
+                    try {
+                        CustomAbilityClass abilityClass = MineshaftRpg.getInstance().getCache().getAbility(abilityId);
+                        lore.add(ChatColor.GRAY + "- " + abilityClass.getName());
+                    } catch (NullPointerException ignored) {
+                        Logger.logWarning("Detected nonexistent ability: '" + abilityId + "' in feat: '" + featClass.getId() + "'");
+                    }
                 }
-                lore.add(" ");
             }
 
             //
 
             lore.add(" ");
-            lore.add(ChatColor.RED + "Requires level: " + featClass.getMinimumLevel());
+
+            // Requirements
+            if(JsonPlayerBridge.getLevel(player)<featClass.getMinimumLevel()) {
+                lore.add(ChatColor.RED + "Requires level: " + featClass.getMinimumLevel());
+            } else if(featClass.getMinimumLevel()>1) {
+                lore.add(ChatColor.WHITE + "Requires level: " + featClass.getMinimumLevel());
+            }
+            for(AbilityScores asr : featClass.getMinimumAbilityScores().keySet()) {
+                if(JsonPlayerBridge.getAbilityScoreValue(player,asr.name())>=featClass.getMinimumAbilityScores().get(asr)) {
+                    lore.add(ChatColor.WHITE + "Requires " + asr.getDarkerColour() + asr.getName() + " " + ChatColor.WHITE + featClass.getMinimumAbilityScores().get(asr));
+                } else {
+                    lore.add(ChatColor.RED + "Requires " + asr.getDarkerColour() + asr.getName() + " " + ChatColor.RED + featClass.getMinimumAbilityScores().get(asr));
+                }
+            }
+
+            switch (featStatus) {
+                case OWNED -> {
+                    lore.add(ChatColor.DARK_GREEN + "Unlocked");
+                    meta.setCustomModelData(1);
+                }
+                case AVAILABLE -> {
+                    if(MineshaftPlayerBridge.Feats.getFeatPoints(player)>0) {
+                        lore.add(ChatColor.GOLD + "Click to unlock");
+                    } else if(featClass.getFeatType()== FeatType.CULTURAL_FEAT && MineshaftPlayerBridge.Feats.getCultureFeatPoints(player)>0) {
+                        lore.add(ChatColor.GOLD + "Click to unlock");
+                    } else {
+                        lore.add(ChatColor.RED + "No feat choices remaining.");
+                    }
+                }
+                case LOCKED -> {
+                    lore.add(ChatColor.RED + "Locked!");
+                    meta.setCustomModelData(2);
+                }
+            }
+
 
             meta.setLore(lore);
 

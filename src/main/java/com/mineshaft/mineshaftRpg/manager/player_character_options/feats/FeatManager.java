@@ -18,12 +18,18 @@
 
 package com.mineshaft.mineshaftRpg.manager.player_character_options.feats;
 
+import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FeatManager {
 
@@ -46,27 +52,88 @@ public class FeatManager {
 
         // Culture check
         if(!CultureManager.hasCulture(player)&&customFeatClass.isCultureRestricted()) {
-            player.sendMessage(ChatColor.RED + "You have not selected a culture.");
+            player.sendMessage(ChatColor.RED + "You have not selected a culture. Please rejoin and select one.");
             return false;
         }
-        if(!(customFeatClass.getCultures().contains(CultureManager.getCulture(player)))) {
-            return false;
-        }
-
-        // Level check
-        if(customFeatClass.getMinimumLevel()<JsonPlayerBridge.getLevel(player)) return false;
-
-        // Ability score check
-        for(AbilityScores abilityScores : customFeatClass.getMinimumAbilityScores().keySet()) {
-            if(MineshaftPlayerBridge.Attributes.getAbilityScore(player,abilityScores)<customFeatClass.getMinimumAbilityScores().get(abilityScores)) {
-                return false;
-            }
-        }
-        return true;
+        return customFeatClass.canPickFeat(player);
     }
 
     public static boolean hasPointsToLearnFeat(Player player, CustomFeatClass customFeatClass) {
         if(MineshaftPlayerBridge.Feats.getFeatPoints(player)>0) return true;
         return customFeatClass.getFeatType().equals(FeatType.CULTURAL_FEAT) && MineshaftPlayerBridge.Feats.getCultureFeatPoints(player) > 0;
+    }
+
+    public static ArrayList<CustomFeatClass> getAncestryFeatList(Player player, int level) {
+        ArrayList<CustomFeatClass> feats = new ArrayList<>();
+        for(CustomFeatClass customFeatClass : MineshaftRpg.getInstance().getCache().getFeatCache()) {
+            if(customFeatClass.getFeatType()==FeatType.CULTURAL_FEAT) {
+                if(!customFeatClass.isCultureRestricted()) {
+                    if(customFeatClass.getMinimumLevel()<=JsonPlayerBridge.getLevel(player)) {
+                        feats.add(customFeatClass);
+                    }
+                } else if(customFeatClass.getCultures().contains(CultureManager.getCulture(player)) || customFeatClass.getCultures().contains(CultureManager.getSubCulture(player)) || (CultureManager.hasAdoptedCulture(player) && customFeatClass.getCultures().contains(CultureManager.getAdoptedAncestry(player)))) {
+                    feats.add(customFeatClass);
+                } else if(customFeatClass.canPickFeat(player) || customFeatClass.hasFeat(player)) {
+                    feats.add(customFeatClass);
+                }
+            }
+        }
+        return feats;
+    }
+
+    public static ArrayList<CustomFeatClass> getSkillFeatList(Player player, int level) {
+        // 1st, 5th, 9th, 13th, 17th?
+        ArrayList<CustomFeatClass> feats = new ArrayList<>();
+        for(CustomFeatClass customFeatClass : MineshaftRpg.getInstance().getCache().getFeatCache()) {
+            if(customFeatClass.getFeatType()==FeatType.SKILL_FEAT) {
+                if(!customFeatClass.isCultureRestricted() || customFeatClass.getCultures().contains(CultureManager.getCulture(player)) || customFeatClass.getCultures().contains(CultureManager.getSubCulture(player)) || (CultureManager.hasAdoptedCulture(player) && customFeatClass.getCultures().contains(CultureManager.getAdoptedAncestry(player)))) {
+                    feats.add(customFeatClass);
+                } else if(customFeatClass.canPickFeat(player) || customFeatClass.hasFeat(player)) {
+                    feats.add(customFeatClass);
+                }
+            }
+        }
+        return feats;
+    }
+
+    public static ArrayList<CustomFeatClass> getFeatSlotList(Player player) {
+        ArrayList<CustomFeatClass> ancestryFeatList = FeatManager.getAncestryFeatList(player,0);
+        ArrayList<CustomFeatClass> skillFeatList = FeatManager.getSkillFeatList(player,0);
+
+        ArrayList<CustomFeatClass> slotList = new ArrayList<>();
+
+        // Level 1;
+        slotList.addAll(getFeatsOfLevel(ancestryFeatList, 1));
+        // New Line
+        while (slotList.size() %9!=0) {slotList.add(null);}
+
+        // Level 5
+        slotList.addAll(getFeatsOfLevel(ancestryFeatList, 5));
+
+        // Level 9
+        slotList.addAll(getFeatsOfLevel(ancestryFeatList, 9));
+
+        // New Line
+        while (slotList.size() %9!=0) {slotList.add(null);}
+        
+        // Level 13
+        slotList.addAll(getFeatsOfLevel(ancestryFeatList, 13));
+
+        // Level 17
+        slotList.addAll(getFeatsOfLevel(ancestryFeatList, 17));
+
+        // New Line
+        while (slotList.size() %9!=0) {slotList.add(null);}
+
+        // Skill Feats
+        slotList.addAll(skillFeatList);
+        
+        return slotList;
+    }
+
+    public static List<CustomFeatClass> getFeatsOfLevel(ArrayList<CustomFeatClass> featList, int level) {
+        return featList.stream().filter(element -> (
+                element.getMinimumLevel()==level || (level==1 && element.getMinimumLevel()<1)
+        )).collect(Collectors.toList());
     }
 }

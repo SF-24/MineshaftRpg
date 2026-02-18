@@ -27,6 +27,10 @@ import java.util.Set;
 
 public class ConfigBridge {
 
+    public static boolean useFancyVirtueUi() {
+        return true;
+    }
+
     public static String getBetonQuestStartingItemEvent() {
         return MineshaftRpg.getInstance().getConfig().getString("default-item-bq-event");
     }

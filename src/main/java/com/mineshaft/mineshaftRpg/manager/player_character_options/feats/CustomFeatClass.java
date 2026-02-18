@@ -42,7 +42,7 @@ public class CustomFeatClass {
     private final FeatType featType = FeatType.SKILL_FEAT;
 
     // The feat type
-    private final boolean cultureRestricted = true;
+    private final boolean cultureRestricted = false;
 
     // The culture it is restricted to (if the above boolean is checked)
     private final List<String> cultures = Collections.singletonList("human_bree");
@@ -62,9 +62,14 @@ public class CustomFeatClass {
     public boolean canPickFeat(Player player) {
         // TODO: CHECK IF THE PLAYER HAS THE FEAT ALREADY
 
+        if(!(featType.equals(FeatType.CULTURAL_FEAT) && MineshaftPlayerBridge.Feats.getCultureFeatPoints(player)>0) && MineshaftPlayerBridge.Feats.getFeatPoints(player)<0) {
+            System.out.println("Not enough points to take the chosen feat!");
+            return false;
+        }
+
         if(!MineshaftPlayerBridge.Feats.getFeats(player).contains(id)) {
             if(!isCultureRestricted() || cultures.contains(CultureManager.getCulture(player))) {
-                if(minimumLevel>=JsonPlayerBridge.getLevel(player)) {
+                if(minimumLevel<=JsonPlayerBridge.getLevel(player)) {
                     for(AbilityScores abilityScore : minimumAbilityScores.keySet()) {
                         if(MineshaftPlayerBridge.Attributes.getAbilityScore(player,abilityScore)<minimumAbilityScores.get(abilityScore)) {
                             return false;
@@ -77,4 +82,6 @@ public class CustomFeatClass {
 
         return false;
     }
+
+    public boolean hasFeat(Player player) {return MineshaftPlayerBridge.Feats.getFeats(player).contains(id);}
 }

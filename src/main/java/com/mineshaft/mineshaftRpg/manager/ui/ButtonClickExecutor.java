@@ -20,6 +20,7 @@ package com.mineshaft.mineshaftRpg.manager.ui;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.FeatType;
 import com.mineshaft.mineshaftapi.manager.event.click.ClickType;
 import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonSettingsBridge;
@@ -165,7 +166,7 @@ public class ButtonClickExecutor {
                 // TODO: add skills. WIP
                 break;
             case "virtues":
-                PlayerMenuManager.openFeatMenu(player,true);
+                PlayerMenuManager.openFeatMenu(player, FeatType.CULTURAL_FEAT,true);
                 break;
             default:
                 Logger.logInfo("default case!");

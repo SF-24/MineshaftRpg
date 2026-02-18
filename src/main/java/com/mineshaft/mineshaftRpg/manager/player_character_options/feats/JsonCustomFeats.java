@@ -134,6 +134,7 @@ public class JsonCustomFeats {
             return null;
         }
 
+        System.out.println("Reading file: " + file.getName());
         CustomFeatClass pdc = gson.fromJson(reader, CustomFeatClass.class);
         if(pdc==null) {
             Logger.logError("ERROR! CustomFeatClass is null");

@@ -207,6 +207,7 @@ public class MineshaftPlayerBridge {
                 return Integer.parseInt(JsonPlayerBridge.getCharacterDataValue(player, "featPoints"));
             } catch (NumberFormatException e) {
                 Logger.logError("Cannot load feat points for " + player.getName());
+                JsonPlayerBridge.setCharacterDataValue(player, "featPoints", String.valueOf(0));
                 return 0;
             }
         }
@@ -221,6 +222,9 @@ public class MineshaftPlayerBridge {
         }
 
         public static List<String> getFeats(Player player) {
+            if(JsonPlayerBridge.getCharDataListElement(player,"feats")==null) {
+                return new ArrayList<>();
+            }
             return JsonPlayerBridge.getCharDataListElement(player,"feats");
         }
 
