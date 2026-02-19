@@ -19,8 +19,8 @@
 package com.mineshaft.mineshaftRpg.manager.ui;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
+import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.FeatType;
 import com.mineshaft.mineshaftapi.manager.event.click.ClickType;
 import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonSettingsBridge;
@@ -32,6 +32,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ButtonClickExecutor {
 
@@ -41,6 +42,8 @@ public class ButtonClickExecutor {
         if(e.getCurrentItem()==null) return;
 
         switch (UIUtil.getOnclick(e.getCurrentItem())) {
+            case "null", "", "nil":
+                return;
             case "discoveries", "discovery_menu":
                 PlayerMenuManager.Discoveries.openDiscoveryMenu(player, true);
                 break;
@@ -114,8 +117,24 @@ public class ButtonClickExecutor {
             case "quest_menu":
                 PlayerMenuManager.Quests.openOldQuestMenu(player, true);
                 break;
+            case "quest_menu_previous_page":
+                if(e.getInventory().getItem(53)==null) return;
+                final int[] pagePrevious = new int[1];
+                NBT.get(e.getInventory().getItem(53), nbt->{
+                    pagePrevious[0] =nbt.getInteger("page")-1;
+                });
+                PlayerMenuManager.Quests.openQuestMenu(player,Math.max(pagePrevious[0],0),true);
+                break;
+            case "quest_menu_next_page":
+                if(e.getInventory().getItem(53)==null) return;
+                final int[] page_next = new int[1];
+                NBT.get(e.getInventory().getItem(53), nbt->{
+                    page_next[0] =nbt.getInteger("page")+1;
+                });
+                PlayerMenuManager.Quests.openQuestMenu(player,Math.min(page_next[0], MineshaftPlayerBridge.Quests.getQuestMaxPage(player)),true);
+                break;
             case "quest_list":
-                PlayerMenuManager.Quests.openQuestMenu(player, true);
+                PlayerMenuManager.Quests.openQuestMenu(player, 0, true);
             case "abilities":
                 if(e.getClick().equals(org.bukkit.event.inventory.ClickType.LEFT) || e.getClick().equals(org.bukkit.event.inventory.ClickType.SHIFT_LEFT)) {
                     PlayerMenuManager.Abilities.openAbilityUI(player, true,AbilityType.ACTIVE_ABILITY);

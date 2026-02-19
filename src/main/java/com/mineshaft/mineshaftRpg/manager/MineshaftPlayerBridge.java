@@ -32,9 +32,12 @@ import com.mineshaft.mineshaftapi.manager.player.PlayerStatManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.manager.player.spells.SpellClass;
+import com.mineshaft.mineshaftapi.nbtapi.NBT;
 import com.mineshaft.mineshaftapi.util.Logger;
+import com.mineshaft.mineshaftapi.util.UIUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -265,6 +268,33 @@ public class MineshaftPlayerBridge {
             // EXPERT:  +3 | +4 | +6 | +7  | +9
             // MASTER:  +4 | +6 | +8 | +10 | +12
             return Attributes.getAbilityScore(player, AbilityScores.valueOf(skills.getBaseAbilityScore().toUpperCase())) + getProficiencyBonus(player, skills);
+        }
+    }
+
+    public static class Quests {
+        public static ArrayList<ItemStack> getQuestList(Player player) {
+            ArrayList<ItemStack> inventory = new ArrayList<>();
+
+            for(String questId : JsonPlayerBridge.getQuests(player).keySet()) {
+                ItemStack item = JsonPlayerBridge.getQuests(player).get(questId).getItem();
+                NBT.modify(item, nbt -> {
+                    nbt.setString("quest", questId);
+                });
+                inventory.add(item);
+            }
+            return inventory;
+        }
+
+        public static ArrayList<ItemStack> getQuestPage(Player player, int page) {
+            return UIUtil.getPageItem(getQuestList(player),0,45);
+        }
+
+        public static int getQuestPageCount(Player player) {
+            return (int) Math.ceil((double) getQuestList(player).size() /45);
+        }
+
+        public static int getQuestMaxPage(Player player) {
+            return getQuestPageCount(player)-1;
         }
     }
 }

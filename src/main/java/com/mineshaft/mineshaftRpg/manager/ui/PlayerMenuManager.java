@@ -36,9 +36,11 @@ import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonDiscoveryBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
+import com.mineshaft.mineshaftapi.nbtapi.NBT;
 import com.mineshaft.mineshaftapi.util.Logger;
 import com.mineshaft.mineshaftapi.util.UIUtil;
 import com.mineshaft.mineshaftapi.util.maths.Direction2D;
+import com.mineshaft.mineshaftapi.util.ui.ButtonType;
 import com.mineshaft.mineshaftapi.util.ui.ButtonUtil;
 import com.mineshaft.mineshaftapi.util.ui.ButtonVariant;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -125,20 +127,20 @@ public class PlayerMenuManager {
             inventoryManagement(player,isUpdate);
         }
 
-        public static void openQuestMenu(Player player, boolean isUpdate) {
+        public static void openQuestMenu(Player player, int page, boolean isUpdate) {
             Inventory ui = getMenuBackground("Quests");
 
-            // TODO: Add quests, with multi-page ui
-
-            ArrayList<ItemStack> inventory = new ArrayList<>();
-
-            for(QuestObject questObject : JsonPlayerBridge.getQuests(player).values()) {
-                inventory.add(questObject.getItem());
-            }
-
-            for(ItemStack itemStack : UIUtil.getPageItem(inventory,0,45)) {
+            for(ItemStack itemStack : MineshaftPlayerBridge.Quests.getQuestPage(player,page)) {
                 ui.addItem(itemStack);
             }
+
+            // Directional arrows and page log
+            ui.setItem(45, ButtonUtil.getButton(ButtonType.ARROW_LEFT, (page<MineshaftPlayerBridge.Quests.getQuestMaxPage(player))?ButtonVariant.GREEN:ButtonVariant.GREY, "Previous Page", Collections.emptyList(), "quest_menu_previous_page"));
+            ItemStack rightArrow = ButtonUtil.getButton(ButtonType.ARROW_RIGHT, (page>0)?ButtonVariant.GREEN:ButtonVariant.GREY, "Next Page", Collections.emptyList(), "quest_menu_next_page");
+            NBT.modify(rightArrow,nbt->{
+                nbt.setInteger("page",page);
+            });
+            ui.setItem(53, rightArrow);
 
             player.openInventory(ui);
 
