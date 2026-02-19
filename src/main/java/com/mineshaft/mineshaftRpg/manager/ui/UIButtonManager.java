@@ -19,6 +19,7 @@
 package com.mineshaft.mineshaftRpg.manager.ui;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
+import com.mineshaft.mineshaftRpg.command.CharacterCreationTabCompleter;
 import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
@@ -247,7 +248,7 @@ public class UIButtonManager {
             ItemMeta meta = item.getItemMeta();
 
             // Name
-            meta.setDisplayName(featClass.getName());
+            meta.setDisplayName(ChatColor.WHITE + featClass.getName());
 
             ArrayList lore = new ArrayList();
 
@@ -261,9 +262,9 @@ public class UIButtonManager {
                     }
                     cultures.append(CultureManager.getCustomCulture(ancestryId).getName());
                 }
-                lore.add(featClass.getFeatType().getName() + " (" + cultures + ")");
+                lore.add(ChatColor.GRAY + featClass.getFeatType().getName().toUpperCase(Locale.ROOT) + " (" + cultures + ")");
             } else {
-                lore.add(featClass.getFeatType().getName());
+                lore.add(ChatColor.GRAY + featClass.getFeatType().getName().toUpperCase(Locale.ROOT));
             }
 
             // Desc.

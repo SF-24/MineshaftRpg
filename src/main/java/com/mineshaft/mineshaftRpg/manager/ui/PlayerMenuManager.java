@@ -88,16 +88,18 @@ public class PlayerMenuManager {
         inventoryManagement(player,isUpdate);
     }
 
-    public static void openFeatMenu(Player player, FeatType featType, boolean isUpdate) {
-        Inventory ui = getMenuBackground("Virtues");
+    public static void openFeatMenu(Player player, int page, boolean isUpdate) {
+        Inventory ui = getMenuBackground("Virtues"); // TODO: Add custom ui
 
-        // Also, gets list of eligible feats:
-        // TODO: Add option for admins to debug everything.
 
         // The top of the ui
         for(int i = 1; i<8; i++) {
             ui.setItem(i,new ItemStack(Material.PAPER));
         }
+        player.openInventory(ui);
+        inventoryManagement(player,isUpdate);
+
+        // The bottom of the UI:
 
         ArrayList<CustomFeatClass> featList = FeatManager.getFeatSlotList(player);
 
@@ -107,14 +109,9 @@ public class PlayerMenuManager {
             for(int i = 0; i<Math.min(36, featList.size()); i++) {
                 int playerSlot;
                 if(i<27) playerSlot=i+9; else playerSlot=i-27;
-                Logger.logInfo("Showing feat in slot: " + playerSlot);
                 player.getInventory().setItem(playerSlot,UIButtonManager.Virtues.getFeatItem(featList.get(i),player));
             }
         }
-        // TODO: Add normal ui
-
-        player.openInventory(ui);
-        inventoryManagement(player,isUpdate);
     }
 
     public static class Quests {

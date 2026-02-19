@@ -166,7 +166,7 @@ public class ButtonClickExecutor {
                 // TODO: add skills. WIP
                 break;
             case "virtues":
-                PlayerMenuManager.openFeatMenu(player, FeatType.CULTURAL_FEAT,true);
+                PlayerMenuManager.openFeatMenu(player, 0,true);
                 break;
             default:
                 Logger.logInfo("default case!");
