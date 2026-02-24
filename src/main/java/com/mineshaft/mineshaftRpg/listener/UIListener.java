@@ -25,7 +25,7 @@ import com.mineshaft.mineshaftRpg.manager.ui.PlayerMenuManager;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
-import com.mineshaft.mineshaftapi.util.UIUtil;
+import com.mineshaft.mineshaftapi.util.ui.UIUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

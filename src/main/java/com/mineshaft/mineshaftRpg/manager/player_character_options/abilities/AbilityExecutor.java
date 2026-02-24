@@ -24,7 +24,7 @@ import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.event.Event;
 import com.mineshaft.mineshaftapi.manager.event.event_subclass.PlayerVectorEvent;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
-import com.mineshaft.mineshaftapi.util.ItemUtil;
+import com.mineshaft.mineshaftapi.util.item.ItemUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;

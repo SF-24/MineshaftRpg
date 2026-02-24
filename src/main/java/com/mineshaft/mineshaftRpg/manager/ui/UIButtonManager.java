@@ -19,7 +19,6 @@
 package com.mineshaft.mineshaftRpg.manager.ui;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
-import com.mineshaft.mineshaftRpg.command.CharacterCreationTabCompleter;
 import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
 import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
@@ -41,10 +40,10 @@ import com.mineshaft.mineshaftapi.manager.player.json.JsonSettingsBridge;
 import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
 import com.mineshaft.mineshaftapi.util.Logger;
-import com.mineshaft.mineshaftapi.util.UIUtil;
 import com.mineshaft.mineshaftapi.util.ui.ButtonType;
 import com.mineshaft.mineshaftapi.util.ui.ButtonUtil;
 import com.mineshaft.mineshaftapi.util.ui.ButtonVariant;
+import com.mineshaft.mineshaftapi.util.ui.UIUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

@@ -27,10 +27,8 @@ import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.Cult
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.CustomFeatClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.FeatManager;
-import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.FeatType;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.player_data.CharacterCreationManager;
-import com.mineshaft.mineshaftapi.dependency.beton_quest.quest_management.QuestObject;
 import com.mineshaft.mineshaftapi.dependency.world_guard.Town;
 import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonDiscoveryBridge;
@@ -38,7 +36,6 @@ import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
 import com.mineshaft.mineshaftapi.util.Logger;
-import com.mineshaft.mineshaftapi.util.UIUtil;
 import com.mineshaft.mineshaftapi.util.maths.Direction2D;
 import com.mineshaft.mineshaftapi.util.ui.ButtonType;
 import com.mineshaft.mineshaftapi.util.ui.ButtonUtil;
@@ -56,7 +53,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
 
 public class PlayerMenuManager {
 

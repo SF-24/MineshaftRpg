@@ -26,7 +26,7 @@ import com.mineshaft.mineshaftapi.manager.player.AbilityType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonSettingsBridge;
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
 import com.mineshaft.mineshaftapi.util.Logger;
-import com.mineshaft.mineshaftapi.util.UIUtil;
+import com.mineshaft.mineshaftapi.util.ui.UIUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;

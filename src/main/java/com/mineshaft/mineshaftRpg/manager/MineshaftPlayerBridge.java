@@ -34,7 +34,7 @@ import com.mineshaft.mineshaftapi.manager.player.player_skills.PlayerSkills;
 import com.mineshaft.mineshaftapi.manager.player.spells.SpellClass;
 import com.mineshaft.mineshaftapi.nbtapi.NBT;
 import com.mineshaft.mineshaftapi.util.Logger;
-import com.mineshaft.mineshaftapi.util.UIUtil;
+import com.mineshaft.mineshaftapi.util.ui.UIUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

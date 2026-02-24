@@ -19,28 +19,19 @@
 package com.mineshaft.mineshaftRpg.listener;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
-import com.mineshaft.mineshaftRpg.manager.cache.MineshaftCache;
-import com.mineshaft.mineshaftRpg.manager.cache.SpellHotbarManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.passive_events.PassiveAbilityRegistrar;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.spells.SpellCaster;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
 import com.mineshaft.mineshaftapi.events.*;
-import com.mineshaft.mineshaftapi.manager.block.BlockManager;
 import com.mineshaft.mineshaftapi.manager.event.click.ClickType;
-import com.mineshaft.mineshaftapi.manager.item.ItemManager;
 import com.mineshaft.mineshaftapi.manager.player.AbilityType;
-import com.mineshaft.mineshaftapi.manager.player.ActionType;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonPlayerBridge;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonSettingsBridge;
 import com.mineshaft.mineshaftapi.manager.ui.notification.NotificationSender;
-import com.mineshaft.mineshaftapi.nbtapi.NBT;
-import com.mineshaft.mineshaftapi.util.ItemUtil;
-import com.mineshaft.mineshaftapi.util.UIUtil;
+import com.mineshaft.mineshaftapi.util.item.ItemUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import java.util.UUID;
 
 public class MineshaftListener implements Listener {
 
