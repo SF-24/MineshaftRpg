@@ -6,6 +6,10 @@ disabled-worlds:
   - world1
   - world2
 
+disabled-players:
+  - player1
+  - player2
+
 default-language: Westron
 
 # BetonQuest event which should be triggered when the player is given their starting items

@@ -43,6 +43,10 @@ public class ConfigBridge {
         return MineshaftRpg.getInstance().getConfigManager().getConfiguration().getStringList("disabled-worlds");
     }
 
+    public static List<String> getDisabledPlayers() {
+        return MineshaftRpg.getInstance().getConfigManager().getConfiguration().getStringList("disabled-players");
+    }
+
     public static List<?> getXpPerLevel() {
         return MineshaftRpg.getInstance().getConfigManager().getConfiguration().getList("experience-per-level");
     }

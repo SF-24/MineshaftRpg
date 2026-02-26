@@ -33,14 +33,12 @@ import org.bukkit.entity.Player;
 public class PlayerCharacterManager {
 
     public static void initialiseCharacter(Player player) {
-        if(player==null) return;
+        if (player == null) return;
 
         // Opens character creation menu if not created
-        if(JsonProfileBridge.getCurrentProfile(player).equals("Default")) {
+        if (JsonProfileBridge.getCurrentProfile(player).equals("Default")) {
             // TODO: Create Profile
-            if (!ConfigBridge.getDisabledWorlds().contains(player.getWorld().getName())) {
-                PlayerMenuManager.Profile.openProfileMenu(player, true);
-            }
+            PlayerMenuManager.Profile.openProfileMenu(player, true);
         }
 
         // Sets default data, if not set
@@ -55,24 +53,26 @@ public class PlayerCharacterManager {
         JsonPlayerBridge.loadEffects(player);
 
         // Culture test, finishes character creation
-        if(!CultureManager.hasCulture(player)) {
-            PlayerMenuManager.Profile.openSpeciesSelector(player);
-        } else if(!CultureManager.Items.hasCultureStartingItems(player)) {
-            CultureManager.Items.giveCultureStartingItems(player,CultureManager.getCulture(player));
-        }
-        if(CultureManager.hasCulture(player)) {
-            if(!CultureManager.hasSubCulture(player)) {
-                if(!CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses().isEmpty()) {
-                    PlayerMenuManager.Profile.openSubspeciesSelector(player,CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses());
+        if (!ConfigBridge.getDisabledWorlds().contains(player.getWorld().getName()) && !ConfigBridge.getDisabledPlayers().contains(player.getName())) {
+            if (!CultureManager.hasCulture(player)) {
+                PlayerMenuManager.Profile.openSpeciesSelector(player);
+            } else if (!CultureManager.Items.hasCultureStartingItems(player)) {
+                CultureManager.Items.giveCultureStartingItems(player, CultureManager.getCulture(player));
+            }
+            if (CultureManager.hasCulture(player)) {
+                if (!CultureManager.hasSubCulture(player)) {
+                    if (!CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses().isEmpty()) {
+                        PlayerMenuManager.Profile.openSubspeciesSelector(player, CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses());
+                    }
+                }
+
+                if ((!CultureManager.hasSubCulture(player) || CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses().isEmpty()) && !MineshaftPlayerBridge.Backgrounds.hasBackground(player)) {
+                    PlayerMenuManager.Profile.openBackgroundSelector(player);
                 }
             }
-
-            if((!CultureManager.hasSubCulture(player) || CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses().isEmpty()) && !MineshaftPlayerBridge.Backgrounds.hasBackground(player)) {
-                PlayerMenuManager.Profile.openBackgroundSelector(player);
+            if (MineshaftPlayerBridge.Backgrounds.hasBackground(player) && !MineshaftPlayerBridge.Backgrounds.hasBackgroundAbilityScores(player)) {
+                PlayerMenuManager.Profile.openBackgroundAsiSelector(player);
             }
-        }
-        if(MineshaftPlayerBridge.Backgrounds.hasBackground(player) && !MineshaftPlayerBridge.Backgrounds.hasBackgroundAbilityScores(player)) {
-            PlayerMenuManager.Profile.openBackgroundAsiSelector(player);
         }
     }
 

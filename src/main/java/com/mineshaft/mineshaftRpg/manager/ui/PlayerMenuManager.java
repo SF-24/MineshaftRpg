@@ -135,15 +135,14 @@ public class PlayerMenuManager {
             }
 
             // Directional arrows and page log
-            ui.setItem(45, ButtonUtil.getButton(ButtonType.ARROW_LEFT, (page<MineshaftPlayerBridge.Quests.getQuestMaxPage(player))?ButtonVariant.GREEN:ButtonVariant.GREY, "Previous Page", Collections.emptyList(), "quest_menu_previous_page"));
+            ui.setItem(1, ButtonUtil.getButton(ButtonType.ARROW_LEFT, (page<MineshaftPlayerBridge.Quests.getQuestMaxPage(player))?ButtonVariant.GREEN:ButtonVariant.GREY, "Previous Page", Collections.emptyList(), "quest_menu_previous_page"));
             ItemStack rightArrow = ButtonUtil.getButton(ButtonType.ARROW_RIGHT, (page>0)?ButtonVariant.GREEN:ButtonVariant.GREY, "Next Page", Collections.emptyList(), "quest_menu_next_page");
             NBT.modify(rightArrow,nbt->{
                 nbt.setInteger("page",page);
             });
-            ui.setItem(53, rightArrow);
+            ui.setItem(7, rightArrow);
 
             player.openInventory(ui);
-
             inventoryManagement(player,isUpdate);
         }
     }
@@ -284,7 +283,9 @@ public class PlayerMenuManager {
                                     JsonProfileBridge.setCurrentProfile(player, name);
                                     JsonProfileBridge.addProfile(player, name);
                                     CharacterCreationManager.setDefaultData(player);
-                                    openSpeciesSelector(player);
+                                    if(!ConfigBridge.getDisabledWorlds().contains(player.getWorld().getName()) && !ConfigBridge.getDisabledPlayers().contains(player.getName())) {
+                                        openSpeciesSelector(player);
+                                    }
                                 })
                         );
                     })
@@ -312,7 +313,7 @@ public class PlayerMenuManager {
                     Logger.logDebug("Detected disabled world '" + player.getWorld().getName() + "' for culture " + c.getName());
                     continue;
                 } else if(!c.getRequiredWorlds().isEmpty() && !c.getRequiredWorlds().contains(player.getWorld().getName())) {
-                    Logger.logDebug("'" + player.getWorld().getName() + "' is not a required world for culture " + c.getName());
+//                    Logger.logDebug("'" + player.getWorld().getName() + "' is not a required world for culture " + c.getName());
                     continue;
                 }
                 // Culture mechanic
