@@ -32,7 +32,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ButtonClickExecutor {
 
