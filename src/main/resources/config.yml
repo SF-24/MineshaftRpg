@@ -13,11 +13,13 @@ disabled-players:
 default-language: Westron
 
 # Modules that are or are not enabled:
-enable-spells: true
-enable-feats: true
-enable-abilities: true
 enable-cultures: true
 enable-backgrounds: true
+enable-spells: true
+
+# Settings not yet implemented, but coming soon...
+enable-feats: true
+enable-abilities: true
 enable-levelling: true
 
 # The menu layout

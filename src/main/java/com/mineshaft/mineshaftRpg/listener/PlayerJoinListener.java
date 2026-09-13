@@ -41,6 +41,11 @@ public class PlayerJoinListener implements Listener {
         event.getPlayer().sendMessage(Component.text("This server uses the plugin MineshaftRpg by https://github.com/SF-24", NamedTextColor.AQUA));
         MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyCache().setEnergy(event.getPlayer(), 20);
         MineshaftRpg.getInstance().getCache().getPlayerCache().getEnergyCache().updateRegistry();
+
+        // Update the XP bar on join
+        Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(MineshaftRpg.getInstance(),()->{
+            ExperienceManager.updateXpBar(event.getPlayer());
+        },1/20);
     }
 
     @EventHandler

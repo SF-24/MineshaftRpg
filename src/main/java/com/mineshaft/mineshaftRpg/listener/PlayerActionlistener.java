@@ -20,6 +20,7 @@ package com.mineshaft.mineshaftRpg.listener;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
+import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.spells.SpellCaster;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.levelling.ExperienceManager;
 import com.mineshaft.mineshaftapi.manager.block.BlockManager;
@@ -57,8 +58,8 @@ public class PlayerActionlistener implements Listener {
     @EventHandler
     void onPlayerPickupExperience(PlayerExpChangeEvent e) {
         JsonPlayerBridge.addXp(e.getPlayer(), e.getAmount());
-        ExperienceManager.updateXpBar(e.getPlayer());
         e.setAmount(0);
+        ExperienceManager.updateXpBar(e.getPlayer());
     }
 
     @EventHandler
@@ -70,7 +71,7 @@ public class PlayerActionlistener implements Listener {
 
     @EventHandler
     void onHeldItemChange(PlayerItemHeldEvent e) {
-        if(MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().hasSpellHotbar(e.getPlayer())) {
+        if(ConfigBridge.isEnableSpells() && MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().hasSpellHotbar(e.getPlayer())) {
             ItemStack slotItem = e.getPlayer().getInventory().getItem(e.getNewSlot());
             if(slotItem!=null && slotItem.getType() != Material.AIR) {
                 try {
@@ -95,7 +96,7 @@ public class PlayerActionlistener implements Listener {
     @EventHandler
     void onInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
-        if (ItemUtil.isWand(e.getItem())) {
+        if (ConfigBridge.isEnableSpells() && ItemUtil.isWand(e.getItem())) {
             if((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (e.getClickedBlock()==null || !BlockManager.isInteractable(e.getClickedBlock().getType()))) {
                 MineshaftRpg.getInstance().getCache().getPlayerCache().getSpellHotbarManager().toggleSpellHotbar(player);
                 e.setCancelled(true);
