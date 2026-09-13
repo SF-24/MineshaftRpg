@@ -29,6 +29,7 @@ import com.mineshaft.mineshaftapi.nbtapi.NBT;
 import com.mineshaft.mineshaftapi.util.item.ItemUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -62,7 +63,7 @@ public class PlayerActionlistener implements Listener {
 
     @EventHandler
     void onItemPickup(PlayerAttemptPickupItemEvent e) {
-        if(MineshaftRpg.getInstance().getUiBrowsingPlayers().contains(e.getPlayer().getUniqueId())) {
+        if(MineshaftRpg.getInstance().getUiBrowsingPlayers().contains(e.getPlayer().getUniqueId()) && (e.getPlayer().getGameMode() == GameMode.CREATIVE)) {
             e.setCancelled(true);
         }
     }
@@ -73,6 +74,7 @@ public class PlayerActionlistener implements Listener {
             ItemStack slotItem = e.getPlayer().getInventory().getItem(e.getNewSlot());
             if(slotItem!=null && slotItem.getType() != Material.AIR) {
                 try {
+
                     NBT.get(slotItem, nbt->{
                         // try to cast spell when the item is selected
                         if(JsonPlayerBridge.getSpells(e.getPlayer()).containsKey(nbt.getString("Spell"))) {

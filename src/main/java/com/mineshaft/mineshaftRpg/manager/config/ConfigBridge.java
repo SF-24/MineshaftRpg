@@ -31,6 +31,38 @@ public class ConfigBridge {
         return true;
     }
 
+    public static boolean enableSpells() {
+        return MineshaftRpg.getInstance().getConfig().getBoolean("enable-spells");
+    }
+
+    public static boolean enableFeats() {
+        return MineshaftRpg.getInstance().getConfig().getBoolean("enable-feats");
+    }
+
+    public static boolean enableAbilities() {
+        return MineshaftRpg.getInstance().getConfig().getBoolean("enable-abilities");
+    }
+
+    public static boolean enableCultures() {
+        return MineshaftRpg.getInstance().getConfig().getBoolean("enable-cultures");
+    }
+
+    public static boolean enableBackgrounds() {
+        return MineshaftRpg.getInstance().getConfig().getBoolean("enable-backgrounds");
+    }
+
+    public static boolean enableLevelling() {
+        return MineshaftRpg.getInstance().getConfig().getBoolean("enable-levelling");
+    }
+
+    public static List<String> getTopMenuIconLayout() {
+        return MineshaftRpg.getInstance().getConfig().getStringList("top-icon-layout");
+    }
+
+    public static List<String> getBottomMenuIconLayout() {
+        return MineshaftRpg.getInstance().getConfig().getStringList("bottom-icon-layout");
+    }
+
     public static String getBetonQuestStartingItemEvent() {
         return MineshaftRpg.getInstance().getConfig().getString("default-item-bq-event");
     }

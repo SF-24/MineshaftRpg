@@ -65,17 +65,45 @@ public class PlayerMenuManager {
         // CREATE MENU INVENTORY
         Inventory ui = getMenuBackground("Menu");
 
-        ui.setItem(1, UIButtonManager.Character.getPlayerLevelButton(player));
-        ui.setItem(2, UIButtonManager.Character.getPlayerAbilityScoreItem(player));
-        ui.setItem(3, UIButtonManager.Character.getSkillsItem(player));
-        ui.setItem(4, UIButtonManager.Character.getAbilityItem(player));
-        ui.setItem(5, UIButtonManager.Character.getSpellItem(player));
-        ui.setItem(6, UIButtonManager.Character.getCodexItem());
-        ui.setItem(7, UIButtonManager.Character.getQuestItem());
+        int location = 1;
+        for(String buttonCode : ConfigBridge.getTopMenuIconLayout()) {
+            if(location > 0 && location <= 7) {
+                if(!buttonCode.equals("none")&&!buttonCode.equals("air")) {
+                        ui.setItem(location, UIButtonManager.getButtonFromCode(player, buttonCode));
+                }
+            } else {
+                break;
+            }
+            location++;
+        }
+
+//        ui.setItem(1, UIButtonManager.Character.getPlayerLevelButton(player));
+//        ui.setItem(2, UIButtonManager.Character.getPlayerAbilityScoreItem(player));
+//        ui.setItem(3, UIButtonManager.Character.getSkillsItem(player));
+//        ui.setItem(4, UIButtonManager.Character.getAbilityItem(player));
+//        ui.setItem(5, UIButtonManager.Character.getSpellItem(player));
+//        ui.setItem(6, UIButtonManager.Character.getCodexItem());
+//        ui.setItem(7, UIButtonManager.Character.getQuestItem());
         player.openInventory(ui);
 
-        player.getInventory().setItem(10, UIButtonManager.Character.getVirtueItem(player));
-        player.getInventory().setItem(11, UIButtonManager.Character.getOldQuestItem());
+        location = 10;
+        for(String buttonCode : ConfigBridge.getTopMenuIconLayout()) {
+            if(location<=44) {
+                player.getInventory().setItem(location,UIButtonManager.getButtonFromCode(player,buttonCode));
+            } else {
+                break;
+            }
+            location++;
+            // Disabled slots
+            if(location == 17 || location == 26 || location == 35 || location == 44) {
+                location+=2;
+            } else if(location == 9 || location == 18 || location == 27 || location == 36) {
+                location++;
+            }
+        }
+
+//        player.getInventory().setItem(10, UIButtonManager.Character.getVirtueItem(player));
+//        player.getInventory().setItem(11, UIButtonManager.Character.getOldQuestItem());
     }
 
     public static void openAbilityScoreMenu(Player player, boolean isUpdate) {

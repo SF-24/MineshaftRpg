@@ -74,6 +74,21 @@ public class UIButtonManager {
         return item;
     }
 
+    public static ItemStack getButtonFromCode(Player player, String code) {
+        switch (code) {
+            case "info" -> {return Character.getPlayerLevelButton(player);}
+            case "ability_scores" -> {return Character.getPlayerAbilityScoreItem(player);}
+            case "skills" -> {return Character.getSkillsItem(player);}
+            case "abilities" -> {return Character.getAbilityItem(player);}
+            case "spells" -> {return Character.getSpellItem(player);}
+            case "codex" -> {return Character.getCodexItem();}
+            case "quests" -> {return Character.getQuestItem();}
+            case "feats","virtues" -> {return Character.getVirtueItem(player);}
+            case "old_quests"-> {return Character.getOldQuestItem();}
+        }
+        return new ItemStack(Material.AIR);
+    }
+
     /**
      * Spells
      * */

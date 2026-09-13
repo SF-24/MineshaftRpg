@@ -12,6 +12,36 @@ disabled-players:
 
 default-language: Westron
 
+# Modules that are or are not enabled:
+enable-spells: true
+enable-feats: true
+enable-abilities: true
+enable-cultures: true
+enable-backgrounds: true
+enable-levelling: true
+
+# The menu layout
+# Button codes:
+# info, ability_scores, skills, abilities, spells, codex, quests,
+# feats, virtues, oldquest, old_quests
+# (note, feats and virtues are aliases for the same item)
+# Use 'none' or 'air' for empty slot
+
+# 7 spaces
+top-icon-layout:
+  - info
+  - ability_scores
+  - skills
+  - abilities
+  - spells
+  - codex
+  - quests
+
+# 21? spaces
+bottom-icon-layout:
+  - feats
+  - old_quests
+
 # BetonQuest event which should be triggered when the player is given their starting items
 default-item-bq-event-package: default
 default-item-bq-event: give_items
