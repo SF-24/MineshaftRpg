@@ -31,27 +31,27 @@ public class ConfigBridge {
         return true;
     }
 
-    public static boolean enableSpells() {
+    public static boolean isEnableSpells() {
         return MineshaftRpg.getInstance().getConfig().getBoolean("enable-spells");
     }
 
-    public static boolean enableFeats() {
+    public static boolean isEnableFeats() {
         return MineshaftRpg.getInstance().getConfig().getBoolean("enable-feats");
     }
 
-    public static boolean enableAbilities() {
+    public static boolean isEnableAbilities() {
         return MineshaftRpg.getInstance().getConfig().getBoolean("enable-abilities");
     }
 
-    public static boolean enableCultures() {
+    public static boolean isEnableCultures() {
         return MineshaftRpg.getInstance().getConfig().getBoolean("enable-cultures");
     }
 
-    public static boolean enableBackgrounds() {
+    public static boolean isEnableBackgrounds() {
         return MineshaftRpg.getInstance().getConfig().getBoolean("enable-backgrounds");
     }
 
-    public static boolean enableLevelling() {
+    public static boolean isEnableLevelling() {
         return MineshaftRpg.getInstance().getConfig().getBoolean("enable-levelling");
     }
 

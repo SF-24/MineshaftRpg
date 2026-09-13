@@ -54,23 +54,24 @@ public class PlayerCharacterManager {
 
         // Culture test, finishes character creation
         if (!ConfigBridge.getDisabledWorlds().contains(player.getWorld().getName()) && !ConfigBridge.getDisabledPlayers().contains(player.getName())) {
-            if (!CultureManager.hasCulture(player)) {
+            if (!CultureManager.hasCulture(player) && ConfigBridge.isEnableCultures()) {
                 PlayerMenuManager.Profile.openSpeciesSelector(player);
-            } else if (!CultureManager.Items.hasCultureStartingItems(player)) {
+            } else if (!CultureManager.Items.hasCultureStartingItems(player) && ConfigBridge.isEnableCultures()) {
                 CultureManager.Items.giveCultureStartingItems(player, CultureManager.getCulture(player));
             }
-            if (CultureManager.hasCulture(player)) {
+            if (CultureManager.hasCulture(player) && ConfigBridge.isEnableCultures()) {
                 if (!CultureManager.hasSubCulture(player)) {
                     if (!CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses().isEmpty()) {
                         PlayerMenuManager.Profile.openSubspeciesSelector(player, CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses());
                     }
                 }
-
                 if ((!CultureManager.hasSubCulture(player) || CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses().isEmpty()) && !MineshaftPlayerBridge.Backgrounds.hasBackground(player)) {
                     PlayerMenuManager.Profile.openBackgroundSelector(player);
                 }
+            } else if(!ConfigBridge.isEnableCultures() && ConfigBridge.isEnableBackgrounds() && !MineshaftPlayerBridge.Backgrounds.hasBackground(player)) {
+                PlayerMenuManager.Profile.openBackgroundSelector(player);
             }
-            if (MineshaftPlayerBridge.Backgrounds.hasBackground(player) && !MineshaftPlayerBridge.Backgrounds.hasBackgroundAbilityScores(player)) {
+            if (MineshaftPlayerBridge.Backgrounds.hasBackground(player) && !MineshaftPlayerBridge.Backgrounds.hasBackgroundAbilityScores(player) && ConfigBridge.isEnableBackgrounds()) {
                 PlayerMenuManager.Profile.openBackgroundAsiSelector(player);
             }
         }
