@@ -20,6 +20,7 @@ package com.mineshaft.mineshaftRpg.manager.ui;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
 import com.mineshaft.mineshaftRpg.manager.MineshaftPlayerBridge;
+import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftapi.manager.event.click.ClickType;
 import com.mineshaft.mineshaftapi.manager.player.AbilityType;
@@ -142,7 +143,9 @@ public class ButtonClickExecutor {
                 }
                 break;
             case "spells", "spellUiClose":
-                PlayerMenuManager.Abilities.openAbilityUI(player, true,AbilityType.SPELL);
+                if(ConfigBridge.isEnableSpells()) {
+                    PlayerMenuManager.Abilities.openAbilityUI(player, true, AbilityType.SPELL);
+                }
                 break;
             case "ability":
                 CustomAbilityClass customAbilityClass = MineshaftRpg.getInstance().getCache().getAbility(UIUtil.getAbility(e.getCurrentItem()));
@@ -184,7 +187,9 @@ public class ButtonClickExecutor {
                 // TODO: add skills. WIP
                 break;
             case "virtues":
-                PlayerMenuManager.openFeatMenu(player, 0,true);
+                if(ConfigBridge.isEnableFeats()) {
+                    PlayerMenuManager.openFeatMenu(player, 0,true);
+                }
                 break;
             default:
                 Logger.logInfo("default case!");

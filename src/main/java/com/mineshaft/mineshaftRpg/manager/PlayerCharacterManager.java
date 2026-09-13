@@ -65,7 +65,7 @@ public class PlayerCharacterManager {
                         PlayerMenuManager.Profile.openSubspeciesSelector(player, CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses());
                     }
                 }
-                if ((!CultureManager.hasSubCulture(player) || CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses().isEmpty()) && !MineshaftPlayerBridge.Backgrounds.hasBackground(player)) {
+                if ((!CultureManager.hasSubCulture(player) || CultureManager.getCustomCulture(CultureManager.getCulture(player)).getSubcultureClasses().isEmpty()) && !MineshaftPlayerBridge.Backgrounds.hasBackground(player) && ConfigBridge.isEnableBackgrounds()) {
                     PlayerMenuManager.Profile.openBackgroundSelector(player);
                 }
             } else if(!ConfigBridge.isEnableCultures() && ConfigBridge.isEnableBackgrounds() && !MineshaftPlayerBridge.Backgrounds.hasBackground(player)) {

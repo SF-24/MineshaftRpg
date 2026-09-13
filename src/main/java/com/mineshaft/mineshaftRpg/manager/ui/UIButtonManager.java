@@ -363,20 +363,24 @@ public class UIButtonManager {
             ItemMeta itemMeta = item.getItemMeta();
             assert itemMeta != null;
 
-            CustomCultureClass cultureClass = CultureManager.getCustomCulture(JsonPlayerBridge.getJsonPlayerManager(player, profile).getCharacterDataValue("culture"));
-
-            String culture;
-            if(cultureClass != null) {
-                culture=cultureClass.getName();
-            } else {
-                culture="No culture selected";
-            }
-            if(CultureManager.hasSubCulture(player)) {
-                culture+=CultureManager.getCustomCulture(CultureManager.getSubCulture(player)).getName() + " ";
-            }
-
             ArrayList<String> lore = new ArrayList<>();
-            lore.add(ChatColor.GRAY + culture + ", Level " + JsonPlayerBridge.getLevel(player));
+
+            if(ConfigBridge.isEnableCultures()) {
+                CustomCultureClass cultureClass = CultureManager.getCustomCulture(JsonPlayerBridge.getJsonPlayerManager(player, profile).getCharacterDataValue("culture"));
+                String culture;
+                if (cultureClass != null) {
+                    culture = cultureClass.getName();
+                } else {
+                    culture = "No culture selected";
+                }
+                if (CultureManager.hasSubCulture(player)) {
+                    culture += CultureManager.getCustomCulture(CultureManager.getSubCulture(player)).getName() + " ";
+                }
+                lore.add(ChatColor.GRAY + culture + ", Level " + JsonPlayerBridge.getLevel(player));
+            } else {
+                lore.add(ChatColor.GRAY + "Level " + JsonPlayerBridge.getLevel(player));
+            }
+
             lore.add("");
             lore.addAll(MineshaftPlayerBridge.Attributes.getAbilityScoreStrings(player));
 
@@ -422,11 +426,16 @@ public class UIButtonManager {
             ItemMeta featItemMeta = featItem.getItemMeta();
             assert featItemMeta != null;
             featItemMeta.setDisplayName(ChatColor.WHITE + "Feats");
-            List<String> lore = List.of(
-                    ChatColor.GOLD + String.valueOf(MineshaftPlayerBridge.Feats.getFeatPoints(player)) + ChatColor.GRAY + " virtue points remaining",
-                    ChatColor.GRAY + "Click to view virtues"
-            );
-            featItemMeta.setLore(lore);
+            if(ConfigBridge.isEnableFeats()) {
+                featItemMeta.setLore(List.of(
+                        ChatColor.GOLD + String.valueOf(MineshaftPlayerBridge.Feats.getFeatPoints(player)) + ChatColor.GRAY + " virtue points remaining",
+                        ChatColor.GRAY + "Click to view virtues"
+                ));
+            } else {
+                featItemMeta.setLore(List.of(
+                        ChatColor.RED + "Disabled in plugin configuration"
+                ));
+            }
             featItem.setItemMeta(featItemMeta);
             UIUtil.setOnclick(featItem,"virtues");
             return featItem;
@@ -454,10 +463,14 @@ public class UIButtonManager {
             ItemMeta abilityItemMeta = abilityItem.getItemMeta();
             assert abilityItemMeta != null;
             abilityItemMeta.setDisplayName(ChatColor.LIGHT_PURPLE + "Spells");
-            if (JsonPlayerBridge.getSpells(player).isEmpty()) {
-                abilityItemMeta.setLore(Collections.singletonList(ChatColor.GRAY + "None"));
+            if(ConfigBridge.isEnableSpells()) {
+                if (JsonPlayerBridge.getSpells(player).isEmpty()) {
+                    abilityItemMeta.setLore(Collections.singletonList(ChatColor.GRAY + "None"));
+                } else {
+                    abilityItemMeta.setLore(Collections.singletonList(ChatColor.GRAY + "Click to view"));
+                }
             } else {
-                abilityItemMeta.setLore(Collections.singletonList(ChatColor.GRAY + "Click to view"));
+                abilityItemMeta.setLore(Collections.singletonList(ChatColor.RED + "Disabled in plugin configuration."));
             }
             abilityItem.setItemMeta(abilityItemMeta);
             NBT.modify(abilityItem, nbt -> {

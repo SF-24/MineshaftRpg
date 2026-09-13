@@ -121,14 +121,16 @@ public class CultureManager {
                 for(String id : c.getSubcultures()) {
                     subCultures.add(getCustomCulture(id));
                 }
-                PlayerMenuManager.Profile.openSubspeciesSelector(player,subCultures);
-            } else if(!MineshaftPlayerBridge.Backgrounds.hasBackground(player)) {
+                if(ConfigBridge.isEnableCultures()) {
+                    PlayerMenuManager.Profile.openSubspeciesSelector(player, subCultures);
+                }
+            } else if(ConfigBridge.isEnableBackgrounds() && !MineshaftPlayerBridge.Backgrounds.hasBackground(player)) {
                 // Open the player background menu
                 PlayerMenuManager.Profile.openBackgroundSelector(player);
             }
         } else {
             CultureManager.setSubCulture(player, c.getId());
-            if(!MineshaftPlayerBridge.Backgrounds.hasBackground(player)) {
+            if(ConfigBridge.isEnableBackgrounds() && !MineshaftPlayerBridge.Backgrounds.hasBackground(player)) {
                 // Open the player background menu
                 PlayerMenuManager.Profile.openBackgroundSelector(player);
             }

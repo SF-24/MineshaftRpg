@@ -311,7 +311,7 @@ public class PlayerMenuManager {
                                     JsonProfileBridge.setCurrentProfile(player, name);
                                     JsonProfileBridge.addProfile(player, name);
                                     CharacterCreationManager.setDefaultData(player);
-                                    if(!ConfigBridge.getDisabledWorlds().contains(player.getWorld().getName()) && !ConfigBridge.getDisabledPlayers().contains(player.getName())) {
+                                    if(ConfigBridge.isEnableCultures() && !ConfigBridge.getDisabledWorlds().contains(player.getWorld().getName()) && !ConfigBridge.getDisabledPlayers().contains(player.getName())) {
                                         openSpeciesSelector(player);
                                     }
                                 })
@@ -323,6 +323,7 @@ public class PlayerMenuManager {
         }
 
         public static void openSpeciesSelector(Player player) {
+
             // TODO:
             player.sendMessage("Character successfully created");
 

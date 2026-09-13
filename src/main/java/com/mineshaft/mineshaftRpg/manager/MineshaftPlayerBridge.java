@@ -23,6 +23,7 @@ import com.mineshaft.mineshaftRpg.manager.config.ConfigBridge;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.CustomAbilityClass;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.abilities.passive_events.PassiveAbilities;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.backgrounds.CustomBackgroundClass;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CultureManager;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.feats.CustomFeatClass;
 import com.mineshaft.mineshaftRpg.manager.player_data.AbilityScores;
 import com.mineshaft.mineshaftRpg.manager.ui.PlayerMenuManager;
@@ -172,7 +173,7 @@ public class MineshaftPlayerBridge {
             }
             MineshaftPlayerBridge.savePlayerData(player);
 
-            if(!hasBackgroundAbilityScores(player)) {
+            if(ConfigBridge.isEnableBackgrounds() && !hasBackgroundAbilityScores(player)) {
                 PlayerMenuManager.Profile.openBackgroundAsiSelector(player);
             }
         }
