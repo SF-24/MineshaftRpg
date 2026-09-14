@@ -200,6 +200,9 @@ public class CultureManager {
 
 
         public static boolean hasCultureStartingItems(Player player) {
+            if(JsonPlayerBridge.getCharacterDataValue(player, "hasCultureStartingItems")==null) {
+                return false;
+            }
             return JsonPlayerBridge.getCharacterDataValue(player, "hasCultureStartingItems").equals("true");
         }
     }
