@@ -286,7 +286,19 @@ public class MineshaftPlayerBridge {
         }
 
         public static ArrayList<ItemStack> getQuestPage(Player player, int page) {
-            return UIUtil.getPageItem(getQuestList(player),0,45);
+            Logger.logDebug("Player " + player.getName() + " has " + getQuestList(player).size() + " quest entries");
+            if(getQuestList(player).size()<45) return getQuestList(player);
+
+            ArrayList<ItemStack> itemList = new ArrayList<>();
+            int iterator = 0;
+            for(ItemStack item : getQuestList(player)) {
+                if(iterator==45) {
+                    return itemList;
+                }
+                itemList.add(item);
+                iterator++;
+            }
+            return itemList;
         }
 
         public static int getQuestPageCount(Player player) {
