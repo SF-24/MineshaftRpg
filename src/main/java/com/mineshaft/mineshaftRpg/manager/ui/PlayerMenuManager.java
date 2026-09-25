@@ -156,19 +156,20 @@ public class PlayerMenuManager {
         }
 
         public static void openQuestMenu(Player player, int page, boolean isUpdate) {
-            Inventory ui = getMenuBackground("Quests");
+            Inventory ui = getLargeMenuBackground("Quests");
 
             for(ItemStack itemStack : MineshaftPlayerBridge.Quests.getQuestPage(player,page)) {
                 ui.addItem(itemStack);
             }
 
             // Directional arrows and page log
-            ui.setItem(1, ButtonUtil.getButton(ButtonType.ARROW_LEFT, (page<MineshaftPlayerBridge.Quests.getQuestMaxPage(player))?ButtonVariant.GREEN:ButtonVariant.GREY, "Previous Page", Collections.emptyList(), "quest_menu_previous_page"));
+            ui.setItem(45, ButtonUtil.getButton(ButtonType.ARROW_LEFT, (page<MineshaftPlayerBridge.Quests.getQuestMaxPage(player))?ButtonVariant.GREEN:ButtonVariant.GREY, "Previous Page", Collections.emptyList(), "quest_menu_previous_page"));
             ItemStack rightArrow = ButtonUtil.getButton(ButtonType.ARROW_RIGHT, (page>0)?ButtonVariant.GREEN:ButtonVariant.GREY, "Next Page", Collections.emptyList(), "quest_menu_next_page");
             NBT.modify(rightArrow,nbt->{
                 nbt.setInteger("page",page);
             });
-            ui.setItem(7, rightArrow);
+            ui.setItem(53, rightArrow);
+
 
             player.openInventory(ui);
             inventoryManagement(player,isUpdate);
