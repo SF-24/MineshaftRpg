@@ -33,15 +33,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class AbilityExecutor {
 
-    public static CustomAbilityClass getAbilityClass(@NotNull String id) {
-        final CustomAbilityClass[] returnValue = {null};
-        MineshaftRpg.getInstance().getCache().getAbilityCache().forEach(customAbilityClass -> {
-            if(customAbilityClass.getId().equals(id)) {
-                returnValue[0]=customAbilityClass;
-            }
-        });
-        return returnValue[0];
-    }
+//    public static CustomAbilityClass getAbilityClass(@NotNull String id) {
+//        return MineshaftRpg.getInstance().getCache().getAbility(id);
+//    }
 
     public static void executeAbilityOnSelf(Player player, CustomAbilityClass ability) {
         executeAbilityOnSelf(player,ability,0);
@@ -84,9 +78,9 @@ public class AbilityExecutor {
 
                     if (!checkOwnership || JsonPlayerBridge.getAbilities(player).containsKey(args[0])) {
                         // Trigger the ability:
-                        executeAbilityOnSelf(player,getAbilityClass(args[0]));
+                        executeAbilityOnSelf(player,AbilityManager.getAbility(args[0]));
                     } else if(ItemUtil.isWand(player.getInventory().getItemInMainHand()) && JsonPlayerBridge.getSpells(player).containsKey(args[0])) {
-                        SpellCaster.attemptCastSpell(player, getAbilityClass(args[0]), true);
+                        SpellCaster.attemptCastSpell(player, AbilityManager.getAbility(args[0]), true);
                     } else {
                         player.sendMessage(Component.text("You have not learned this ability",NamedTextColor.RED));
                     }

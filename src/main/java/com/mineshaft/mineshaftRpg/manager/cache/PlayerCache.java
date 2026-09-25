@@ -55,7 +55,6 @@ public class PlayerCache {
 
     HashMap<UUID, ArrayList<ClickType>> clicks = new HashMap<>();
     private final Cache<UUID, Long> activeTime = CacheBuilder.newBuilder().expireAfterWrite(2500, TimeUnit.MILLISECONDS).build();
-    private final Cache<UUID, Long> cooldown = CacheBuilder.newBuilder().expireAfterWrite(100, TimeUnit.MILLISECONDS).build();
 
     private final HashMap<UUID, ArrayList<ClickType>> settableClicks = new HashMap<>();
 

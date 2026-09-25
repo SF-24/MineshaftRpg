@@ -56,13 +56,7 @@ public class CultureManager {
     }
 
     public static CustomCultureClass getCustomCulture(String culture) {
-        for(CustomCultureClass c : MineshaftRpg.getInstance().getCache().getCultureCache()) {
-            if(c==null) {Logger.logWarning("Null culture detected."); continue;}
-            if(c.getId().equalsIgnoreCase(culture)) {
-                return c;
-            }
-        }
-        return null;
+        return MineshaftRpg.getInstance().getCache().getCulture(culture);
     }
 
     public static void setCulture(Player player, String culture) {

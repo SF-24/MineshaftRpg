@@ -35,10 +35,7 @@ public class AbilityManager {
     }
 
     public static CustomAbilityClass getAbility(String abilityId) {
-        for(CustomAbilityClass abilityClass : MineshaftRpg.getInstance().getCache().getAbilityCache()) {
-            if(abilityClass.getId().equals(abilityId)) return abilityClass;
-        }
-        return null;
+        return MineshaftRpg.getInstance().getCache().getAbility(abilityId);
     }
 
 }

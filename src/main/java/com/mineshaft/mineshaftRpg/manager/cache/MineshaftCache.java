@@ -50,17 +50,20 @@ public class MineshaftCache {
 
     // Getters
     @Getter
-    private final ArrayList<CustomCultureClass> cultureCache = new ArrayList<>();
+    private final HashMap<String, String> cultureCache = new HashMap<>();
+    @Getter
+    private final HashMap<String,String> abilityCache = new HashMap<>();
+    @Getter
+    private final HashMap<String, String> backgroundCache = new HashMap<>();
+
+    @Getter
+    private final HashMap<List<Integer>, String> spellPatternCache = new HashMap<>();
+
+    // TODO: Convert
     @Getter
     private final ArrayList<CustomFeatClass> featCache = new ArrayList<>();
     @Getter
-    private final ArrayList<CustomAbilityClass> abilityCache = new ArrayList<>();
-    @Getter
     private final ArrayList<LevellingRewardClass> levellingRewardCache = new ArrayList<>();
-    @Getter
-    private final List<CustomBackgroundClass> backgroundCache = new ArrayList<>();
-    @Getter
-    private final HashMap<List<Integer>, String> spellPatternCache = new HashMap<>();
 
     // Click cache
     @Getter
@@ -81,17 +84,18 @@ public class MineshaftCache {
         Logger.logInfo("Cached custom feat with name: " + customFeat.getName());
     }
 
-    public void cacheCustomAbility(CustomAbilityClass customAbilityClass) {
-        MineshaftApi.getInstance().cacheAbility(customAbilityClass.getId(),customAbilityClass.getAbilityType());
-        this.abilityCache.add(customAbilityClass);
-
-        // If the spell has a pattern, cache the pattern
-        if(!customAbilityClass.getSpellPattern().isEmpty()) {
-            this.spellPatternCache.put(customAbilityClass.getSpellPattern(),customAbilityClass.getId());
-            Logger.logInfo("Cached custom ability with id: " + customAbilityClass.getId() + " with pattern " + customAbilityClass.getSpellPattern());
-        } else {
-            Logger.logInfo("Cached custom ability with id: " + customAbilityClass.getId());
-        }
+    public void cacheCustomAbility(String name, String path) {
+        this.abilityCache.put(name, path);
+//        MineshaftApi.getInstance().cacheAbility(customAbilityClass.getId(),customAbilityClass.getAbilityType());
+//        this.abilityCache.add(customAbilityClass);
+//
+//        // If the spell has a pattern, cache the pattern
+//        if(!customAbilityClass.getSpellPattern().isEmpty()) {
+//            this.spellPatternCache.put(customAbilityClass.getSpellPattern(),customAbilityClass.getId());
+//            Logger.logInfo("Cached custom ability with id: " + customAbilityClass.getId() + " with pattern " + customAbilityClass.getSpellPattern());
+//        } else {
+//            Logger.logInfo("Cached custom ability with id: " + customAbilityClass.getId());
+//        }
     }
 
     public void cacheHardcodedPassiveAbility(PassiveAbilities passiveAbility) {
@@ -105,42 +109,31 @@ public class MineshaftCache {
         Logger.logInfo("Cached custom levelling reward for level: " + levellingRewardClass.getLevel());
     }
 
-    public void cacheCustomBackground(CustomBackgroundClass customBackground) {
-        this.backgroundCache.add(customBackground);
-        Logger.logInfo("Cached custom background with id: " + customBackground.getId());
+    public void cacheCustomBackground(String id, String path) {
+        this.backgroundCache.put(id,path);
+        Logger.logInfo("Cached custom background with id: " + id);
     }
 
-    public void cacheCustomCulture(CustomCultureClass customCulture) {
-        this.cultureCache.add(customCulture);
-        Logger.logInfo("Cached custom culture with id: " + customCulture.getId());
+    public void cacheCustomCulture(String id, String path) {
+        this.cultureCache.put(id,path);
+        Logger.logInfo("Cached custom culture with id: " + id);
     }
 
     public ArrayList<String> getAbilityIds() {
-        ArrayList<String> abilityStrings = new ArrayList<>();
-        abilityCache.forEach(customAbilityClass -> {
-            abilityStrings.add(customAbilityClass.getId());
-        });
-        return abilityStrings;
+        return new ArrayList<>(this.abilityCache.keySet());
     }
 
     public CustomAbilityClass getAbility(String id) {
-        for(CustomAbilityClass customAbilityClass : abilityCache) {
-            if(id.equalsIgnoreCase(customAbilityClass.getId())) return customAbilityClass;
-        }
-        return null;
+        return jsonCustomAbilities.getFile(id,abilityCache.get(id));
     }
 
     public CustomBackgroundClass getBackground(String id) {
         if(id==null) return null;
+        return jsonCustomBackgrounds.getFile(id,backgroundCache.get(id));
+    }
 
-        for(CustomBackgroundClass element : backgroundCache) {
-            if(element.getId()==null) {
-                Logger.logError("Detected background with null ID. Aborting");
-                return null;
-            }
-            if(id.equalsIgnoreCase(element.getId())) return element;
-        }
-        return null;
+    public CustomCultureClass getCulture(String id) {
+        return jsonCustomCultures.getFile(id,cultureCache.get(id));
     }
 
     public CustomFeatClass getFeat(String id) {
@@ -196,7 +189,6 @@ public class MineshaftCache {
     }
 
     public void makeExamples() {
-
         MineshaftRpg.getInstance().getJsonCustomCultures().makeExample();
         MineshaftRpg.getInstance().getJsonCustomFeats().makeExample();
         MineshaftRpg.getInstance().getJsonCustomAbilities().makeExample();

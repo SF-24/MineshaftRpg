@@ -20,7 +20,9 @@ package com.mineshaft.mineshaftRpg.manager.player_character_options.backgrounds;
 
 import com.google.gson.Gson;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
 import com.mineshaft.mineshaftapi.util.Logger;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
 import java.util.Objects;
@@ -52,9 +54,18 @@ public class JsonCustomBackgrounds {
         if(!file.exists()) {
             makeNewFile(file);
         }
-        CustomBackgroundClass data = loadData(file);
-        MineshaftRpg.getInstance().getCache().cacheCustomBackground(data);
+//        CustomBackgroundClass data = loadData(file);
+        MineshaftRpg.getInstance().getCache().cacheCustomBackground(FilenameUtils.removeExtension(file.getName()), file.getPath());
     }
+
+    public CustomBackgroundClass getFile(String id, String path) {
+        File file = new File(path,id+".json");
+        if(file.exists()) {
+            return loadData(file);
+        }
+        return null;
+    }
+
 
     public void makeExample() {
         File file = new File(path, "example_background.json");

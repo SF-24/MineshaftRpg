@@ -87,7 +87,7 @@ public class PlayerMenuManager {
         player.openInventory(ui);
 
         location = 10;
-        for(String buttonCode : ConfigBridge.getTopMenuIconLayout()) {
+        for(String buttonCode : ConfigBridge.getBottomMenuIconLayout()) {
             if(location<=44) {
                 player.getInventory().setItem(location,UIButtonManager.getButtonFromCode(player,buttonCode));
             } else {
@@ -335,23 +335,20 @@ public class PlayerMenuManager {
 
             ArrayList<BaseComponent[]> unlockedLockedCulturePages = new ArrayList<>();
 
-            for(CustomCultureClass c : MineshaftRpg.getInstance().getCache().getCultureCache()) {
+            for(String cId : MineshaftRpg.getInstance().getCache().getCultureCache().keySet()) {
+                CustomCultureClass c = MineshaftRpg.getInstance().getCache().getCulture(cId);
                 if(c.isSubculture()) continue;
-
                 if(!c.getDisabledWorlds().isEmpty() && c.getDisabledWorlds().contains(player.getWorld().getName())) {
                     Logger.logDebug("Detected disabled world '" + player.getWorld().getName() + "' for culture " + c.getName());
                     continue;
                 } else if(!c.getRequiredWorlds().isEmpty() && !c.getRequiredWorlds().contains(player.getWorld().getName())) {
-//                    Logger.logDebug("'" + player.getWorld().getName() + "' is not a required world for culture " + c.getName());
                     continue;
                 }
                 // Culture mechanic
                 if (!c.isLocked()) {
                     bookMeta.spigot().addPage(BookUIManager.getCulturePageDisplay(c.getId()));
-//                    Logger.logDebug("Displaying culture page for: " + c.getName());
                 } else if(JsonProfileBridge.getUnlockedCultures(player).contains(c.getName().toLowerCase())) {
                     unlockedLockedCulturePages.add(BookUIManager.getCulturePageDisplay(c.getId()));
-//                    Logger.logDebug("Displaying culture page for: " + c.getName());
                 }
             }
 
@@ -413,7 +410,8 @@ public class PlayerMenuManager {
 
             ArrayList<BaseComponent[]> unlockedLockedCulturePages = new ArrayList<>();
 
-            for(CustomBackgroundClass backgroundClass : MineshaftRpg.getInstance().getCache().getBackgroundCache()) {
+            for(String classId : MineshaftRpg.getInstance().getCache().getBackgroundCache().keySet()) {
+                CustomBackgroundClass backgroundClass = MineshaftRpg.getInstance().getCache().getBackground(classId);
                 if(backgroundClass.isCultureRestricted()) {
                     if(!backgroundClass.getCultures().contains(CultureManager.getCulture(player))) {
                         continue;

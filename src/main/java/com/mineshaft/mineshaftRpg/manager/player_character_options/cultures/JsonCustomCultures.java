@@ -20,8 +20,8 @@ package com.mineshaft.mineshaftRpg.manager.player_character_options.cultures;
 
 import com.google.gson.Gson;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
-import com.mineshaft.mineshaftapi.manager.player.ProfileManager;
 import com.mineshaft.mineshaftapi.util.Logger;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
 import java.util.Objects;
@@ -54,7 +54,16 @@ public class JsonCustomCultures {
         if(!file.exists()) {
             makeNewFile(file);
         }
-        MineshaftRpg.getInstance().getCache().cacheCustomCulture(loadData(file));
+        MineshaftRpg.getInstance().getCache().cacheCustomCulture(FilenameUtils.removeExtension(file.getName()),file.getPath());
+//        loadData(file)
+    }
+
+    public CustomCultureClass getFile(String id, String path) {
+        File file = new File(path,id+".json");
+        if(file.exists()) {
+            return loadData(file);
+        }
+        return null;
     }
 
     public void makeExample() {

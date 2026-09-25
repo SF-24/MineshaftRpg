@@ -135,6 +135,7 @@ public class ButtonClickExecutor {
                 break;
             case "quest_list":
                 PlayerMenuManager.Quests.openQuestMenu(player, 0, true);
+                break;
             case "abilities":
                 if(e.getClick().equals(org.bukkit.event.inventory.ClickType.LEFT) || e.getClick().equals(org.bukkit.event.inventory.ClickType.SHIFT_LEFT)) {
                     PlayerMenuManager.Abilities.openAbilityUI(player, true,AbilityType.ACTIVE_ABILITY);

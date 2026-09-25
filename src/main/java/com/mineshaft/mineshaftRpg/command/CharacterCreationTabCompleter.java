@@ -19,7 +19,9 @@
 package com.mineshaft.mineshaftRpg.command;
 
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
+import com.mineshaft.mineshaftRpg.manager.cache.MineshaftCache;
 import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
+import com.mineshaft.mineshaftapi.MineshaftApi;
 import com.mineshaft.mineshaftapi.manager.player.json.JsonProfileBridge;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -41,7 +43,9 @@ public class CharacterCreationTabCompleter implements TabCompleter {
             return StringUtil.copyPartialMatches(args[0], List.of("set_culture","set_background","set_background_asi"),new ArrayList<>());
         } else if(args.length==2 && args[0].equals("set_culture")) {
             ArrayList<String> list = new ArrayList<>();
-            for(CustomCultureClass c : MineshaftRpg.getInstance().getCache().getCultureCache()) {
+            for(String cId : MineshaftRpg.getInstance().getCache().getCultureCache().keySet()) {
+                CustomCultureClass c = MineshaftRpg.getInstance().getCache().getCulture(cId);
+                if(c==null) continue;
                 if(!c.isLocked() || JsonProfileBridge.getUnlockedCultures((Player)sender).contains(c.getId())) {
                     list.add(c.getId());
                 }

@@ -20,7 +20,9 @@ package com.mineshaft.mineshaftRpg.manager.player_character_options.abilities;
 
 import com.google.gson.Gson;
 import com.mineshaft.mineshaftRpg.MineshaftRpg;
+import com.mineshaft.mineshaftRpg.manager.player_character_options.cultures.CustomCultureClass;
 import com.mineshaft.mineshaftapi.util.Logger;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
 import java.util.Objects;
@@ -52,7 +54,15 @@ public class JsonCustomAbilities {
         if(!file.exists()) {
             makeNewFile(file);
         }
-        MineshaftRpg.getInstance().getCache().cacheCustomAbility(loadData(file));
+        MineshaftRpg.getInstance().getCache().cacheCustomAbility(FilenameUtils.removeExtension(file.getName()),file.getPath());
+    }
+
+    public CustomAbilityClass getFile(String id, String path) {
+        File file = new File(path,id+".json");
+        if(file.exists()) {
+            return loadData(file);
+        }
+        return null;
     }
 
     public void makeExample() {
